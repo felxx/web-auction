@@ -20,12 +20,12 @@ import jakarta.websocket.server.PathParam;
 
 @RestController
 @RequestMapping("/person")
-public class PersonControler {
+public class PersonController {
 
     @Autowired
     private PersonService personService;
 
-    @GetMapping("/list")
+    @GetMapping
     public ResponseEntity<List<Person>> findAll() {
         return ResponseEntity.ok(personService.findAll());
     }

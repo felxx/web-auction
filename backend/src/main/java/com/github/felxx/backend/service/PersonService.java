@@ -1,6 +1,5 @@
 package com.github.felxx.backend.service;
 
-import java.rmi.NoSuchObjectException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
