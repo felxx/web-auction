@@ -12,7 +12,7 @@
 	<artifactId>backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>backend</name>
-	<description>Projeto de Leilão Online</description>
+	<description>A web auction project</description>
 	<url/>
 	<licenses>
 		<license/>

@@ -18,10 +18,10 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank(message = "{validation.name.notblank}")
-    private String nome;
+    private String name;
     @NotBlank(message = "{validation.email.notblank}")
     @Email(message = "{validation.email.notvalid}")
     private String email;
     @CPF
-    private String senha;
+    private String password;
 }
