@@ -1,8 +1,8 @@
 package com.github.felxx.backend.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,13 +26,15 @@ public class PersonController {
     private PersonService personService;
 
     @GetMapping
-    public ResponseEntity<List<Person>> findAll() {
-        return ResponseEntity.ok(personService.findAll());
+    public ResponseEntity<Page<Person>> findAll(Pageable pageable) {
+        return ResponseEntity.ok(personService.findAll(pageable));
     }
 
     @PostMapping
     public ResponseEntity<Person> insert(@Valid @RequestBody Person person) {
+        
         return ResponseEntity.ok(personService.insert(person));
+
     }
 
     @PutMapping

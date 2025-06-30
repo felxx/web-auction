@@ -1,13 +1,13 @@
 package com.github.felxx.backend.service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.github.felxx.backend.exception.NotFoundException;
 import com.github.felxx.backend.model.Person;
 import com.github.felxx.backend.repository.PersonRepository;
 
@@ -19,8 +19,13 @@ public class PersonService {
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private EmailService emailService;
+
     public Person insert(Person person) {
-        return personRepository.save(person);
+        Person registeredPerson = personRepository.save(person);
+        emailService.sendSimpleMail(registeredPerson.getEmail(), "Successfully registration!", "Successfully registration on Web Auction!");
+        return registeredPerson;
     }
 
     public Person update(Person person) {
@@ -38,11 +43,11 @@ public class PersonService {
 
     public Person findById(Long id) {
         return personRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(messageSource.getMessage("person.notfound",
+                .orElseThrow(() -> new NotFoundException(messageSource.getMessage("person.notfound",
                         new Object[] { id }, LocaleContextHolder.getLocale())));
     }
 
-    public List<Person> findAll(){
-        return personRepository.findAll();
+    public Page<Person> findAll(Pageable pageable) {
+        return personRepository.findAll(pageable);
     }
 }
