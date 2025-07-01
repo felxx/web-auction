@@ -6,6 +6,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 import com.github.felxx.backend.exception.NotFoundException;
 import com.github.felxx.backend.model.Person;
@@ -22,9 +23,16 @@ public class PersonService {
     @Autowired
     private EmailService emailService;
 
+    private void sendSuccessEmail(Person person) {
+        Context context = new Context();
+        context.setVariable("name", person.getName());
+        emailService.sendTemplateMail(person.getEmail(), "Successfully registration!", context, "successRegister");
+    }
+
     public Person insert(Person person) {
         Person registeredPerson = personRepository.save(person);
-        emailService.sendSimpleMail(registeredPerson.getEmail(), "Successfully registration!", "Successfully registration on Web Auction!");
+        // emailService.sendSimpleMail(registeredPerson.getEmail(), "Successfully registration!", "Successfully registration on Web Auction!");
+        sendSuccessEmail(registeredPerson);
         return registeredPerson;
     }
 

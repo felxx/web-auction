@@ -32,7 +32,6 @@ public class PersonController {
 
     @PostMapping
     public ResponseEntity<Person> insert(@Valid @RequestBody Person person) {
-        
         return ResponseEntity.ok(personService.insert(person));
 
     }
