@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import com.github.felxx.backend.dto.ErrorResponse;
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

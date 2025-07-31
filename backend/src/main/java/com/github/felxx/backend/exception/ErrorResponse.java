@@ -1,4 +1,4 @@
-package com.github.felxx.backend.dto;
+package com.github.felxx.backend.exception;
 
 import java.time.LocalDateTime;
 
