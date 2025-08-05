@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -43,16 +45,19 @@ public class Person {
 
     private boolean enabled = false;
 
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @Setter(value = AccessLevel.NONE)
+    private List<PersonProfile> personProfiles;
+
+    public void setPersonProfile(List<PersonProfile> personProfiles) {
+        for (PersonProfile p : personProfiles) {
+            p.setPerson(this);
+        }
+        this.personProfiles = personProfiles;
+    }
+
     @Lob
     private byte[] profilePicture;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "person_roles",
-        joinColumns = @JoinColumn(name = "person_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Role> roles;
 
     @OneToMany(mappedBy = "creator")
     private List<Category> createdCategories;

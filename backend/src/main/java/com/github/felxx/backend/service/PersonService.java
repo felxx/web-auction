@@ -1,5 +1,7 @@
 package com.github.felxx.backend.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 
 import com.github.felxx.backend.exception.NotFoundException;
+import com.github.felxx.backend.model.Feedback;
 import com.github.felxx.backend.model.Person;
 import com.github.felxx.backend.repository.PersonRepository;
 
@@ -36,8 +39,8 @@ public class PersonService {
         return registeredPerson;
     }
 
-    public Person update(Person person) {
-        Person personDatabase = findById(person.getId());
+    public Person update(Long id, Person person) {
+        Person personDatabase = findById(id);
         personDatabase.setName(person.getName());
         personDatabase.setEmail(person.getEmail());
         return personRepository.save(personDatabase);
@@ -57,5 +60,10 @@ public class PersonService {
 
     public Page<Person> findAll(Pageable pageable) {
         return personRepository.findAll(pageable);
+    }
+
+    public List<Feedback> findFeedbacks(Long id){
+        Person person = personRepository.findById(id).orElseThrow(() -> new NotFoundException(messageSource.getMessage("person.notfound", new Object[] { id }, LocaleContextHolder.getLocale())));;
+        return person.getReceivedFeedbacks();
     }
 }

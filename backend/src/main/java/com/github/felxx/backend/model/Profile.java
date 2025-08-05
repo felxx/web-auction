@@ -6,12 +6,13 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "roles")
-public class Role {
+public class Profile {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
-    private RoleType type;
+    private ProfileType type;
 }

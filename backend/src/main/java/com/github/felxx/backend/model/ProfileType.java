@@ -1,6 +1,6 @@
 package com.github.felxx.backend.model;
 
-public enum RoleType {
+public enum ProfileType {
     ADMIN,
     BUYER,
     SELLER
