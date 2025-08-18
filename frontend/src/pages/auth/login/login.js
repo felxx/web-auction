@@ -1,20 +1,34 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import authService from '../../../services/authService';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        // TODO: Call API to login
-        console.log({ email, password });
+        setLoading(true);
+        setError('');
+        try {
+            await authService.login(email, password);
+            navigate('/admin');
+        } catch (err) {
+            setError('Invalid credentials. Please try again.');
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div>
             <h2>Login</h2>
             <form onSubmit={handleLogin}>
+                {error && <p style={{ color: 'red' }}>{error}</p>}
                 <div>
                     <label>Email</label>
                     <input
@@ -33,7 +47,9 @@ const LoginPage = () => {
                         required
                     />
                 </div>
-                <button type="submit">Sign In</button>
+                <button type="submit" disabled={loading}>
+                    {loading ? 'Loading...' : 'Sign In'}
+                </button>
             </form>
             <p>
                 <Link to="/forgot-password">Forgot Password?</Link>
