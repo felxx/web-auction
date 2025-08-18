@@ -1,50 +1,38 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { validatePassword } from '../../../utils/password-validator';
+import authService from '../../../services/authService';
 
 const SignUpPage = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [profileType, setProfileType] = useState('BUYER');
     const [error, setError] = useState('');
-    
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const handleSignUp = (e) => {
+    const handleSignUp = async (e) => {
         e.preventDefault();
-
-        if (!name || !email || !password || !confirmPassword) {
-            setError('All fields are required.');
-            return;
-        }
-
-        if (password !== confirmPassword) {
-            setError('Passwords do not match.');
-            return;
-        }
-
-        const passwordErrors = validatePassword(password);
-        if (passwordErrors.length > 0) {
-            setError(passwordErrors.join(' '));
-            return;
-        }
-
+        setLoading(true);
         setError('');
-
-        // TODO: Implementar chamada para backend
-        console.log('Signing up with:', { name, email, password });
-        
-        alert('Sign up successful! Please log in.');
-        navigate('/login');
+        try {
+            await authService.register(name, email, password, profileType);
+            navigate('/');
+        } catch (err) {
+            const errorMessage = err.response?.data?.message || 'Failed to register. Please try again.';
+            setError(errorMessage);
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
-        <div className="container">
+        <div>
             <h2>Sign Up</h2>
             <form onSubmit={handleSignUp}>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
-                <div className="form-group">
+                <div>
                     <label>Name</label>
                     <input
                         type="text"
@@ -53,7 +41,7 @@ const SignUpPage = () => {
                         required
                     />
                 </div>
-                <div className="form-group">
+                <div>
                     <label>Email</label>
                     <input
                         type="email"
@@ -62,7 +50,7 @@ const SignUpPage = () => {
                         required
                     />
                 </div>
-                <div className="form-group">
+                <div>
                     <label>Password</label>
                     <input
                         type="password"
@@ -71,26 +59,19 @@ const SignUpPage = () => {
                         required
                     />
                 </div>
-                <div className="form-group">
-                    <label>Confirm Password</label>
-                    <input
-                        type="password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                    />
+                <div>
+                    <label>Register as a:</label>
+                    <select value={profileType} onChange={(e) => setProfileType(e.target.value)}>
+                        <option value="BUYER">Buyer</option>
+                        <option value="SELLER">Seller</option>
+                    </select>
                 </div>
-                <div className="button-group">
-                    <button type="button" onClick={() => navigate('/login')} className="btn-secondary">
-                        Cancel
-                    </button>
-                    <button type="submit" className="btn-primary">
-                        Sign Up
-                    </button>
-                </div>
+                <button type="submit" disabled={loading}>
+                    {loading ? 'Creating Account...' : 'Sign Up'}
+                </button>
             </form>
             <p>
-                Already have an account? <Link to="/login">Login</Link>
+                Already have an account? <Link to="/login">Sign In</Link>
             </p>
         </div>
     );
