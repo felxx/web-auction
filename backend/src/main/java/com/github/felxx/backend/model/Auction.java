@@ -33,8 +33,8 @@ public class Auction {
     private Float minimumBid;
 
     @ManyToOne
-    @JoinColumn(name = "seller_id", nullable = false)
-    private Person seller;
+    @JoinColumn(name = "publisher_id")
+    private Person publisher;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
