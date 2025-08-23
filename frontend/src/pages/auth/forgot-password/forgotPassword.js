@@ -20,7 +20,7 @@ const ForgotPasswordPage = () => {
         setMessage('');
 
         try {
-            // TODO: IMPLEMENTAR REQUISIÇÃO PARA O BACK
+            // TODO: IMPLEMENT BACKEND REQUEST
             console.log('Requesting password reset for email:', email);
 
             setMessage('If an account with this email exists, a password reset link has been sent.');

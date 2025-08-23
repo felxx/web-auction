@@ -36,7 +36,7 @@ const ChangePasswordPage = () => {
 
         if (finalPasswordErrors.length === 0 && passwordsMatch) {
             
-            // TODO: CHAMADA DO BACKEND
+            // TODO: BACKEND CALL
             console.log("Password change submitted for", { email, code, newPassword });
         } else {
             console.error("Validation failed");

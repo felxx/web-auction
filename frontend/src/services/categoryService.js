@@ -1,4 +1,4 @@
-import api from './api';
+import api from './api.js';
 
 const getCategories = (page = 0, size = 10, sort = 'name') => {
   return api.get(`/categories?page=${page}&size=${size}&sort=${sort}`);

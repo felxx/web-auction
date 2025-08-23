@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import authService from '../../../services/authService';
+import authService from '../../../services/auth/authService';
 
 const SignUpPage = () => {
     const [name, setName] = useState('');
@@ -17,11 +17,12 @@ const SignUpPage = () => {
         setError('');
         try {
             await authService.register(name, email, password, profileType);
-            navigate('/');
-        } catch (err) {
-            const errorMessage = err.response?.data?.message || 'Failed to register. Please try again.';
-            setError(errorMessage);
-            console.error(err);
+        } catch (error) {
+            if (error.response && error.response.data && error.response.data.message) {
+                setError(error.response.data.message);
+            } else {
+                setError('Failed to sign up. Please try again.');
+            }
         } finally {
             setLoading(false);
         }
@@ -64,6 +65,7 @@ const SignUpPage = () => {
                     <select value={profileType} onChange={(e) => setProfileType(e.target.value)}>
                         <option value="BUYER">Buyer</option>
                         <option value="SELLER">Seller</option>
+                        <option value="ADMIN">Admin</option>
                     </select>
                 </div>
                 <button type="submit" disabled={loading}>

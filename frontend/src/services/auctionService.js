@@ -1,4 +1,4 @@
-import api from './api';
+import api from './api.js';
 
 const getAuctions = (page = 0, size = 10, sort = 'title') => {
   return api.get(`/auctions?page=${page}&size=${size}&sort=${sort}`);

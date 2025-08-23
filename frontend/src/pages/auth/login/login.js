@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import authService from '../../../services/authService';
+import authService from '../../../services/auth/authService';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -15,7 +15,6 @@ const LoginPage = () => {
         setError('');
         try {
             await authService.login(email, password);
-            navigate('/admin');
         } catch (err) {
             setError('Invalid credentials. Please try again.');
             console.error(err);
@@ -55,7 +54,7 @@ const LoginPage = () => {
                 <Link to="/forgot-password">Forgot Password?</Link>
             </p>
             <p>
-                Don't have an account? <Link to="/signup">Sign Up</Link>
+                Don't have an account? <Link to="/sign-up">Sign Up</Link>
             </p>
         </div>
     );
