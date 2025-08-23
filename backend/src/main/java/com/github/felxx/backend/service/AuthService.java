@@ -19,6 +19,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +35,10 @@ public class AuthService {
 
     public AuthResponse register(RegisterRequest request) {
         if (request.getProfileType() == null ||
-            (request.getProfileType() != ProfileType.BUYER && request.getProfileType() != ProfileType.SELLER)) {
-            throw new BusinessException("A profile type of 'BUYER' or 'SELLER' must be selected.");
+            (request.getProfileType() != ProfileType.BUYER && 
+             request.getProfileType() != ProfileType.SELLER && 
+             request.getProfileType() != ProfileType.ADMIN)) {
+            throw new BusinessException("A profile type of 'BUYER', 'SELLER', or 'ADMIN' must be selected.");
         }
 
         Profile selectedProfile = profileRepository.findByType(request.getProfileType())
@@ -52,7 +57,12 @@ public class AuthService {
 
         personRepository.save(user);
 
-        var jwtToken = jwtService.generateToken(user);
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("roles", user.getAuthorities().stream()
+                .map(authority -> authority.getAuthority())
+                .collect(Collectors.toList()));
+
+        var jwtToken = jwtService.generateToken(extraClaims, user);
         return AuthResponse.builder().token(jwtToken).build();
     }
 
@@ -65,7 +75,13 @@ public class AuthService {
         );
         var user = personRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found with email: " + request.getEmail()));
-        var jwtToken = jwtService.generateToken(user);
+        
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("roles", user.getAuthorities().stream()
+                .map(authority -> authority.getAuthority())
+                .collect(Collectors.toList()));
+
+        var jwtToken = jwtService.generateToken(extraClaims, user);
         return AuthResponse.builder().token(jwtToken).build();
     }
 }
