@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,15 +27,15 @@ public class AuctionController {
     private final AuctionService auctionService;
 
     @PostMapping
-    public ResponseEntity<Auction> insert(Auction auction){
-        auctionService.insert(auction);
-        return ResponseEntity.ok(auction);
+    public ResponseEntity<Auction> insert(@Valid @RequestBody Auction auction){
+        Auction savedAuction = auctionService.insert(auction);
+        return ResponseEntity.ok(savedAuction);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Auction> update(@PathVariable("id") Long id, Auction auction){
-        auctionService.update(id, auction);
-        return ResponseEntity.ok(auction);
+    public ResponseEntity<Auction> update(@PathVariable("id") Long id, @Valid @RequestBody Auction auction){
+        Auction updatedAuction = auctionService.update(id, auction);
+        return ResponseEntity.ok(updatedAuction);
     }
 
     @DeleteMapping("/{id}")

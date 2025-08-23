@@ -1,6 +1,9 @@
 package com.github.felxx.backend.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
 
@@ -16,7 +19,10 @@ public class Auction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Title cannot be blank")
     private String title;
+    
+    @NotBlank(message = "Description cannot be blank")
     private String description;
 
     @Column(columnDefinition = "TEXT")
@@ -38,14 +44,18 @@ public class Auction {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
+    @NotNull(message = "Category cannot be null")
     private Category category;
 
     @OneToMany(mappedBy = "auction", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("auction")
     private List<Image> images;
 
     @OneToMany(mappedBy = "auction")
+    @JsonIgnoreProperties("auction")
     private List<Bid> bids;
 
     @OneToOne(mappedBy = "auction", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("auction")
     private Payment payment;
 }
