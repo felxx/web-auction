@@ -4,13 +4,15 @@ import LoginPage from './pages/auth/login/login.js';
 import SignUpPage from './pages/auth/sign-up/signUp.js';
 import ChangePasswordPage from './pages/auth/change-password/changePassword.js';
 import ForgotPasswordPage from './pages/auth/forgot-password/forgotPassword.js';
-import ProtectedRoute from './components/ProtectedRoute.js';
+import ResetPasswordPage from './pages/auth/reset-password/resetPassword.js';
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute.js';
 import CategoryList from './pages/admin/categories/CategoryList.js';
 import CategoryForm from './pages/admin/categories/CategoryForm.js';
 import AuctionList from './pages/admin/auctions/AuctionList.js';
 import AuctionForm from './pages/admin/auctions/AuctionForm.js';
 import authService from './services/auth/authService.js';
 import Home from './pages/home/home.js'
+import './App.css';
 
 function App() {
   const navigate = useNavigate();
@@ -30,8 +32,9 @@ function App() {
 
         <Route path="/login" element={<LoginPage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
-        <Route path="/change-password" element={<ChangePasswordPage />} />
+        <Route path="/change-password" element={<ProtectedRoute><ChangePasswordPage /></ProtectedRoute>} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
 
         <Route 
             path="/admin/categories" 

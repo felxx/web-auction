@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import {useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import authService from '../../../services/auth/authService';
 
 const ForgotPasswordPage = () => {
     const [email, setEmail] = useState('');
@@ -20,9 +21,7 @@ const ForgotPasswordPage = () => {
         setMessage('');
 
         try {
-            // TODO: IMPLEMENT BACKEND REQUEST
-            console.log('Requesting password reset for email:', email);
-
+            await authService.forgotPassword(email);
             setMessage('If an account with this email exists, a password reset link has been sent.');
             
         } catch (apiError) {

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { validatePassword } from '../../../utils/password-validator';
 import authService from '../../../services/auth/authService';
 
-const ChangePasswordPage = () => {
+const ResetPasswordPage = () => {
     const navigate = useNavigate();
-
-    const [currentPassword, setCurrentPassword] = useState('');
+    const [searchParams] = useSearchParams();
+    
+    const token = searchParams.get('token') || '';
+    
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState('');
@@ -15,6 +17,12 @@ const ChangePasswordPage = () => {
     
     const [passwordErrors, setPasswordErrors] = useState([]);
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
+
+    useEffect(() => {
+        if (!token) {
+            setError('Invalid or missing reset token.');
+        }
+    }, [token]);
 
     useEffect(() => {
         setPasswordErrors(validatePassword(newPassword));
@@ -31,13 +39,13 @@ const ChangePasswordPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        const finalPasswordErrors = validatePassword(newPassword);
-        const passwordsMatch = newPassword === confirmPassword;
-
-        if (!currentPassword) {
-            setError('Please enter your current password.');
+        if (!token) {
+            setError('Invalid or missing reset token.');
             return;
         }
+
+        const finalPasswordErrors = validatePassword(newPassword);
+        const passwordsMatch = newPassword === confirmPassword;
 
         if (finalPasswordErrors.length > 0) {
             setError('Please fix the password requirements.');
@@ -54,40 +62,42 @@ const ChangePasswordPage = () => {
         setMessage('');
 
         try {
-            await authService.changePassword(currentPassword, newPassword);
-            setMessage('Password changed successfully!');
+            await authService.resetPassword(token, newPassword);
+            setMessage('Password reset successfully! Redirecting to login...');
             setTimeout(() => {
-                navigate('/');
+                navigate('/login');
             }, 2000);
         } catch (apiError) {
-            console.error('Change password error:', apiError);
+            console.error('Reset password error:', apiError);
             if (apiError.response?.data?.message) {
                 setError(apiError.response.data.message);
             } else {
-                setError('Failed to change password. Please check your current password.');
+                setError('Failed to reset password. The token may be invalid or expired.');
             }
         } finally {
             setLoading(false);
         }
     };
 
+    if (!token) {
+        return (
+            <div className="container">
+                <h2>Reset Password</h2>
+                <p style={{ color: 'red' }}>Invalid or missing reset token. Please request a new password reset.</p>
+                <button onClick={() => navigate('/forgot-password')}>Request New Reset</button>
+            </div>
+        );
+    }
+
     return (
         <div className="container">
-            <h2>Change Password</h2>
+            <h2>Reset Password</h2>
+            <p>Enter your new password below.</p>
+            
             <form onSubmit={handleSubmit}>
                 {message && <p style={{ color: 'green' }}>{message}</p>}
                 {error && <p style={{ color: 'red' }}>{error}</p>}
 
-                <div className="form-group">
-                    <label>Current Password</label>
-                    <input
-                        type="password"
-                        value={currentPassword}
-                        onChange={(e) => setCurrentPassword(e.target.value)}
-                        required
-                        disabled={loading}
-                    />
-                </div>
                 <div className="form-group">
                     <label>New Password</label>
                     <input
@@ -103,6 +113,7 @@ const ChangePasswordPage = () => {
                         </div>
                     )}
                 </div>
+                
                 <div className="form-group">
                     <label>Confirm New Password</label>
                     <input
@@ -116,11 +127,11 @@ const ChangePasswordPage = () => {
                 </div>
 
                 <div className="button-group">
-                    <button type="button" onClick={() => navigate('/')} disabled={loading}>
+                    <button type="button" onClick={() => navigate('/login')} disabled={loading}>
                         Cancel
                     </button>
                     <button type="submit" disabled={loading}>
-                        {loading ? 'Changing...' : 'Change Password'}
+                        {loading ? 'Resetting...' : 'Reset Password'}
                     </button>
                 </div>
             </form>
@@ -128,4 +139,4 @@ const ChangePasswordPage = () => {
     );
 };
 
-export default ChangePasswordPage;
+export default ResetPasswordPage;

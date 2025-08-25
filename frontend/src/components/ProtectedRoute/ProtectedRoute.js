@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import authService from '../services/auth/authService';
+import authService from '../../services/auth/authService';
 
 const ProtectedRoute = ({ children, requiredRole }) => {
     const token = authService.getToken();

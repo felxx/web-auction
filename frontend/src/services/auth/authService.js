@@ -65,12 +65,45 @@ const logout = () => {
     window.location.href = '/login';
 };
 
+const forgotPassword = async (email) => {
+    try {
+        const response = await api.post('/auth/forgot-password', { email });
+        return response;
+    } catch (error) {
+        console.error("Forgot password error:", error);
+        throw error;
+    }
+};
+
+const resetPassword = async (token, newPassword) => {
+    try {
+        const response = await api.post('/auth/reset-password', { token, newPassword });
+        return response;
+    } catch (error) {
+        console.error("Reset password error:", error);
+        throw error;
+    }
+};
+
+const changePassword = async (currentPassword, newPassword) => {
+    try {
+        const response = await api.post('/auth/change-password', { currentPassword, newPassword });
+        return response;
+    } catch (error) {
+        console.error("Change password error:", error);
+        throw error;
+    }
+};
+
 const authService = {
     login,
     register,
     logout,
     getToken,
     getUserRoles,
+    forgotPassword,
+    resetPassword,
+    changePassword,
 };
 
 export default authService;
