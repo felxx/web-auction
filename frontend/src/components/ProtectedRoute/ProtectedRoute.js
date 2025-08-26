@@ -3,14 +3,14 @@ import { Navigate } from 'react-router-dom';
 import authService from '../../services/auth/authService';
 
 const ProtectedRoute = ({ children, requiredRole }) => {
-    const token = authService.getToken();
-    const userRoles = authService.getUserRoles();
+    const isAuthenticated = authService.isAuthenticated();
+    const currentUser = authService.getCurrentUser();
 
-    if (!token) {
+    if (!isAuthenticated || !currentUser) {
         return <Navigate to="/login" />;
     }
 
-    if (requiredRole && !userRoles.includes(requiredRole)) {
+    if (requiredRole && currentUser.role !== requiredRole && !currentUser.roles?.includes(requiredRole)) {
         return <Navigate to="/" />;
     }
     
