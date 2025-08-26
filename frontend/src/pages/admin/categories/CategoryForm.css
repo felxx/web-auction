@@ -1,32 +1,29 @@
-.change-password-page {
+.category-form {
     min-height: 100vh;
+    background: #1a1a1a;
+    padding: 2rem 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #1a1a1a;
-    padding: 2rem 1rem;
 }
 
-.change-password-container {
-    width: 100%;
-    max-width: 500px;
-}
-
-.change-password-card {
+.category-form .form-card {
     background: #2a2a2a !important;
     border: 1px solid #4a4a4a !important;
     border-radius: 20px !important;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
-    padding: 2rem !important;
+    width: 100%;
+    max-width: 600px;
 }
 
-.change-password-header {
+.category-form .form-header {
     text-align: center;
     margin-bottom: 2rem;
+    padding: 1.5rem 1.5rem 0;
 }
 
-.change-password-title {
-    font-size: 2rem;
+.category-form .form-header h2 {
+    font-size: 1.8rem;
     font-weight: 700;
     color: #e0e0e0;
     margin-bottom: 0.5rem;
@@ -35,30 +32,26 @@
     justify-content: center;
 }
 
-.change-password-title i {
-    color: #ff8c00;
-    font-size: 1.8rem;
-}
-
-.change-password-subtitle {
+.category-form .form-header p {
     color: #b0b0b0;
     font-size: 1rem;
     margin: 0;
 }
 
-.change-password-form {
+.category-form-content {
+    padding: 0 1.5rem 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-.form-field {
+.category-form-content .field {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.field-label {
+.category-form-content .field-label {
     font-size: 0.9rem;
     font-weight: 600;
     color: #e0e0e0;
@@ -67,17 +60,14 @@
     margin-bottom: 0.25rem;
 }
 
-.field-label i {
+.category-form-content .field-label i {
     color: #ff8c00;
     font-size: 0.9rem;
 }
 
 
-.change-password-form .p-password {
-    width: 100%;
-}
-
-.change-password-form .p-password .p-inputtext {
+.category-form-content .p-inputtext,
+.category-form-content .p-inputtextarea {
     background: #3a3a3a !important;
     border: 1px solid #4a4a4a !important;
     color: #e0e0e0 !important;
@@ -87,117 +77,15 @@
     transition: all 0.3s ease !important;
 }
 
-.change-password-form .p-password .p-inputtext:focus {
+.category-form-content .p-inputtext:focus,
+.category-form-content .p-inputtextarea:focus {
     border-color: #ff8c00 !important;
     box-shadow: 0 0 0 0.2rem rgba(255, 140, 0, 0.2) !important;
 }
 
-.change-password-form .p-password .p-inputtext::placeholder {
+.category-form-content .p-inputtext::placeholder,
+.category-form-content .p-inputtextarea::placeholder {
     color: #888 !important;
-}
-
-
-.change-password-form .p-password-meter {
-    background: #4a4a4a !important;
-    border-radius: 3px !important;
-    margin-top: 0.5rem !important;
-}
-
-.change-password-form .p-password-strength {
-    border-radius: 3px !important;
-}
-
-.change-password-form .p-password-strength.weak {
-    background: #e74c3c !important;
-}
-
-.change-password-form .p-password-strength.medium {
-    background: #f39c12 !important;
-}
-
-.change-password-form .p-password-strength.strong {
-    background: #27ae60 !important;
-}
-
-
-.change-password-form .p-password-panel {
-    background: #2a2a2a !important;
-    border: 1px solid #4a4a4a !important;
-    border-radius: 10px !important;
-    color: #e0e0e0 !important;
-}
-
-
-.password-requirements {
-    margin-top: 0.75rem;
-    padding: 0.75rem;
-    background: rgba(42, 42, 42, 0.5);
-    border-radius: 8px;
-    border: 1px solid #4a4a4a;
-}
-
-.requirements-title {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #e0e0e0;
-    margin-bottom: 0.5rem;
-}
-
-.requirements-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.requirements-list li {
-    font-size: 0.8rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: color 0.3s ease;
-}
-
-.requirements-list li::before {
-    content: '';
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    transition: background-color 0.3s ease;
-}
-
-.requirement-met {
-    color: #27ae60 !important;
-}
-
-.requirement-met::before {
-    background-color: #27ae60;
-}
-
-.requirement-unmet {
-    color: #7a7a7a !important;
-}
-
-.requirement-unmet::before {
-    background-color: #4a4a4a;
-}
-
-
-.confirm-password-error {
-    background: rgba(231, 76, 60, 0.1) !important;
-    border: 1px solid rgba(231, 76, 60, 0.3) !important;
-    color: #e74c3c !important;
-    border-radius: 6px !important;
-    padding: 0.5rem !important;
-    font-size: 0.85rem !important;
-    margin: 0 !important;
-    margin-top: 0.5rem !important;
-}
-
-.confirm-password-error .p-message-icon {
-    color: #e74c3c !important;
 }
 
 
@@ -205,11 +93,10 @@
     display: flex;
     gap: 1rem;
     margin-top: 1rem;
-    justify-content: space-between;
+    justify-content: flex-end;
 }
 
 .form-actions .p-button {
-    flex: 1;
     padding: 0.75rem 1.5rem !important;
     border-radius: 10px !important;
     font-weight: 600 !important;
@@ -247,21 +134,29 @@
 }
 
 
-.p-button .pi-spinner {
-    font-size: 1rem !important;
+.category-form .p-skeleton {
+    background: #3a3a3a !important;
 }
 
 
 @media (max-width: 768px) {
-    .change-password-page {
+    .category-form {
         padding: 1rem 0.5rem;
     }
     
-    .change-password-card {
-        padding: 1.5rem !important;
+    .category-form .form-card {
+        margin: 0;
     }
     
-    .change-password-title {
+    .category-form .form-header {
+        padding: 1rem 1rem 0;
+    }
+    
+    .category-form-content {
+        padding: 0 1rem 1rem;
+    }
+    
+    .category-form .form-header h2 {
         font-size: 1.5rem;
     }
     
@@ -279,6 +174,7 @@
     background: #2a2a2a !important;
     border: 1px solid #4a4a4a !important;
     color: #e0e0e0 !important;
+    border-radius: 10px !important;
 }
 
 .p-toast .p-toast-message.p-toast-message-success {
@@ -291,5 +187,31 @@
 
 .p-toast .p-toast-icon-close {
     color: #e0e0e0 !important;
+}
+
+.category-form-loading {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.category-form-loading .p-card {
+    border-radius: 15px;
+    padding: 2rem;
+}
+
+
+@media (max-width: 768px) {
+    .category-form {
+        max-width: 100%;
+    }
+    
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+    
+    .form-actions .p-button {
+        width: 100%;
+    }
 }
 

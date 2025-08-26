@@ -1,118 +1,130 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Card } from 'primereact/card';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { Button } from 'primereact/button';
-import { Message } from 'primereact/message';
+import { Toast } from 'primereact/toast';
 import { Divider } from 'primereact/divider';
 import authService from '../../../services/auth/authService';
+import './login.css';
 
 const LoginPage = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [formData, setFormData] = useState({
+        email: '',
+        password: ''
+    });
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const toast = useRef(null);
+
+    const handleInputChange = (name, value) => {
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
 
     const handleLogin = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError('');
+        
         try {
-            await authService.login(email, password);
+            await authService.login(formData.email, formData.password);
+            toast.current.show({
+                severity: 'success',
+                summary: 'Login successful',
+                detail: 'Welcome to Web Auction!',
+                life: 3000
+            });
+            navigate('/');
         } catch (err) {
-            setError('Invalid credentials. Please try again.');
-            console.error(err);
+            toast.current.show({
+                severity: 'error',
+                summary: 'Login Error',
+                detail: 'Incorrect email or password. Please try again.',
+                life: 5000
+            });
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="auth-container">
-            <div className="auth-wrapper">
-                <Card className="p-card auth-card">
-                    <div className="auth-header">
-                        <h1 className="auth-title">Web Auction</h1>
-                        <p className="auth-subtitle">Sign in to your account to continue</p>
-                    </div>
-
-                    {error && (
-                        <Message 
-                            severity="error" 
-                            text={error} 
-                            className="p-mb-3" 
-                        />
-                    )}
-
-                    <form onSubmit={handleLogin} className="auth-form">
-                        <div className="auth-field">
-                            <span className="p-float-label">
-                                <InputText
-                                    id="email"
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                    className="p-inputtext-lg w-full"
-                                />
-                                <label htmlFor="email">Email</label>
-                            </span>
+        <div className="login-page">
+            <Toast ref={toast} />
+            
+            <div className="login-container">
+                <div className="login-background">
+                    <div className="login-overlay"></div>
+                </div>
+                
+                <div className="login-content">
+                    <Card className="login-card">
+                        <div className="login-header">
+                            <div className="login-logo">
+                                <i className="pi pi-shopping-cart"></i>
+                            </div>
+                            <h1 className="login-title">Web Auction</h1>
+                            <p className="login-subtitle">Sign in to your account to continue</p>
                         </div>
 
-                        <div className="auth-field">
-                            <span className="p-float-label">
-                                <Password
-                                    id="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
-                                    className="w-full"
-                                    inputClassName="p-inputtext-lg w-full"
-                                    toggleMask
-                                    feedback={false}
-                                />
-                                <label htmlFor="password">Password</label>
-                            </span>
+                        <form onSubmit={handleLogin} className="login-form">
+                            <div className="field">
+                                <span className="p-float-label">
+                                    <InputText
+                                        id="email"
+                                        type="email"
+                                        value={formData.email}
+                                        onChange={(e) => handleInputChange('email', e.target.value)}
+                                        required
+                                        className="w-full"
+                                    />
+                                    <label htmlFor="email">Email</label>
+                                </span>
+                            </div>
+
+                            <div className="field">
+                                <span className="p-float-label">
+                                    <Password
+                                        id="password"
+                                        value={formData.password}
+                                        onChange={(e) => handleInputChange('password', e.target.value)}
+                                        required
+                                        className="w-full"
+                                        inputClassName="w-full"
+                                        toggleMask
+                                        feedback={false}
+                                    />
+                                    <label htmlFor="password">Password</label>
+                                </span>
+                            </div>
+
+                            <Button 
+                                type="submit" 
+                                label={loading ? 'Signing in...' : 'Sign In'}
+                                icon={loading ? 'pi pi-spin pi-spinner' : 'pi pi-sign-in'}
+                                loading={loading}
+                                className="w-full login-button"
+                                disabled={loading}
+                            />
+                        </form>
+
+                        <Divider />
+
+                        <div className="login-links">
+                            <Link to="/forgot-password" className="text-primary text-sm">
+                                Forgot your password?
+                            </Link>
                         </div>
 
-                        <Button 
-                            type="submit" 
-                            label={loading ? 'Signing in...' : 'Sign In'}
-                            icon={loading ? 'pi pi-spin pi-spinner' : 'pi pi-sign-in'}
-                            loading={loading}
-                            className="p-button-success auth-button"
-                            disabled={loading}
-                        />
-                    </form>
-
-                    <Divider className="auth-divider" />
-
-                    <div className="auth-links">
-                        <Link 
-                            to="/forgot-password" 
-                            className="auth-link"
-                        >
-                            Forgot your password?
-                        </Link>
-                    </div>
-
-                    <div className="auth-links" style={{ marginTop: '0.75rem' }}>
-                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Don't have an account? </span>
-                        <Link 
-                            to="/sign-up" 
-                            className="auth-link"
-                        >
-                            Sign Up
-                        </Link>
-                    </div>
-                </Card>
-
-                <div className="auth-footer">
-                    <p className="auth-footer-text">
-                        © 2025 Web Auction. All rights reserved.
-                    </p>
+                        <div className="login-signup">
+                            <span className="text-600 text-sm">Don't have an account? </span>
+                            <Link to="/sign-up" className="text-primary text-sm font-medium">
+                                Sign up
+                            </Link>
+                        </div>
+                    </Card>
                 </div>
             </div>
         </div>

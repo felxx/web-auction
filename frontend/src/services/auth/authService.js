@@ -34,6 +34,41 @@ const getUserRoles = () => {
     }
 };
 
+const getCurrentUser = () => {
+    const token = getToken();
+    if (!token) {
+        return null;
+    }
+    try {
+        const decodedToken = jwtDecode(token);
+        return {
+            id: decodedToken.sub,
+            name: decodedToken.name || decodedToken.username || 'User',
+            email: decodedToken.email || '',
+            role: decodedToken.role || decodedToken.authorities?.[0] || 'USER',
+            roles: decodedToken.roles || decodedToken.authorities || []
+        };
+    } catch (error) {
+        console.error("Invalid token:", error);
+        return null;
+    }
+};
+
+const isAuthenticated = () => {
+    const token = getToken();
+    if (!token) {
+        return false;
+    }
+    try {
+        const decodedToken = jwtDecode(token);
+        const currentTime = Date.now() / 1000;
+        return decodedToken.exp > currentTime;
+    } catch (error) {
+        console.error("Invalid token:", error);
+        return false;
+    }
+};
+
 const login = async (email, password) => {
     try {
         const response = await api.post('/auth/login', { email, password });
@@ -101,6 +136,8 @@ const authService = {
     logout,
     getToken,
     getUserRoles,
+    getCurrentUser,
+    isAuthenticated,
     forgotPassword,
     resetPassword,
     changePassword,

@@ -31,7 +31,6 @@ public class PersonService {
 
     public Person insert(Person person) {
         Person registeredPerson = personRepository.save(person);
-        // emailService.sendSimpleMail(registeredPerson.getEmail(), "Successfully registration!", "Successfully registration on Web Auction!");
         sendSuccessEmail(registeredPerson);
         return registeredPerson;
     }

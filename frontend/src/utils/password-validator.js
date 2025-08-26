@@ -17,3 +17,10 @@ export const validatePassword = (password) => {
     }
     return errors;
 };
+
+export const getPasswordStrength = (password) => {
+    const errors = validatePassword(password);
+    if (errors.length === 0) return { strength: 'strong', label: 'Strong', color: '#4CAF50' };
+    if (errors.length <= 2) return { strength: 'medium', label: 'Medium', color: '#FF9800' };
+    return { strength: 'weak', label: 'Weak', color: '#F44336' };
+};

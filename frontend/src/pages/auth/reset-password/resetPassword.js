@@ -1,31 +1,46 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { Card } from 'primereact/card';
+import { Password } from 'primereact/password';
+import { Button } from 'primereact/button';
+import { Message } from 'primereact/message';
+import { Toast } from 'primereact/toast';
 import { validatePassword } from '../../../utils/password-validator';
 import authService from '../../../services/auth/authService';
+import './resetPassword.css';
 
 const ResetPasswordPage = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
+    const toast = useRef(null);
     
     const token = searchParams.get('token') || '';
     
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [message, setMessage] = useState('');
-    const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    
     const [passwordErrors, setPasswordErrors] = useState([]);
+    
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
     useEffect(() => {
         if (!token) {
-            setError('Invalid or missing reset token.');
+            toast.current?.show({
+                severity: 'error',
+                summary: 'Invalid Token',
+                detail: 'Invalid or missing reset token.',
+                life: 5000
+            });
         }
     }, [token]);
 
     useEffect(() => {
-        setPasswordErrors(validatePassword(newPassword));
+        if (newPassword) {
+            const errors = validatePassword(newPassword);
+            setPasswordErrors(errors);
+        } else {
+            setPasswordErrors([]);
+        }
     }, [newPassword]);
 
     useEffect(() => {
@@ -40,7 +55,12 @@ const ResetPasswordPage = () => {
         e.preventDefault();
         
         if (!token) {
-            setError('Invalid or missing reset token.');
+            toast.current.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Invalid or missing reset token.',
+                life: 3000
+            });
             return;
         }
 
@@ -48,32 +68,48 @@ const ResetPasswordPage = () => {
         const passwordsMatch = newPassword === confirmPassword;
 
         if (finalPasswordErrors.length > 0) {
-            setError('Please fix the password requirements.');
+            toast.current.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Please fix the password requirements.',
+                life: 3000
+            });
             return;
         }
 
         if (!passwordsMatch) {
-            setError('Passwords do not match.');
+            toast.current.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Passwords do not match.',
+                life: 3000
+            });
             return;
         }
 
         setLoading(true);
-        setError('');
-        setMessage('');
 
         try {
             await authService.resetPassword(token, newPassword);
-            setMessage('Password reset successfully! Redirecting to login...');
+            toast.current.show({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Password reset successfully! Redirecting to login...',
+                life: 3000
+            });
             setTimeout(() => {
                 navigate('/login');
             }, 2000);
         } catch (apiError) {
             console.error('Reset password error:', apiError);
-            if (apiError.response?.data?.message) {
-                setError(apiError.response.data.message);
-            } else {
-                setError('Failed to reset password. The token may be invalid or expired.');
-            }
+            const errorMessage = apiError.response?.data?.message || 
+                'Failed to reset password. The token may be invalid or expired.';
+            toast.current.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: errorMessage,
+                life: 3000
+            });
         } finally {
             setLoading(false);
         }
@@ -81,60 +117,95 @@ const ResetPasswordPage = () => {
 
     if (!token) {
         return (
-            <div className="container">
-                <h2>Reset Password</h2>
-                <p style={{ color: 'red' }}>Invalid or missing reset token. Please request a new password reset.</p>
-                <button onClick={() => navigate('/forgot-password')}>Request New Reset</button>
+            <div className="reset-password-page">
+                <Toast ref={toast} />
+                <div className="reset-password-container">
+                    <Card className="reset-password-card">
+                        <h2>Reset Password</h2>
+                        <Message 
+                            severity="error" 
+                            text="Invalid or missing reset token. Please request a new password reset." 
+                            className="w-full mb-3" 
+                        />
+                        <Button 
+                            label="Request New Reset" 
+                            onClick={() => navigate('/forgot-password')}
+                            className="w-full"
+                        />
+                    </Card>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="container">
-            <h2>Reset Password</h2>
-            <p>Enter your new password below.</p>
-            
-            <form onSubmit={handleSubmit}>
-                {message && <p style={{ color: 'green' }}>{message}</p>}
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-
-                <div className="form-group">
-                    <label>New Password</label>
-                    <input
-                        type="password"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        required
-                        disabled={loading}
-                    />
-                    {passwordErrors.length > 0 && (
-                        <div style={{ color: 'red' }}>
-                            {passwordErrors.map(error => <p key={error}>{error}</p>)}
+        <div className="reset-password-page">
+            <Toast ref={toast} />
+            <div className="reset-password-container">
+                <Card className="reset-password-card">
+                    <h2>Reset Password</h2>
+                    
+                    <form onSubmit={handleSubmit} className="reset-password-form">
+                        <div className="field">
+                            <label htmlFor="newPassword">New Password</label>
+                            <Password
+                                id="newPassword"
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                                placeholder="Enter your new password"
+                                feedback={false}
+                                toggleMask
+                                className="w-full"
+                            />
                         </div>
-                    )}
-                </div>
-                
-                <div className="form-group">
-                    <label>Confirm New Password</label>
-                    <input
-                        type="password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                        disabled={loading}
-                    />
-                    {confirmPasswordError && <p style={{ color: 'red' }}>{confirmPasswordError}</p>}
-                </div>
 
-                <div className="button-group">
-                    <button type="button" onClick={() => navigate('/login')} disabled={loading}>
-                        Cancel
-                    </button>
-                    <button type="submit" disabled={loading}>
-                        {loading ? 'Resetting...' : 'Reset Password'}
-                    </button>
-                </div>
-            </form>
+                        <div className="field">
+                            <label htmlFor="confirmPassword">Confirm Password</label>
+                            <Password
+                                id="confirmPassword"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                placeholder="Confirm your new password"
+                                feedback={false}
+                                toggleMask
+                                className="w-full"
+                            />
+                        </div>
+
+                        <div className="password-requirements">
+                            <div className="requirements-title">Password requirements:</div>
+                            <ul className="requirements-list">
+                                <li className={newPassword.length >= 6 ? 'requirement-met' : 'requirement-unmet'}>
+                                    At least 6 characters
+                                </li>
+                                <li className={/[a-z]/.test(newPassword) ? 'requirement-met' : 'requirement-unmet'}>
+                                    One lowercase letter
+                                </li>
+                                <li className={/[A-Z]/.test(newPassword) ? 'requirement-met' : 'requirement-unmet'}>
+                                    One uppercase letter
+                                </li>
+                                <li className={/[0-9]/.test(newPassword) ? 'requirement-met' : 'requirement-unmet'}>
+                                    One number
+                                </li>
+                                <li className={/[!@#$%^&*(),.?":{}|<>]/.test(newPassword) ? 'requirement-met' : 'requirement-unmet'}>
+                                    One special character
+                                </li>
+                                <li className={confirmPassword && newPassword && newPassword === confirmPassword ? 'requirement-met' : 'requirement-unmet'}>
+                                    Passwords must match
+                                </li>
+                            </ul>
+                        </div>
+
+                        <Button 
+                            type="submit" 
+                            label="Reset Password" 
+                            className="w-full"
+                            loading={loading}
+                            disabled={loading || passwordErrors.length > 0 || newPassword !== confirmPassword}
+                        />
+                    </form>
+                </Card>
+            </div>
         </div>
     );
 };

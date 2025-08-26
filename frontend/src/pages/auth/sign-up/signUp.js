@@ -1,80 +1,210 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Card } from 'primereact/card';
+import { InputText } from 'primereact/inputtext';
+import { Password } from 'primereact/password';
+import { Dropdown } from 'primereact/dropdown';
+import { Button } from 'primereact/button';
+import { Toast } from 'primereact/toast';
+import { Divider } from 'primereact/divider';
+import { Message } from 'primereact/message';
 import authService from '../../../services/auth/authService';
+import { validatePassword, getPasswordStrength } from '../../../utils/password-validator';
+import './signUp.css';
 
 const SignUpPage = () => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [profileType, setProfileType] = useState('BUYER');
-    const [error, setError] = useState('');
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        profileType: 'BUYER'
+    });
     const [loading, setLoading] = useState(false);
+    const [passwordErrors, setPasswordErrors] = useState([]);
+    const [passwordStrength, setPasswordStrength] = useState(null);
     const navigate = useNavigate();
+    const toast = useRef(null);
+
+    const profileOptions = [
+        { label: 'Buyer', value: 'BUYER' },
+        { label: 'Seller', value: 'SELLER' },
+        { label: 'Admin', value: 'ADMIN' }
+    ];
+
+    const handleInputChange = (name, value) => {
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+
+        if (name === 'password') {
+            const errors = validatePassword(value);
+            setPasswordErrors(errors);
+            setPasswordStrength(getPasswordStrength(value));
+        }
+    };
 
     const handleSignUp = async (e) => {
         e.preventDefault();
+        
+        const passwordValidationErrors = validatePassword(formData.password);
+        if (passwordValidationErrors.length > 0) {
+            toast.current.show({
+                severity: 'error',
+                summary: 'Invalid Password',
+                detail: 'Password does not meet security requirements.',
+                life: 5000
+            });
+            setPasswordErrors(passwordValidationErrors);
+            return;
+        }
+        
         setLoading(true);
-        setError('');
+        
         try {
-            await authService.register(name, email, password, profileType);
+            await authService.register(
+                formData.name, 
+                formData.email, 
+                formData.password, 
+                formData.profileType
+            );
+            toast.current.show({
+                severity: 'success',
+                summary: 'Registration Successful',
+                detail: 'Account created successfully! Please login to continue.',
+                life: 5000
+            });
+            setTimeout(() => navigate('/login'), 2000);
         } catch (error) {
-            if (error.response && error.response.data && error.response.data.message) {
-                setError(error.response.data.message);
-            } else {
-                setError('Failed to sign up. Please try again.');
-            }
+            const errorMessage = error.response?.data?.message || 'Error creating account. Please try again.';
+            toast.current.show({
+                severity: 'error',
+                summary: 'Registration Error',
+                detail: errorMessage,
+                life: 5000
+            });
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div>
-            <h2>Sign Up</h2>
-            <form onSubmit={handleSignUp}>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-                <div>
-                    <label>Name</label>
-                    <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                    />
+        <div className="signup-page">
+            <Toast ref={toast} />
+            
+            <div className="signup-container">
+                <div className="signup-background">
+                    <div className="signup-overlay"></div>
                 </div>
-                <div>
-                    <label>Email</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
+                
+                <div className="signup-content">
+                    <Card className="signup-card">
+                        <div className="signup-header">
+                            <div className="signup-logo">
+                                <i className="pi pi-user-plus"></i>
+                            </div>
+                            <h1 className="signup-title">Create Account</h1>
+                            <p className="signup-subtitle">Join Web Auction!</p>
+                        </div>
+
+                        <form onSubmit={handleSignUp} className="signup-form">
+                            <div className="field">
+                                <span className="p-float-label">
+                                    <InputText
+                                        id="name"
+                                        value={formData.name}
+                                        onChange={(e) => handleInputChange('name', e.target.value)}
+                                        required
+                                        className="w-full"
+                                    />
+                                    <label htmlFor="name">Name</label>
+                                </span>
+                            </div>
+
+                            <div className="field">
+                                <span className="p-float-label">
+                                    <InputText
+                                        id="email"
+                                        type="email"
+                                        value={formData.email}
+                                        onChange={(e) => handleInputChange('email', e.target.value)}
+                                        required
+                                        className="w-full"
+                                    />
+                                    <label htmlFor="email">Email</label>
+                                </span>
+                            </div>
+
+                            <div className="field">
+                                <span className="p-float-label">
+                                    <Password
+                                        id="password"
+                                        value={formData.password}
+                                        onChange={(e) => handleInputChange('password', e.target.value)}
+                                        required
+                                        className="w-full"
+                                        inputClassName="w-full"
+                                        promptLabel=""
+                                        feedback={false}
+                                    />
+                                    <label htmlFor="password">Password</label>
+                                </span>
+                                
+                                <div className="password-requirements">
+                                    <div className="requirements-title">Password requirements:</div>
+                                    <ul className="requirements-list">
+                                        <li className={formData.password.length >= 6 ? 'requirement-met' : 'requirement-unmet'}>
+                                            At least 6 characters
+                                        </li>
+                                        <li className={/[a-z]/.test(formData.password) ? 'requirement-met' : 'requirement-unmet'}>
+                                            One lowercase letter
+                                        </li>
+                                        <li className={/[A-Z]/.test(formData.password) ? 'requirement-met' : 'requirement-unmet'}>
+                                            One uppercase letter
+                                        </li>
+                                        <li className={/[0-9]/.test(formData.password) ? 'requirement-met' : 'requirement-unmet'}>
+                                            One number
+                                        </li>
+                                        <li className={/[!@#$%^&*(),.?":{}|<>]/.test(formData.password) ? 'requirement-met' : 'requirement-unmet'}>
+                                            One special character
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div className="field">
+                                <span className="p-float-label">
+                                    <Dropdown
+                                        id="profileType"
+                                        value={formData.profileType}
+                                        options={profileOptions}
+                                        onChange={(e) => handleInputChange('profileType', e.value)}
+                                        className="w-full"
+                                    />
+                                </span>
+                            </div>
+
+                            <Button 
+                                type="submit" 
+                                label={loading ? 'Creating account...' : 'Create Account'}
+                                icon={loading ? 'pi pi-spin pi-spinner' : 'pi pi-user-plus'}
+                                loading={loading}
+                                className="w-full signup-button"
+                                disabled={loading}
+                            />
+                        </form>
+
+                        <Divider />
+
+                        <div className="signup-login">
+                            <span className="text-600 text-sm">Already have an account? </span>
+                            <Link to="/login" className="text-primary text-sm font-medium">
+                                Sign in
+                            </Link>
+                        </div>
+                    </Card>
                 </div>
-                <div>
-                    <label>Password</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Register as a:</label>
-                    <select value={profileType} onChange={(e) => setProfileType(e.target.value)}>
-                        <option value="BUYER">Buyer</option>
-                        <option value="SELLER">Seller</option>
-                        <option value="ADMIN">Admin</option>
-                    </select>
-                </div>
-                <button type="submit" disabled={loading}>
-                    {loading ? 'Creating Account...' : 'Sign Up'}
-                </button>
-            </form>
-            <p>
-                Already have an account? <Link to="/login">Sign In</Link>
-            </p>
+            </div>
         </div>
     );
 };

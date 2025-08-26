@@ -26,7 +26,7 @@ public class PasswordService {
     private final EmailService emailService;
     private final SecureRandom secureRandom = new SecureRandom();
 
-    @Value("${app.frontend.url:http://localhost:3000}")
+    @Value("${app.frontend.url}")
     private String frontendUrl;
 
     public void requestPasswordReset(ForgotPasswordRequest request) {
