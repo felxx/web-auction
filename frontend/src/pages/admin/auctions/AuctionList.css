@@ -39,7 +39,6 @@
     padding: 0 1.5rem 1.5rem;
 }
 
-/* Empty state */
 .empty-state {
     text-align: center;
     padding: 3rem 1rem;
@@ -57,7 +56,6 @@
     font-size: 0.9rem;
 }
 
-/* DataTable styling */
 .auction-list .p-datatable {
     background: transparent !important;
     border: 1px solid #4a4a4a !important;
@@ -103,14 +101,12 @@
     border-bottom: none !important;
 }
 
-/* Description cell */
 .description-cell {
     max-width: 300px;
     word-wrap: break-word;
     line-height: 1.4;
 }
 
-/* Paginator styling */
 .auction-list .p-paginator {
     background: #3a3a3a !important;
     border: none !important;
@@ -169,7 +165,6 @@
     color: #ff8c00 !important;
 }
 
-/* Button styling */
 .auction-list .p-button {
     border-radius: 10px !important;
     font-weight: 600 !important;
@@ -208,12 +203,10 @@
     color: #e74c3c !important;
 }
 
-/* Skeleton styling */
 .auction-list .p-skeleton {
     background: #3a3a3a !important;
 }
 
-/* Mobile responsiveness */
 @media (max-width: 768px) {
     .auction-list {
         padding: 1rem 0.5rem;
@@ -241,7 +234,6 @@
     }
 }
 
-/* Confirm Dialog styling */
 .p-confirm-dialog {
     background: #2a2a2a !important;
     border: 1px solid #4a4a4a !important;
@@ -269,7 +261,6 @@
     border-radius: 8px !important;
 }
 
-/* Toast customization */
 .p-toast .p-toast-message {
     background: #2a2a2a !important;
     border: 1px solid #4a4a4a !important;

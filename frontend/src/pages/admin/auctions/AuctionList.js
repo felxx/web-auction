@@ -28,8 +28,8 @@ const AuctionList = () => {
         } catch (err) {
             toast.current?.show({
                 severity: 'error',
-                summary: 'Erro',
-                detail: 'Falha ao carregar leilões.',
+                summary: 'Error',
+                detail: 'Failed to load auctions.',
                 life: 5000
             });
             console.error(err);
@@ -40,24 +40,24 @@ const AuctionList = () => {
 
     const handleDelete = async (auction) => {
         confirmDialog({
-            message: `Tem certeza que deseja excluir o leilão "${auction.title}"?`,
-            header: 'Confirmar Exclusão',
+            message: `Are you sure you want to delete the auction "${auction.title}"?`,
+            header: 'Confirm Deletion',
             icon: 'pi pi-exclamation-triangle',
             accept: async () => {
                 try {
                     await auctionService.deleteAuction(auction.id);
                     toast.current?.show({
                         severity: 'success',
-                        summary: 'Sucesso',
-                        detail: 'Leilão excluído com sucesso!',
+                        summary: 'Success',
+                        detail: 'Auction deleted successfully!',
                         life: 3000
                     });
                     fetchAuctions();
                 } catch (err) {
                     toast.current?.show({
                         severity: 'error',
-                        summary: 'Erro',
-                        detail: 'Falha ao excluir leilão.',
+                        summary: 'Error',
+                        detail: 'Failed to delete auction.',
                         life: 5000
                     });
                     console.error(err);
@@ -74,7 +74,7 @@ const AuctionList = () => {
                     size="small"
                     className="p-button-rounded p-button-outlined"
                     onClick={() => navigate(`/admin/auctions/edit/${rowData.id}`)}
-                    tooltip="Editar"
+                    tooltip="Edit"
                     tooltipOptions={{ position: 'top' }}
                 />
                 <Button
@@ -82,7 +82,7 @@ const AuctionList = () => {
                     size="small"
                     className="p-button-rounded p-button-outlined p-button-danger"
                     onClick={() => handleDelete(rowData)}
-                    tooltip="Excluir"
+                    tooltip="Delete"
                     tooltipOptions={{ position: 'top' }}
                 />
             </div>
@@ -119,12 +119,12 @@ const AuctionList = () => {
             <Card className="list-card">
                 <div className="list-header">
                     <h2>
-                        Gerenciar Leilões
+                        Manage Auctions
                     </h2>
-                    <p>Gerencie todos os leilões do sistema</p>
+                    <p>Manage all system auctions</p>
                     
                     <Button
-                        label="Novo Leilão"
+                        label="New Auction"
                         icon="pi pi-plus"
                         className="p-button-success mb-3"
                         onClick={() => navigate('/admin/auctions/new')}
@@ -135,8 +135,8 @@ const AuctionList = () => {
                     {auctions.length === 0 ? (
                         <div className="empty-state">
                             <i className="pi pi-shopping-cart" style={{ fontSize: '3rem', color: '#6a6a6a' }} />
-                            <h3>Nenhum leilão encontrado</h3>
-                            <p>Clique em "Novo Leilão" para criar o primeiro leilão.</p>
+                            <h3>No auctions found</h3>
+                            <p>Click "New Auction" to create the first auction.</p>
                         </div>
                     ) : (
                         <DataTable
@@ -146,17 +146,17 @@ const AuctionList = () => {
                             rowsPerPageOptions={[5, 10, 25]}
                             className="p-datatable-sm"
                             responsiveLayout="scroll"
-                            emptyMessage="Nenhum leilão encontrado."
+                            emptyMessage="No auctions found."
                         >
                             <Column 
                                 field="title" 
-                                header="Título" 
+                                header="Title" 
                                 sortable 
                                 style={{ minWidth: '200px' }}
                             />
                             <Column 
                                 field="description" 
-                                header="Descrição" 
+                                header="Description" 
                                 style={{ minWidth: '250px' }}
                                 body={(rowData) => (
                                     <div className="description-cell">
@@ -168,13 +168,13 @@ const AuctionList = () => {
                                 )}
                             />
                             <Column 
-                                header="Categoria" 
+                                header="Category" 
                                 body={categoryBodyTemplate}
                                 sortable 
                                 style={{ minWidth: '120px' }}
                             />
                             <Column 
-                                header="Ações" 
+                                header="Actions" 
                                 body={actionBodyTemplate}
                                 style={{ minWidth: '120px', textAlign: 'center' }}
                             />

@@ -34,8 +34,8 @@ const AuctionForm = () => {
             } catch (err) {
                 toast.current?.show({
                     severity: 'error',
-                    summary: 'Erro',
-                    detail: 'Falha ao carregar categorias.',
+                    summary: 'Error',
+                    detail: 'Failed to load categories.',
                     life: 5000
                 });
                 console.error(err);
@@ -60,8 +60,8 @@ const AuctionForm = () => {
         } catch (err) {
             toast.current?.show({
                 severity: 'error',
-                summary: 'Erro',
-                detail: 'Falha ao carregar leilão.',
+                summary: 'Error',
+                detail: 'Failed to load auction.',
                 life: 5000
             });
             console.error(err);
@@ -92,16 +92,16 @@ const AuctionForm = () => {
                 await auctionService.updateAuction(id, auction);
                 toast.current?.show({
                     severity: 'success',
-                    summary: 'Sucesso',
-                    detail: 'Leilão atualizado com sucesso!',
+                    summary: 'Success',
+                    detail: 'Auction updated successfully!',
                     life: 3000
                 });
             } else {
                 await auctionService.createAuction(auction);
                 toast.current?.show({
                     severity: 'success',
-                    summary: 'Sucesso',
-                    detail: 'Leilão criado com sucesso!',
+                    summary: 'Success',
+                    detail: 'Auction created successfully!',
                     life: 3000
                 });
             }
@@ -109,8 +109,8 @@ const AuctionForm = () => {
         } catch (err) {
             toast.current?.show({
                 severity: 'error',
-                summary: 'Erro',
-                detail: 'Falha ao salvar leilão.',
+                summary: 'Error',
+                detail: 'Failed to save auction.',
                 life: 5000
             });
             console.error(err);
@@ -157,22 +157,22 @@ const AuctionForm = () => {
             <Card className="form-card">
                 <div className="form-header">
                     <h2>
-                        {isEdit ? 'Editar Leilão' : 'Novo Leilão'}
+                        {isEdit ? 'Edit Auction' : 'New Auction'}
                     </h2>
-                    <p>Preencha os dados do leilão abaixo</p>
+                    <p>Fill in the auction details below</p>
                 </div>
                 
                 <form onSubmit={handleSubmit} className="auction-form-content">
                     <div className="field">
                         <label htmlFor="title" className="field-label">
                             <i className="pi pi-tag mr-2" />
-                            Título *
+                            Title *
                         </label>
                         <InputText
                             id="title"
                             value={formData.title}
                             onChange={(e) => handleInputChange('title', e.target.value)}
-                            placeholder="Digite o título do leilão"
+                            placeholder="Enter the auction title"
                             className="w-full"
                             required
                             disabled={loading}
@@ -182,13 +182,13 @@ const AuctionForm = () => {
                     <div className="field">
                         <label htmlFor="description" className="field-label">
                             <i className="pi pi-align-left mr-2" />
-                            Descrição *
+                            Description *
                         </label>
                         <InputTextarea
                             id="description"
                             value={formData.description}
                             onChange={(e) => handleInputChange('description', e.target.value)}
-                            placeholder="Digite a descrição do leilão"
+                            placeholder="Enter the auction description"
                             className="w-full"
                             rows={4}
                             required
@@ -199,7 +199,7 @@ const AuctionForm = () => {
                     <div className="field">
                         <label htmlFor="category" className="field-label">
                             <i className="pi pi-tags mr-2" />
-                            Categoria *
+                            Category *
                         </label>
                         <Dropdown
                             id="category"
@@ -208,7 +208,7 @@ const AuctionForm = () => {
                             options={categories}
                             optionLabel="name"
                             optionValue="id"
-                            placeholder="Selecione uma categoria"
+                            placeholder="Select a category"
                             className="w-full"
                             required
                             disabled={loading}
@@ -218,7 +218,7 @@ const AuctionForm = () => {
                     <div className="form-actions">
                         <Button
                             type="button"
-                            label="Cancelar"
+                            label="Cancel"
                             icon="pi pi-times"
                             className="p-button-outlined"
                             onClick={() => navigate('/admin/auctions')}
@@ -226,7 +226,7 @@ const AuctionForm = () => {
                         />
                         <Button
                             type="submit"
-                            label={isEdit ? 'Atualizar' : 'Criar'}
+                            label={isEdit ? 'Update' : 'Create'}
                             icon={isEdit ? 'pi pi-check' : 'pi pi-plus'}
                             className="p-button-success"
                             loading={loading}
