@@ -1,0 +1,33 @@
+import axios from 'axios';
+
+const API_URL = 'http://localhost:8080/public/auctions';
+
+export const publicAuctionService = {
+    /**
+     * Get public auctions with filters
+     * @param {Object} params - { search, categoryId, status, page, size, sort }
+     */
+    getPublicAuctions: async (params = {}) => {
+        const queryParams = new URLSearchParams();
+        
+        if (params.search) queryParams.append('search', params.search);
+        if (params.categoryId) queryParams.append('categoryId', params.categoryId);
+        if (params.status) queryParams.append('status', params.status);
+        if (params.page !== undefined) queryParams.append('page', params.page);
+        if (params.size !== undefined) queryParams.append('size', params.size);
+        if (params.sort) queryParams.append('sort', params.sort);
+        
+        const response = await axios.get(`${API_URL}?${queryParams.toString()}`);
+        return response.data;
+    },
+
+    /**
+     * Get auction detail by ID
+     * @param {number} id - Auction ID
+     */
+    getAuctionDetail: async (id) => {
+        const response = await axios.get(`${API_URL}/${id}`);
+        return response.data;
+    }
+};
+
