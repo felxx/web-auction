@@ -7,11 +7,17 @@ import ChangePasswordPage from './pages/auth/change-password/changePassword.js';
 import ForgotPasswordPage from './pages/auth/forgot-password/forgotPassword.js';
 import ResetPasswordPage from './pages/auth/reset-password/resetPassword.js';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute.js';
-import CategoryList from './pages/admin/categories/CategoryList.js';
-import CategoryForm from './pages/admin/categories/CategoryForm.js';
-import AuctionList from './pages/admin/auctions/AuctionList.js';
-import AuctionForm from './pages/admin/auctions/AuctionForm.js';
-import Home from './pages/home/home.js';
+import CategoryList from './pages/(authenticated)/admin/categories/CategoryList.js';
+import CategoryForm from './pages/(authenticated)/admin/categories/CategoryForm.js';
+import AuctionList from './pages/(authenticated)/admin/auctions/AuctionList.js';
+import AdminAuctionForm from './pages/(authenticated)/admin/auctions/AdminAuctionForm.js';
+import Home from './pages/(unauthenticated)/home/home.js';
+import PublicAuctions from './pages/(unauthenticated)/auctions/PublicAuctions.js';
+import AuctionDetail from './pages/(unauthenticated)/auctions/AuctionDetail.js';
+import MyAuctions from './pages/(authenticated)/seller/my-auctions/MyAuctions.js';
+import SellerAuctionForm from './pages/(authenticated)/seller/my-auctions/SellerAuctionForm.js';
+import MyBids from './pages/(authenticated)/buyer/my-bids/MyBids.js';
+import WonAuctions from './pages/(authenticated)/buyer/won-auctions/WonAuctions.js';
 import Layout from './components/Layout/Layout.js';
 
 import 'primereact/resources/themes/lara-dark-amber/theme.css';
@@ -30,19 +36,27 @@ function App() {
       <div className="App">
       <Routes>
         {/* Public routes */}
+        <Route path="/" element={
+          <Layout>
+            <Home />
+          </Layout>
+        } />
+        <Route path="/auctions" element={
+          <Layout>
+            <PublicAuctions />
+          </Layout>
+        } />
+        <Route path="/auctions/:id" element={
+          <Layout>
+            <AuctionDetail />
+          </Layout>
+        } />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
         
         {/* Protected routes */}
-        <Route path="/" element={
-          <ProtectedRoute>
-            <Layout>
-              <Home />
-            </Layout>
-          </ProtectedRoute>
-        } />
         
         <Route path="/change-password" element={
           <ProtectedRoute>
@@ -88,7 +102,7 @@ function App() {
         <Route path="/admin/auctions/new" element={
           <ProtectedRoute requiredRole="ADMIN">
             <Layout>
-              <AuctionForm />
+              <AdminAuctionForm />
             </Layout>
           </ProtectedRoute>
         } />
@@ -96,7 +110,49 @@ function App() {
         <Route path="/admin/auctions/edit/:id" element={
           <ProtectedRoute requiredRole="ADMIN">
             <Layout>
-              <AuctionForm />
+              <AdminAuctionForm />
+            </Layout>
+          </ProtectedRoute>
+        } />
+
+        {/* Seller routes */}
+        <Route path="/my-auctions" element={
+          <ProtectedRoute requiredRole="SELLER">
+            <Layout>
+              <MyAuctions />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/auctions/new" element={
+          <ProtectedRoute requiredRole="SELLER">
+            <Layout>
+              <SellerAuctionForm />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/auctions/edit/:id" element={
+          <ProtectedRoute requiredRole="SELLER">
+            <Layout>
+              <SellerAuctionForm />
+            </Layout>
+          </ProtectedRoute>
+        } />
+
+        {/* Buyer routes */}
+        <Route path="/my-bids" element={
+          <ProtectedRoute requiredRole="BUYER">
+            <Layout>
+              <MyBids />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/won-auctions" element={
+          <ProtectedRoute requiredRole="BUYER">
+            <Layout>
+              <WonAuctions />
             </Layout>
           </ProtectedRoute>
         } />
