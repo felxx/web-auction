@@ -42,6 +42,8 @@ const AuctionDetail = () => {
 
         try {
             const data = await publicAuctionService.getAuctionDetail(id);
+            console.log('Auction data loaded:', data);
+            console.log('Images in auction:', data.images);
             setAuction(data);
         } catch (err) {
             console.error('Erro ao carregar detalhes do leilão:', err);
@@ -105,28 +107,56 @@ const AuctionDetail = () => {
     };
 
     const itemTemplate = (item) => {
+        const imageUrl = item.id ? `http://localhost:8080/images/${item.id}/data` : null;
+        
+        if (!imageUrl) {
+            return (
+                <div style={{ background: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
+                    <div style={{ textAlign: 'center', color: '#999' }}>
+                        <i className="pi pi-image" style={{ fontSize: '4rem' }}></i>
+                        <p>No image</p>
+                    </div>
+                </div>
+            );
+        }
+        
         return (
-            <img
-                src={item.imageName || 'https://via.placeholder.com/800x600?text=Sem+Imagem'}
-                alt={`Imagem do leilão ${auction?.title}`}
-                style={{ width: '100%', display: 'block' }}
-                loading="lazy"
-                onError={(e) => {
-                    e.target.src = 'https://via.placeholder.com/800x600?text=Sem+Imagem';
-                }}
-            />
+            <div style={{ background: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
+                <img
+                    src={imageUrl}
+                    alt={`Auction image ${auction?.title}`}
+                    style={{ width: '100%', maxHeight: '600px', objectFit: 'contain' }}
+                    loading="lazy"
+                    onError={(e) => {
+                        console.error('Error loading image:', e.target.src);
+                        e.target.style.display = 'none';
+                        e.target.parentElement.innerHTML = '<div style="text-align: center; color: #999;"><i class="pi pi-image" style="font-size: 4rem;"></i><p>Failed to load image</p></div>';
+                    }}
+                />
+            </div>
         );
     };
 
     const thumbnailTemplate = (item) => {
+        const imageUrl = item.id ? `http://localhost:8080/images/${item.id}/data` : null;
+        
+        if (!imageUrl) {
+            return (
+                <div style={{ width: '100px', height: '75px', background: '#3a3a3a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <i className="pi pi-image" style={{ fontSize: '1.5rem', color: '#666' }}></i>
+                </div>
+            );
+        }
+        
         return (
             <img
-                src={item.imageName || 'https://via.placeholder.com/100x75?text=Sem+Imagem'}
+                src={imageUrl}
                 alt={`Thumbnail ${item.id}`}
                 style={{ display: 'block', width: '100px', height: '75px', objectFit: 'cover' }}
                 loading="lazy"
                 onError={(e) => {
-                    e.target.src = 'https://via.placeholder.com/100x75?text=Sem+Imagem';
+                    e.target.style.display = 'none';
+                    e.target.parentElement.innerHTML = '<div style="width: 100px; height: 75px; background: #3a3a3a; display: flex; align-items: center; justify-content: center;"><i class="pi pi-image" style="font-size: 1.5rem; color: #666;"></i></div>';
                 }}
             />
         );
@@ -243,21 +273,23 @@ const AuctionDetail = () => {
                     {/* Image Gallery */}
                     <section className="gallery-section" aria-label="Galeria de imagens">
                         {auction.images && auction.images.length > 0 ? (
-                            <Galleria
-                                value={auction.images}
-                                item={itemTemplate}
-                                thumbnail={thumbnailTemplate}
-                                numVisible={5}
-                                circular
-                                autoPlay
-                                transitionInterval={3000}
-                                showThumbnails={auction.images.length > 1}
-                                showItemNavigators
-                            />
+                            <>
+                                <Galleria
+                                    value={auction.images}
+                                    item={itemTemplate}
+                                    thumbnail={thumbnailTemplate}
+                                    numVisible={5}
+                                    circular
+                                    style={{ maxWidth: '100%' }}
+                                    showThumbnails={false}
+                                    showItemNavigators={auction.images.length > 1}
+                                    showIndicators
+                                />
+                            </>
                         ) : (
                             <div className="no-images">
                                 <i className="pi pi-image" style={{ fontSize: '4rem', color: '#ccc' }}></i>
-                                <p>Nenhuma imagem disponível</p>
+                                <p>No images available</p>
                             </div>
                         )}
                     </section>

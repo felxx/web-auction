@@ -11,6 +11,8 @@ import { Toast } from 'primereact/toast';
 import { Skeleton } from 'primereact/skeleton';
 import auctionService from '../../services/auctionService';
 import categoryService from '../../services/categoryService';
+import ImageUpload from '../ImageUpload/ImageUpload';
+import api from '../../services/api';
 import './AuctionForm.css';
 
 /**
@@ -27,6 +29,7 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
         endDateTime: null,
         minimumBid: 0.01
     });
+    const [images, setImages] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
     const [initialLoading, setInitialLoading] = useState(false);
@@ -93,7 +96,6 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
         e.preventDefault();
         setLoading(true);
         
-        // Helper function to convert local date to ISO string without timezone conversion
         const toLocalISOString = (date) => {
             if (!date) return null;
             const year = date.getFullYear();
@@ -115,29 +117,66 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
         };
         
         try {
+            let auctionId;
+            
             if (id) {
                 await auctionService.updateAuction(id, auction);
+                auctionId = id;
                 toast.current?.show({
                     severity: 'success',
-                    summary: 'Sucesso',
-                    detail: 'Leilão atualizado com sucesso!',
+                    summary: 'Success',
+                    detail: 'Auction updated successfully!',
                     life: 3000
                 });
             } else {
-                await auctionService.createAuction(auction);
+                const response = await auctionService.createAuction(auction);
+                auctionId = response.data.id;
                 toast.current?.show({
                     severity: 'success',
-                    summary: 'Sucesso',
-                    detail: 'Leilão criado com sucesso!',
+                    summary: 'Success',
+                    detail: 'Auction created successfully!',
                     life: 3000
                 });
             }
-            setTimeout(() => navigate(returnPath), 1500);
+            
+            if (images.length > 0 && auctionId) {
+                try {
+                    const formData = new FormData();
+                    images.forEach((image) => {
+                        formData.append('files', image.file);
+                    });
+                    
+                    await api.post(`/images/auction/${auctionId}`, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+                    
+                    toast.current?.show({
+                        severity: 'success',
+                        summary: 'Success',
+                        detail: 'Images uploaded successfully!',
+                        life: 2000
+                    });
+                } catch (imgErr) {
+                    console.error('Error uploading images:', imgErr);
+                    console.error('Error details:', imgErr.response?.data);
+                    const errorMessage = imgErr.response?.data?.message || 'Auction saved but image upload failed';
+                    toast.current?.show({
+                        severity: 'warn',
+                        summary: 'Warning',
+                        detail: errorMessage,
+                        life: 4000
+                    });
+                }
+            }
+            
+            setTimeout(() => navigate(returnPath), 2000);
         } catch (err) {
             toast.current?.show({
                 severity: 'error',
-                summary: 'Erro',
-                detail: 'Falha ao salvar leilão.',
+                summary: 'Error',
+                detail: 'Failed to save auction.',
                 life: 5000
             });
             console.error(err);
@@ -190,6 +229,17 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
                 </div>
                 
                 <form onSubmit={handleSubmit} className="auction-form-content">
+                    <div className="field">
+                        <label className="field-label">
+                            <i className="pi pi-images mr-2" />
+                            Images (Maximum 5)
+                        </label>
+                        <ImageUpload 
+                            onImagesChange={setImages}
+                            maxImages={5}
+                        />
+                    </div>
+
                     <div className="field">
                         <label htmlFor="title" className="field-label">
                             <i className="pi pi-tag mr-2" />

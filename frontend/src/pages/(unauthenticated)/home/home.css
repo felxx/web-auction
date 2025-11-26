@@ -379,13 +379,17 @@ html, body {
 }
 
 .featured-carousel .p-carousel-indicators .p-carousel-indicator {
-    background: #4a4a4a;
-    border: 1px solid #6a6a6a;
+    background: #4a4a4a !important;
+    border: 1px solid #6a6a6a !important;
+    width: 8px !important;
+    height: 8px !important;
 }
 
 .featured-carousel .p-carousel-indicators .p-carousel-indicator.p-highlight {
-    background: #ff8c00;
-    border: 1px solid #ff8c00;
+    background: #ff8c00 !important;
+    border: 1px solid #ff8c00 !important;
+    width: 8px !important;
+    height: 8px !important;
 }
 
 /* Mobile responsiveness */

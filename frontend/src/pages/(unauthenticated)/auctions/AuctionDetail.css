@@ -111,6 +111,113 @@
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     border: 1px solid #4a4a4a;
+    min-height: 400px;
+}
+
+.gallery-section .p-galleria {
+    background: transparent;
+}
+
+.gallery-section .p-galleria-content {
+    background: #1a1a1a;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.gallery-section .p-galleria-item-wrapper {
+    background: #1a1a1a;
+}
+
+.gallery-section .p-galleria-item {
+    background: #1a1a1a;
+}
+
+.gallery-section .p-galleria-thumbnail-container {
+    background: #2a2a2a;
+    border-radius: 0 0 12px 12px;
+    padding: 0.75rem;
+}
+
+/* Galleria item image styling */
+.gallery-section .p-galleria-item-wrapper img {
+    border-radius: 12px 12px 0 0;
+    object-fit: contain;
+    max-height: 500px;
+}
+
+/* Navigation buttons */
+.gallery-section .p-galleria-item-nav {
+    background: rgba(255, 140, 0, 0.8) !important;
+    border: none !important;
+    color: white !important;
+    border-radius: 50% !important;
+    width: 40px !important;
+    height: 40px !important;
+    margin: 1rem !important;
+}
+
+.gallery-section .p-galleria-item-nav:hover {
+    background: rgba(255, 140, 0, 1) !important;
+    transform: scale(1.1);
+}
+
+.gallery-section .p-galleria-item-nav .p-galleria-item-prev-icon,
+.gallery-section .p-galleria-item-nav .p-galleria-item-next-icon {
+    color: white !important;
+}
+
+/* Thumbnail navigation */
+.gallery-section .p-galleria-thumbnail-prev,
+.gallery-section .p-galleria-thumbnail-next {
+    background: transparent !important;
+    color: #ff8c00 !important;
+    border: none !important;
+}
+
+.gallery-section .p-galleria-thumbnail-prev:hover,
+.gallery-section .p-galleria-thumbnail-next:hover {
+    background: rgba(255, 140, 0, 0.1) !important;
+    color: #ffa726 !important;
+}
+
+/* Thumbnails */
+.gallery-section .p-galleria-thumbnail-item {
+    border: 2px solid #4a4a4a !important;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0 0.25rem;
+    transition: all 0.3s ease;
+}
+
+.gallery-section .p-galleria-thumbnail-item:hover {
+    border-color: #ff8c00 !important;
+}
+
+.gallery-section .p-galleria-thumbnail-item.p-galleria-thumbnail-item-current {
+    border-color: #ff8c00 !important;
+    border-width: 3px !important;
+}
+
+.gallery-section .p-galleria-thumbnail-item img {
+    border-radius: 6px;
+}
+
+/* Indicators */
+.gallery-section .p-galleria-indicators {
+    padding: 1rem;
+}
+
+.gallery-section .p-galleria-indicator button {
+    background: #4a4a4a !important;
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    border: 1px solid #6a6a6a !important;
+}
+
+.gallery-section .p-galleria-indicator.p-highlight button {
+    background: #ff8c00 !important;
+    border-color: #ff8c00 !important;
 }
 
 .no-images {

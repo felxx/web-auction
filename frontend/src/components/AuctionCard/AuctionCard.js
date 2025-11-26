@@ -59,17 +59,18 @@ const AuctionCard = ({ auction }) => {
     
     const header = (
         <div className="auction-card-image-wrapper">
-            {auction.imageUrl ? (
+            {auction.mainImageId ? (
                 <img
-                    alt={`Imagem do leilão ${auction.title}`}
-                    src={auction.imageUrl}
+                    alt={`Auction image ${auction.title}`}
+                    src={`http://localhost:8080/images/${auction.mainImageId}/data`}
                     className="auction-card-image"
                     onError={(e) => {
-                        e.target.src = 'https://via.placeholder.com/400x300?text=Sem+Imagem';
+                        e.target.style.display = 'none';
+                        e.target.parentElement.innerHTML = '<div class="auction-card-no-image"><i class="pi pi-image" style="font-size: 3rem; color: #ccc;"></i></div>';
                     }}
                 />
             ) : (
-                <div className="auction-card-no-image" role="img" aria-label="Sem imagem disponível">
+                <div className="auction-card-no-image" role="img" aria-label="No image available">
                     <i className="pi pi-image" style={{ fontSize: '3rem', color: '#ccc' }}></i>
                 </div>
             )}
