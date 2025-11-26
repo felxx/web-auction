@@ -1,10 +1,15 @@
 package com.github.felxx.backend.exception;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -14,35 +19,119 @@ import org.springframework.web.context.request.WebRequest;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> global(Exception ex, WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal Error", ex.getMessage(),
-                request.getDescription(false), null);
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<Map<String, Object>> handleGlobalException(Exception ex, WebRequest request) {
+        Map<String, Object> body = buildErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Internal Server Error",
+                ex.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> validate(MethodArgumentNotValidException ex, WebRequest request) {
-        List<String> errors = ex.getBindingResult().getFieldErrors().stream()
-                .map(err -> err.getField() + ": " + err.getDefaultMessage()).collect(Collectors.toList());
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Validation Error",
-                "Invalid Fields", request.getDescription(false), errors);
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Map<String, Object>> handleValidationException(
+            MethodArgumentNotValidException ex, 
+            WebRequest request) {
+        
+        Map<String, String> fieldErrors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error -> 
+            fieldErrors.put(error.getField(), error.getDefaultMessage())
+        );
+        
+        Map<String, Object> body = buildErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                "Validation Failed",
+                "One or more fields have validation errors",
+                request.getDescription(false)
+        );
+        body.put("fieldErrors", fieldErrors);
+        
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ErrorResponse> business(BusinessException ex, WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.UNPROCESSABLE_ENTITY.value(), "Business Error", ex.getMessage(),
-                request.getDescription(false), null);
-        return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
+    public ResponseEntity<Map<String, Object>> handleBusinessException(
+            BusinessException ex, 
+            WebRequest request) {
+        
+        Map<String, Object> body = buildErrorResponse(
+                HttpStatus.UNPROCESSABLE_ENTITY,
+                "Business Rule Violation",
+                ex.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(body, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorResponse> notFound(NotFoundException ex, WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpStatus.NOT_FOUND.value(), "Not Found", ex.getMessage(),
-                request.getDescription(false), null);
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    public ResponseEntity<Map<String, Object>> handleNotFoundException(
+            NotFoundException ex, 
+            WebRequest request) {
+        
+        Map<String, Object> body = buildErrorResponse(
+                HttpStatus.NOT_FOUND,
+                "Resource Not Found",
+                ex.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Map<String, Object>> handleAuthenticationException(
+            AuthenticationException ex, 
+            WebRequest request) {
+        
+        Map<String, Object> body = buildErrorResponse(
+                HttpStatus.UNAUTHORIZED,
+                "Authentication Failed",
+                ex.getMessage(),
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Map<String, Object>> handleBadCredentialsException(
+            BadCredentialsException ex, 
+            WebRequest request) {
+        
+        Map<String, Object> body = buildErrorResponse(
+                HttpStatus.UNAUTHORIZED,
+                "Invalid Credentials",
+                "Email or password is incorrect",
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, Object>> handleAccessDeniedException(
+            AccessDeniedException ex, 
+            WebRequest request) {
+        
+        Map<String, Object> body = buildErrorResponse(
+                HttpStatus.FORBIDDEN,
+                "Access Denied",
+                "You don't have permission to access this resource",
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(body, HttpStatus.FORBIDDEN);
+    }
+
+    private Map<String, Object> buildErrorResponse(
+            HttpStatus status, 
+            String error, 
+            String message, 
+            String path) {
+        
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now().toString());
+        body.put("status", status.value());
+        body.put("error", error);
+        body.put("message", message);
+        body.put("path", path.replace("uri=", ""));
+        return body;
     }
 }
