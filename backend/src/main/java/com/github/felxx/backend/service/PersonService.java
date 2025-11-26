@@ -47,14 +47,12 @@ public class PersonService {
             context.setVariable("name", person.getName());
             emailService.sendTemplateMail(person.getEmail(), "Successfully registration!", context, "successRegister");
         } catch (Exception e) {
-            // Log error but don't fail registration
             System.err.println("Failed to send email: " + e.getMessage());
         }
     }
 
     @Transactional
     public PersonResponseDTO insert(PersonRequestDTO requestDTO) {
-        // Validate unique email
         if (personRepository.existsByEmail(requestDTO.getEmail())) {
             throw new BusinessException("Email already exists: " + requestDTO.getEmail());
         }
@@ -64,13 +62,11 @@ public class PersonService {
         person.setEmail(requestDTO.getEmail());
         person.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
 
-        // Set default profile or from DTO
-        ProfileType requestedType = ProfileType.BUYER; // default
+        ProfileType requestedType = ProfileType.BUYER;
         if (requestDTO.getProfileType() != null && !requestDTO.getProfileType().trim().isEmpty()) {
             try {
                 requestedType = ProfileType.valueOf(requestDTO.getProfileType().toUpperCase());
             } catch (IllegalArgumentException e) {
-                // Keep default
             }
         }
         
@@ -93,7 +89,6 @@ public class PersonService {
     public PersonResponseDTO update(Long id, PersonUpdateDTO requestDTO) {
         Person person = findById(id);
 
-        // Check if user has permission to update (only themselves or ADMIN)
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated()) {
             String currentUserEmail = auth.getName();
@@ -105,7 +100,6 @@ public class PersonService {
             }
         }
 
-        // Validate email uniqueness if changed
         if (!person.getEmail().equals(requestDTO.getEmail()) &&
                 personRepository.existsByEmail(requestDTO.getEmail())) {
             throw new BusinessException("Email already exists: " + requestDTO.getEmail());
@@ -122,7 +116,6 @@ public class PersonService {
     public void delete(Long id) {
         Person person = findById(id);
 
-        // Check if user has permission (only ADMIN can delete)
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated()) {
             boolean isAdmin = auth.getAuthorities().stream()
@@ -143,6 +136,19 @@ public class PersonService {
 
     public PersonResponseDTO findByIdDTO(Long id) {
         Person person = findById(id);
+        return toResponseDTO(person);
+    }
+
+    public PersonResponseDTO getCurrentUserProfile() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            throw new BusinessException("User not authenticated");
+        }
+        
+        String email = auth.getName();
+        Person person = personRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User not found with email: " + email));
+        
         return toResponseDTO(person);
     }
 

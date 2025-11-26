@@ -30,6 +30,12 @@ public class PersonController {
     @Autowired
     private PersonService personService;
 
+    @GetMapping("/me")
+    public ResponseEntity<PersonResponseDTO> getCurrentUser() {
+        PersonResponseDTO person = personService.getCurrentUserProfile();
+        return ResponseEntity.ok(person);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<PersonResponseDTO> findById(@PathVariable("id") Long id) {
         PersonResponseDTO person = personService.toResponseDTO(personService.findById(id));
