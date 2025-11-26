@@ -15,11 +15,6 @@ import ImageUpload from '../ImageUpload/ImageUpload';
 import api from '../../services/api';
 import './AuctionForm.css';
 
-/**
- * Componente reutilizável de formulário de leilão
- * @param {Object} props
- * @param {string} props.returnPath - Caminho para retornar após salvar (ex: '/admin/auctions' ou '/my-auctions')
- */
 const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
     const [formData, setFormData] = useState({
         title: '',
@@ -46,8 +41,8 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
             } catch (err) {
                 toast.current?.show({
                     severity: 'error',
-                    summary: 'Erro',
-                    detail: 'Falha ao carregar categorias.',
+                    summary: 'Error',
+                    detail: 'Failed to load categories.',
                     life: 5000
                 });
                 console.error(err);
@@ -75,8 +70,8 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
         } catch (err) {
             toast.current?.show({
                 severity: 'error',
-                summary: 'Erro',
-                detail: 'Falha ao carregar leilão.',
+                summary: 'Error',
+                detail: 'Failed to load auction.',
                 life: 5000
             });
             console.error(err);
@@ -223,9 +218,9 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
             <Card className="form-card">
                 <div className="form-header">
                     <h2>
-                        {isEdit ? 'Editar Leilão' : 'Novo Leilão'}
+                        {isEdit ? 'Edit Auction' : 'New Auction'}
                     </h2>
-                    <p>Preencha os detalhes do leilão abaixo</p>
+                    <p>Fill in the auction details below</p>
                 </div>
                 
                 <form onSubmit={handleSubmit} className="auction-form-content">
@@ -243,13 +238,13 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
                     <div className="field">
                         <label htmlFor="title" className="field-label">
                             <i className="pi pi-tag mr-2" />
-                            Título *
+                            Title *
                         </label>
                         <InputText
                             id="title"
                             value={formData.title}
                             onChange={(e) => handleInputChange('title', e.target.value)}
-                            placeholder="Digite o título do leilão"
+                            placeholder="Enter auction title"
                             className="w-full"
                             required
                             disabled={loading}
@@ -259,13 +254,13 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
                     <div className="field">
                         <label htmlFor="description" className="field-label">
                             <i className="pi pi-align-left mr-2" />
-                            Descrição *
+                            Description *
                         </label>
                         <InputTextarea
                             id="description"
                             value={formData.description}
                             onChange={(e) => handleInputChange('description', e.target.value)}
-                            placeholder="Digite a descrição do leilão"
+                            placeholder="Enter auction description"
                             className="w-full"
                             rows={4}
                             required
@@ -276,7 +271,7 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
                     <div className="field">
                         <label htmlFor="category" className="field-label">
                             <i className="pi pi-tags mr-2" />
-                            Categoria *
+                            Category *
                         </label>
                         <Dropdown
                             id="category"
@@ -285,7 +280,7 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
                             options={categories}
                             optionLabel="name"
                             optionValue="id"
-                            placeholder="Selecione uma categoria"
+                            placeholder="Select a category"
                             className="w-full"
                             required
                             disabled={loading}
@@ -295,7 +290,7 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
                     <div className="field">
                         <label htmlFor="minimumBid" className="field-label">
                             <i className="pi pi-money-bill mr-2" />
-                            Lance Mínimo *
+                            Minimum Bid *
                         </label>
                         <InputNumber
                             id="minimumBid"
@@ -304,7 +299,7 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
                             mode="currency"
                             currency="BRL"
                             locale="pt-BR"
-                            placeholder="Digite o lance mínimo"
+                            placeholder="Enter minimum bid"
                             className="w-full"
                             min={0.01}
                             minFractionDigits={2}
@@ -317,7 +312,7 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
                     <div className="field">
                         <label htmlFor="startDateTime" className="field-label">
                             <i className="pi pi-calendar mr-2" />
-                            Data e Hora de Início *
+                            Start Date and Time *
                         </label>
                         <Calendar
                             id="startDateTime"
@@ -325,7 +320,7 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
                             onChange={(e) => handleInputChange('startDateTime', e.value)}
                             showTime
                             hourFormat="24"
-                            placeholder="Selecione a data e hora de início"
+                            placeholder="Select start date and time"
                             className="w-full"
                             required
                             disabled={loading}
@@ -336,7 +331,7 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
                     <div className="field">
                         <label htmlFor="endDateTime" className="field-label">
                             <i className="pi pi-calendar mr-2" />
-                            Data e Hora de Término *
+                            End Date and Time *
                         </label>
                         <Calendar
                             id="endDateTime"
@@ -344,7 +339,7 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
                             onChange={(e) => handleInputChange('endDateTime', e.value)}
                             showTime
                             hourFormat="24"
-                            placeholder="Selecione a data e hora de término"
+                            placeholder="Select end date and time"
                             className="w-full"
                             required
                             disabled={loading}
@@ -355,7 +350,7 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
                     <div className="form-actions">
                         <Button
                             type="button"
-                            label="Cancelar"
+                            label="Cancel"
                             icon="pi pi-times"
                             className="p-button-outlined"
                             onClick={() => navigate(returnPath)}
@@ -363,7 +358,7 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
                         />
                         <Button
                             type="submit"
-                            label={isEdit ? 'Atualizar' : 'Criar'}
+                            label={isEdit ? 'Update' : 'Create'}
                             icon={isEdit ? 'pi pi-check' : 'pi pi-plus'}
                             className="p-button-success"
                             loading={loading}

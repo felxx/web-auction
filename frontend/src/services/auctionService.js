@@ -50,7 +50,6 @@ const filterAuctions = (filters, page = 0, size = 10, sort = 'title') => {
   return getAuctions(page, size, sort, filters);
 };
 
-// Buscar leilões onde o usuário deu lance (para BUYER)
 const getMyBids = (page = 0, size = 10, sort = 'endDateTime,asc', filters = {}) => {
   const params = new URLSearchParams({
     page: page.toString(),
@@ -71,7 +70,6 @@ const getMyBids = (page = 0, size = 10, sort = 'endDateTime,asc', filters = {}) 
   return api.get(`/auctions/my-bids?${params.toString()}`);
 };
 
-// Buscar leilões ganhos pelo usuário (para BUYER)
 const getWonAuctions = (page = 0, size = 10, sort = 'endDateTime,desc', filters = {}) => {
   const params = new URLSearchParams({
     page: page.toString(),

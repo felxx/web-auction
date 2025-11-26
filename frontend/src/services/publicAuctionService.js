@@ -3,10 +3,6 @@ import axios from 'axios';
 const API_URL = 'http://localhost:8080/public/auctions';
 
 export const publicAuctionService = {
-    /**
-     * Get public auctions with filters
-     * @param {Object} params - { search, categoryId, status, page, size, sort }
-     */
     getPublicAuctions: async (params = {}) => {
         const queryParams = new URLSearchParams();
         
@@ -21,10 +17,6 @@ export const publicAuctionService = {
         return response.data;
     },
 
-    /**
-     * Get auction detail by ID
-     * @param {number} id - Auction ID
-     */
     getAuctionDetail: async (id) => {
         const response = await axios.get(`${API_URL}/${id}`);
         return response.data;

@@ -24,12 +24,12 @@ const WonAuctions = () => {
 
     return (
         <AuctionList
-            title="Leilões Ganhos"
-            subtitle="Parabéns! Veja os leilões que você venceu"
+            title="Won Auctions"
+            subtitle="Congratulations! See the auctions you won"
             fetchFunction={fetchAuctions}
             fetchCategories={fetchCategories}
-            emptyStateTitle="Nenhum leilão ganho"
-            emptyStateMessage="Você ainda não ganhou nenhum leilão. Continue participando e boa sorte!"
+            emptyStateTitle="No auctions won"
+            emptyStateMessage="You haven't won any auctions yet. Keep participating and good luck!"
             showCreateButton={false}
             showFilters={true}
             showSearch={true}

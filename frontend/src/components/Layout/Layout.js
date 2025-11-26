@@ -16,24 +16,20 @@ const Layout = ({ children }) => {
     const userMenu = useRef(null);
     const [user] = useState(() => authService.getCurrentUser());
 
-    // Debug: log user info
     React.useEffect(() => {
         console.log('Current user:', user);
         console.log('User role:', user?.role);
         console.log('User roles:', user?.roles);
     }, [user]);
 
-    // Helper function to check user role
     const hasRole = (roleToCheck) => {
         if (!user) return false;
         
-        // Check in role field
         if (user.role) {
             const role = user.role.replace('ROLE_', '');
             if (role === roleToCheck) return true;
         }
         
-        // Check in roles array
         if (user.roles && Array.isArray(user.roles)) {
             return user.roles.some(r => {
                 const role = r.replace('ROLE_', '');
@@ -92,7 +88,6 @@ const Layout = ({ children }) => {
         }
     ];
 
-    // Menu items for all authenticated users
     if (user) {
         const auctionSubItems = [
             {
@@ -102,7 +97,6 @@ const Layout = ({ children }) => {
             }
         ];
 
-        // Add buyer-specific items
         if (hasRole('BUYER') || hasRole('ADMIN')) {
             auctionSubItems.push(
                 {
@@ -124,7 +118,6 @@ const Layout = ({ children }) => {
             items: auctionSubItems
         });
 
-        // Seller menu
         if (hasRole('SELLER') || hasRole('ADMIN')) {
             menuItems.push({
                 label: 'Seller',
@@ -144,7 +137,6 @@ const Layout = ({ children }) => {
             });
         }
 
-        // Admin menu
         if (hasRole('ADMIN')) {
             menuItems.push({
                 label: 'Administration',
@@ -174,7 +166,6 @@ const Layout = ({ children }) => {
             });
         }
     } else {
-        // Menu for unauthenticated users
         menuItems.push({
             label: 'Auctions',
             icon: 'pi pi-shopping-cart',

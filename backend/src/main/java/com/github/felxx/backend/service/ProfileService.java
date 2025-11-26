@@ -23,7 +23,6 @@ public class ProfileService {
     public ProfileResponseDTO insert(ProfileRequestDTO requestDTO) {
         ProfileType type = requestDTO.getType();
         
-        // Prevent duplicate profiles
         if (profileRepository.findByType(type).isPresent()) {
             throw new BusinessException("Profile already exists: " + type);
         }
@@ -40,7 +39,6 @@ public class ProfileService {
         Profile existingProfile = findById(id);
         ProfileType newType = requestDTO.getType();
         
-        // Check if another profile with the new type exists
         profileRepository.findByType(newType).ifPresent(p -> {
             if (!p.getId().equals(id)) {
                 throw new BusinessException("Profile already exists: " + newType);
@@ -56,7 +54,6 @@ public class ProfileService {
     @Transactional
     public void delete(Long id) {
         Profile profile = findById(id);
-        // TODO: Add check if profile is being used by any person
         profileRepository.delete(profile);
     }
 

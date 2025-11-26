@@ -36,7 +36,6 @@ function App() {
     <PrimeReactProvider value={primeReactConfig}>
       <div className="App">
       <Routes>
-        {/* Public routes */}
         <Route path="/" element={
           <Layout>
             <Home />
@@ -57,8 +56,6 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
         
-        {/* Protected routes */}
-        
         <Route path="/profile" element={
           <ProtectedRoute>
             <Layout>
@@ -75,7 +72,6 @@ function App() {
           </ProtectedRoute>
         } />
 
-        {/* Admin routes */}
         <Route path="/admin/categories" element={
           <ProtectedRoute requiredRole="ADMIN">
             <Layout>
@@ -124,7 +120,6 @@ function App() {
           </ProtectedRoute>
         } />
 
-        {/* Seller routes */}
         <Route path="/my-auctions" element={
           <ProtectedRoute requiredRole="SELLER">
             <Layout>
@@ -149,7 +144,6 @@ function App() {
           </ProtectedRoute>
         } />
 
-        {/* Buyer routes */}
         <Route path="/my-bids" element={
           <ProtectedRoute requiredRole="BUYER">
             <Layout>

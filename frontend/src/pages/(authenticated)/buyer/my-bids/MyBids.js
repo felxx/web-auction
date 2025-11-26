@@ -25,12 +25,12 @@ const MyBids = () => {
 
     return (
         <AuctionList
-            title="Meus Lances"
-            subtitle="Acompanhe os leilões nos quais você participou"
+            title="My Bids"
+            subtitle="Track the auctions you participated in"
             fetchFunction={fetchAuctions}
             fetchCategories={fetchCategories}
-            emptyStateTitle="Nenhum lance encontrado"
-            emptyStateMessage="Você ainda não deu lances em nenhum leilão. Explore os leilões disponíveis e faça sua primeira oferta!"
+            emptyStateTitle="No bids found"
+            emptyStateMessage="You haven't placed bids on any auctions yet. Explore available auctions and make your first offer!"
             showCreateButton={false}
             showFilters={true}
             showSearch={true}

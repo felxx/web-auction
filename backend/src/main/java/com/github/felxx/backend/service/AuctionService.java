@@ -61,7 +61,6 @@ public class AuctionService {
         Auction auction = new Auction();
         mapDTOToEntity(requestDTO, auction);
         
-        // Get authenticated user as publisher
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             String email = authentication.getName();
@@ -115,7 +114,6 @@ public class AuctionService {
             try {
                 auctionStatus = AuctionStatus.valueOf(status.toUpperCase());
             } catch (IllegalArgumentException e) {
-                // Ignore invalid status
             }
         }
         
@@ -137,12 +135,10 @@ public class AuctionService {
         auction.setEndDateTime(dto.getEndDateTime());
         auction.setMinimumBid(dto.getMinimumBid());
         
-        // Set default status
         if (auction.getStatus() == null) {
             auction.setStatus(AuctionStatus.OPEN);
         }
         
-        // Set category
         if (dto.getCategoryId() != null) {
             Category category = categoryRepository.findById(dto.getCategoryId())
                     .orElseThrow(() -> new NotFoundException("Category not found with id: " + dto.getCategoryId()));
@@ -199,7 +195,6 @@ public class AuctionService {
         return dto;
     }
     
-    // Public method for listing auctions without authentication
     public Page<PublicAuctionResponseDTO> findPublicAuctions(
             String status,
             Long categoryId,
@@ -211,7 +206,6 @@ public class AuctionService {
             try {
                 auctionStatus = AuctionStatus.valueOf(status.toUpperCase());
             } catch (IllegalArgumentException e) {
-                // Default to OPEN if invalid
                 auctionStatus = AuctionStatus.OPEN;
             }
         }
@@ -240,7 +234,6 @@ public class AuctionService {
             dto.setCategoryName(auction.getCategory().getName());
         }
         
-        // Calculate current price (highest bid or minimum bid)
         Float currentPrice = auction.getMinimumBid();
         if (auction.getBids() != null && !auction.getBids().isEmpty()) {
             currentPrice = auction.getBids().stream()
@@ -250,7 +243,6 @@ public class AuctionService {
         }
         dto.setCurrentPrice(currentPrice);
         
-        // Get first image (main image) if available
         if (auction.getImages() != null && !auction.getImages().isEmpty()) {
             auction.getImages().stream()
                     .filter(image -> image.getDisplayOrder() != null && image.getDisplayOrder() == 0)
@@ -261,13 +253,11 @@ public class AuctionService {
                     });
         }
         
-        // Total bids
         dto.setTotalBids(auction.getBids() != null ? auction.getBids().size() : 0);
         
         return dto;
     }
     
-    // Public method for getting auction details
     public AuctionDetailDTO getPublicAuctionDetail(Long id) {
         Auction auction = findById(id);
         
@@ -282,13 +272,11 @@ public class AuctionService {
         dto.setMinimumBid(auction.getMinimumBid());
         dto.setIncrementValue(auction.getIncrementValue());
         
-        // Category
         if (auction.getCategory() != null) {
             dto.setCategoryId(auction.getCategory().getId());
             dto.setCategoryName(auction.getCategory().getName());
         }
         
-        // Calculate current price
         Float currentPrice = auction.getMinimumBid();
         if (auction.getBids() != null && !auction.getBids().isEmpty()) {
             currentPrice = auction.getBids().stream()
@@ -299,7 +287,6 @@ public class AuctionService {
         dto.setCurrentPrice(currentPrice);
         dto.setTotalBids(auction.getBids() != null ? auction.getBids().size() : 0);
         
-        // Images
         if (auction.getImages() != null && !auction.getImages().isEmpty()) {
             List<AuctionDetailDTO.ImageDTO> imageDTOs = auction.getImages().stream()
                     .sorted((a, b) -> {
@@ -317,7 +304,6 @@ public class AuctionService {
             dto.setImages(imageDTOs);
         }
         
-        // Recent bids (last 10)
         List<Bid> recentBids = bidRepository.findRecentBidsByAuctionId(
                 auction.getId(),
                 PageRequest.of(0, 10)
@@ -335,14 +321,12 @@ public class AuctionService {
             dto.setRecentBids(bidDTOs);
         }
         
-        // Seller info with feedback
         if (auction.getPublisher() != null) {
             Person seller = auction.getPublisher();
             
-            // Calculate average rating and total feedbacks
             Page<Feedback> sellerFeedbacks = feedbackRepository.findByRecipientId(
                     seller.getId(),
-                    PageRequest.of(0, 1000) // Get all feedbacks for calculation
+                    PageRequest.of(0, 1000)
             );
             
             Double averageRating = null;

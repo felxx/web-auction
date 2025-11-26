@@ -25,12 +25,12 @@ const MyAuctions = () => {
 
     return (
         <AuctionList
-            title="Meus Leilões"
-            subtitle="Gerencie seus leilões e acompanhe o desempenho"
+            title="My Auctions"
+            subtitle="Manage your auctions and track performance"
             fetchFunction={fetchAuctions}
             fetchCategories={fetchCategories}
-            emptyStateTitle="Nenhum leilão encontrado"
-            emptyStateMessage="Você ainda não criou nenhum leilão. Comece criando seu primeiro leilão!"
+            emptyStateTitle="No auctions found"
+            emptyStateMessage="You haven't created any auctions yet. Start by creating your first auction!"
             showCreateButton={true}
             createButtonRoute="/auctions/new"
             showFilters={true}

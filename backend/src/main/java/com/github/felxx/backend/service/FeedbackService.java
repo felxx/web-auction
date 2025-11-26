@@ -36,7 +36,6 @@ public class FeedbackService {
         Person recipient = personRepository.findById(requestDTO.getRecipientId())
                 .orElseThrow(() -> new NotFoundException("Recipient not found"));
         
-        // Business rules
         if (writer.getId().equals(recipient.getId())) {
             throw new BusinessException("You cannot give feedback to yourself");
         }
@@ -57,7 +56,6 @@ public class FeedbackService {
     public FeedbackResponseDTO update(Long id, FeedbackRequestDTO requestDTO) {
         Feedback existingFeedback = findById(id);
         
-        // Only the writer can update their feedback
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserEmail = authentication.getName();
         
@@ -81,7 +79,6 @@ public class FeedbackService {
     public void delete(Long id) {
         Feedback feedback = findById(id);
         
-        // Only the writer or admin can delete
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserEmail = authentication.getName();
         boolean isAdmin = authentication.getAuthorities().stream()

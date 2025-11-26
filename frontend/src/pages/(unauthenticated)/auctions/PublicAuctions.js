@@ -15,12 +15,12 @@ const PublicAuctions = () => {
 
     return (
         <AuctionList
-            title="Leilões Disponíveis"
-            subtitle="Encontre os melhores leilões e faça sua oferta"
+            title="Available Auctions"
+            subtitle="Find the best auctions and place your bid"
             fetchFunction={fetchAuctions}
             fetchCategories={fetchCategories}
-            emptyStateTitle="Nenhum leilão disponível"
-            emptyStateMessage="Não encontramos leilões que correspondam aos seus critérios de busca."
+            emptyStateTitle="No auctions available"
+            emptyStateMessage="We couldn't find auctions matching your search criteria."
             showCreateButton={false}
             showFilters={true}
             showSearch={true}

@@ -20,17 +20,15 @@ const AuctionDetail = () => {
 
     useEffect(() => {
         loadAuctionDetail();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
     useEffect(() => {
         if (auction) {
-            document.title = `${auction.title} — Leilões`;
+            document.title = `${auction.title} — Auctions`;
             
-            // Set meta description
             const metaDescription = document.querySelector('meta[name="description"]');
             if (metaDescription) {
-                metaDescription.setAttribute('content', auction.description || 'Leilão online');
+                metaDescription.setAttribute('content', auction.description || 'Online auction');
             }
         }
     }, [auction]);
@@ -46,11 +44,11 @@ const AuctionDetail = () => {
             console.log('Images in auction:', data.images);
             setAuction(data);
         } catch (err) {
-            console.error('Erro ao carregar detalhes do leilão:', err);
+            console.error('Error loading auction details:', err);
             if (err.response && err.response.status === 404) {
                 setNotFound(true);
             } else {
-                setError('Não foi possível carregar os detalhes do leilão. Por favor, tente novamente.');
+                setError('Unable to load auction details. Please try again.');
             }
         } finally {
             setLoading(false);
@@ -94,13 +92,13 @@ const AuctionDetail = () => {
     const getStatusLabel = (status) => {
         switch (status) {
             case 'OPEN':
-                return 'Aberto';
+                return 'Open';
             case 'CLOSED':
-                return 'Encerrado';
+                return 'Closed';
             case 'CANCELLED':
-                return 'Cancelado';
+                return 'Cancelled';
             case 'UNDER_REVIEW':
-                return 'Em Revisão';
+                return 'Under Review';
             default:
                 return status;
         }
@@ -168,7 +166,7 @@ const AuctionDetail = () => {
                 <div className="detail-container">
                     <Button
                         icon="pi pi-arrow-left"
-                        label="Voltar"
+                        label="Back"
                         className="p-button-text mb-3"
                         onClick={() => navigate('/auctions')}
                     />
@@ -192,10 +190,10 @@ const AuctionDetail = () => {
                 <div className="detail-container">
                     <div className="not-found-state">
                         <i className="pi pi-exclamation-triangle" style={{ fontSize: '4rem', color: '#f59e0b' }}></i>
-                        <h2>Leilão não encontrado</h2>
-                        <p>O leilão que você está procurando não existe ou foi removido.</p>
+                        <h2>Auction not found</h2>
+                        <p>The auction you're looking for doesn't exist or has been removed.</p>
                         <Button
-                            label="Voltar para leilões"
+                            label="Back to auctions"
                             icon="pi pi-arrow-left"
                             onClick={() => navigate('/auctions')}
                             className="mt-3"
@@ -213,13 +211,13 @@ const AuctionDetail = () => {
                     <div className="error-state">
                         <Message severity="error" text={error} />
                         <Button
-                            label="Tentar novamente"
+                            label="Try again"
                             icon="pi pi-refresh"
                             onClick={loadAuctionDetail}
                             className="mt-3"
                         />
                         <Button
-                            label="Voltar"
+                            label="Back"
                             icon="pi pi-arrow-left"
                             className="p-button-text mt-2"
                             onClick={() => navigate('/auctions')}
@@ -235,13 +233,12 @@ const AuctionDetail = () => {
             <div className="detail-container">
                 <Button
                     icon="pi pi-arrow-left"
-                    label="Voltar"
+                    label="Back"
                     className="p-button-text mb-3"
                     onClick={() => navigate('/auctions')}
-                    aria-label="Voltar para lista de leilões"
+                    aria-label="Back to auction list"
                 />
 
-                {/* Header */}
                 <header className="auction-header">
                     <div className="header-content">
                         <h1>{auction.title}</h1>
@@ -259,18 +256,17 @@ const AuctionDetail = () => {
                     </div>
                     <div className="period-info">
                         <div className="period-item">
-                            <small>Início:</small>
+                            <small>Start:</small>
                             <strong>{formatDateTime(auction.startDateTime)}</strong>
                         </div>
                         <div className="period-item">
-                            <small>Término:</small>
+                            <small>End:</small>
                             <strong>{formatDateTime(auction.endDateTime)}</strong>
                         </div>
                     </div>
                 </header>
 
                 <div className="detail-grid">
-                    {/* Image Gallery */}
                     <section className="gallery-section" aria-label="Galeria de imagens">
                         {auction.images && auction.images.length > 0 ? (
                             <>
@@ -294,48 +290,46 @@ const AuctionDetail = () => {
                         )}
                     </section>
 
-                    {/* Info Panel */}
-                    <aside className="info-panel" aria-label="Informações do leilão">
+                    <aside className="info-panel" aria-label="Auction information">
                         <div className="info-card">
-                            <h3>Informações de Lances</h3>
+                            <h3>Bid Information</h3>
                             
                             <div className="info-item">
-                                <span className="info-label">Lance mínimo:</span>
+                                <span className="info-label">Minimum bid:</span>
                                 <span className="info-value">{formatCurrency(auction.minimumBid)}</span>
                             </div>
                             
                             <div className="info-item">
-                                <span className="info-label">Valor do incremento:</span>
+                                <span className="info-label">Increment value:</span>
                                 <span className="info-value">{formatCurrency(auction.incrementValue)}</span>
                             </div>
                             
                             <div className="info-item highlight">
-                                <span className="info-label">Lance atual:</span>
+                                <span className="info-label">Current bid:</span>
                                 <span className="info-value current-price">
                                     {formatCurrency(auction.currentPrice)}
                                 </span>
                             </div>
                             
                             <div className="info-item">
-                                <span className="info-label">Total de lances:</span>
+                                <span className="info-label">Total bids:</span>
                                 <span className="info-value">{auction.totalBids || 0}</span>
                             </div>
 
                             {auction.status === 'OPEN' && (
                                 <Button
-                                    label={isAuthenticated ? "Dar lance" : "Entrar para dar lance"}
+                                    label={isAuthenticated ? "Place bid" : "Login to bid"}
                                     icon={isAuthenticated ? "pi pi-dollar" : "pi pi-sign-in"}
                                     className="w-full mt-3 p-button-warning"
                                     onClick={() => navigate(isAuthenticated ? '#bid-section' : '/login')}
-                                    aria-label={isAuthenticated ? "Dar um lance" : "Fazer login para dar lances"}
+                                    aria-label={isAuthenticated ? "Place a bid" : "Login to place bids"}
                                 />
                             )}
                         </div>
 
-                        {/* Seller Info */}
                         {auction.seller && (
                             <div className="info-card seller-card">
-                                <h3>Vendedor</h3>
+                                <h3>Seller</h3>
                                 <div className="seller-info">
                                     <i className="pi pi-user" aria-hidden="true"></i>
                                     <div>
@@ -345,7 +339,7 @@ const AuctionDetail = () => {
                                                 <i className="pi pi-star-fill" style={{ color: '#fbbf24' }}></i>
                                                 <span>
                                                     {auction.seller.averageRating?.toFixed(1)} 
-                                                    ({auction.seller.totalFeedbacks} avaliações)
+                                                    ({auction.seller.totalFeedbacks} reviews)
                                                 </span>
                                             </div>
                                         )}
@@ -356,21 +350,19 @@ const AuctionDetail = () => {
                     </aside>
                 </div>
 
-                {/* Description */}
                 <section className="description-section" aria-labelledby="description-title">
-                    <h2 id="description-title">Descrição</h2>
+                    <h2 id="description-title">Description</h2>
                     <div className="description-content">
                         <p className="description-short">{auction.description}</p>
                         {auction.detailedDescription && (
                             <div className="description-detailed">
-                                <h3>Detalhes</h3>
+                                <h3>Details</h3>
                                 <p>{auction.detailedDescription}</p>
                             </div>
                         )}
                     </div>
                 </section>
 
-                {/* Recent Bids */}
                 {auction.recentBids && auction.recentBids.length > 0 && (
                     <section className="bids-section" aria-labelledby="bids-title">
                         <h2 id="bids-title">Últimos Lances</h2>

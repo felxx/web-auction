@@ -45,13 +45,13 @@ const AuctionCard = ({ auction }) => {
     const getStatusLabel = (status) => {
         switch (status) {
             case 'OPEN':
-                return 'Aberto';
+                return 'Open';
             case 'CLOSED':
-                return 'Encerrado';
+                return 'Closed';
             case 'CANCELLED':
-                return 'Cancelado';
+                return 'Cancelled';
             case 'UNDER_REVIEW':
-                return 'Em Revisão';
+                return 'Under Review';
             default:
                 return status;
         }
@@ -85,11 +85,11 @@ const AuctionCard = ({ auction }) => {
     const footer = (
         <div className="auction-card-footer">
             <Button
-                label="Ver detalhes"
+                label="View details"
                 icon="pi pi-eye"
                 className="p-button-text"
                 onClick={() => navigate(`/auctions/${auction.id}`)}
-                aria-label={`Ver detalhes do leilão ${auction.title}`}
+                aria-label={`View auction details ${auction.title}`}
             />
         </div>
     );
@@ -119,7 +119,7 @@ const AuctionCard = ({ auction }) => {
                 <div className="auction-card-info-item">
                     <i className="pi pi-clock" aria-hidden="true"></i>
                     <div>
-                        <small>Termina em:</small>
+                        <small>Ends at:</small>
                         <strong>{formatDateTime(auction.endDateTime)}</strong>
                     </div>
                 </div>
@@ -127,7 +127,7 @@ const AuctionCard = ({ auction }) => {
                 <div className="auction-card-info-item">
                     <i className="pi pi-dollar" aria-hidden="true"></i>
                     <div>
-                        <small>{auction.currentPrice > 0 ? 'Preço atual:' : 'Lance mínimo:'}</small>
+                        <small>{auction.currentPrice > 0 ? 'Current price:' : 'Minimum bid:'}</small>
                         <strong className="auction-card-price">
                             {formatCurrency(auction.currentPrice > 0 ? auction.currentPrice : auction.minimumBid)}
                         </strong>
@@ -138,7 +138,7 @@ const AuctionCard = ({ auction }) => {
                     <div className="auction-card-info-item">
                         <i className="pi pi-users" aria-hidden="true"></i>
                         <div>
-                            <small>Lances:</small>
+                            <small>Bids:</small>
                             <strong>{auction.totalBids}</strong>
                         </div>
                     </div>
