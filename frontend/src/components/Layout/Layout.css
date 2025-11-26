@@ -134,10 +134,14 @@
     color: white !important;
 }
 
-.p-menubar .p-submenu-list .p-menuitem-link:focus,
-.p-menubar .p-submenu-list .p-menuitem-link:active,
-.p-menubar .p-submenu-list .p-menuitem.p-focus > .p-menuitem-link,
-.p-menubar .p-submenu-list .p-menuitem.p-menuitem-active > .p-menuitem-link {
+.p-menubar .p-submenu-list .p-menuitem-link:focus {
+    background: transparent !important;
+    color: #e0e0e0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.p-menubar .p-submenu-list .p-menuitem.p-focus > .p-menuitem-link {
     background: transparent !important;
     color: #e0e0e0 !important;
     box-shadow: none !important;

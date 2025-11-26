@@ -16,6 +16,34 @@ const Layout = ({ children }) => {
     const userMenu = useRef(null);
     const [user] = useState(() => authService.getCurrentUser());
 
+    // Debug: log user info
+    React.useEffect(() => {
+        console.log('Current user:', user);
+        console.log('User role:', user?.role);
+        console.log('User roles:', user?.roles);
+    }, [user]);
+
+    // Helper function to check user role
+    const hasRole = (roleToCheck) => {
+        if (!user) return false;
+        
+        // Check in role field
+        if (user.role) {
+            const role = user.role.replace('ROLE_', '');
+            if (role === roleToCheck) return true;
+        }
+        
+        // Check in roles array
+        if (user.roles && Array.isArray(user.roles)) {
+            return user.roles.some(r => {
+                const role = r.replace('ROLE_', '');
+                return role === roleToCheck;
+            });
+        }
+        
+        return false;
+    };
+
     const handleLogout = () => {
         confirmDialog({
             message: 'Are you sure you want to logout?',
@@ -61,16 +89,22 @@ const Layout = ({ children }) => {
             icon: 'pi pi-home',
             command: () => navigate('/'),
             className: location.pathname === '/' ? 'p-menuitem-active' : ''
-        },
-        {
-            label: 'Auctions',
-            icon: 'pi pi-shopping-cart',
-            items: [
-                {
-                    label: 'All Auctions',
-                    icon: 'pi pi-list',
-                    command: () => navigate('/auctions')
-                },
+        }
+    ];
+
+    // Menu items for all authenticated users
+    if (user) {
+        const auctionSubItems = [
+            {
+                label: 'All Auctions',
+                icon: 'pi pi-list',
+                command: () => navigate('/auctions')
+            }
+        ];
+
+        // Add buyer-specific items
+        if (hasRole('BUYER') || hasRole('ADMIN')) {
+            auctionSubItems.push(
                 {
                     label: 'My Bids',
                     icon: 'pi pi-heart',
@@ -81,36 +115,70 @@ const Layout = ({ children }) => {
                     icon: 'pi pi-trophy',
                     command: () => navigate('/won-auctions')
                 }
-            ]
+            );
         }
-    ];
 
-    if (user && user.role === 'ADMIN') {
         menuItems.push({
-            label: 'Administration',
-            icon: 'pi pi-cog',
-            items: [
-                {
-                    label: 'Categories',
-                    icon: 'pi pi-tags',
-                    command: () => navigate('/admin/categories')
-                },
-                {
-                    label: 'Auctions',
-                    icon: 'pi pi-shopping-cart',
-                    command: () => navigate('/admin/auctions')
-                },
-                {
-                    label: 'Users',
-                    icon: 'pi pi-users',
-                    command: () => navigate('/admin/users')
-                },
-                {
-                    label: 'Reports',
-                    icon: 'pi pi-chart-bar',
-                    command: () => navigate('/admin/reports')
-                }
-            ]
+            label: 'Auctions',
+            icon: 'pi pi-shopping-cart',
+            items: auctionSubItems
+        });
+
+        // Seller menu
+        if (hasRole('SELLER') || hasRole('ADMIN')) {
+            menuItems.push({
+                label: 'Seller',
+                icon: 'pi pi-briefcase',
+                items: [
+                    {
+                        label: 'My Auctions',
+                        icon: 'pi pi-shopping-cart',
+                        command: () => navigate('/my-auctions')
+                    },
+                    {
+                        label: 'Create Auction',
+                        icon: 'pi pi-plus',
+                        command: () => navigate('/auctions/new')
+                    }
+                ]
+            });
+        }
+
+        // Admin menu
+        if (hasRole('ADMIN')) {
+            menuItems.push({
+                label: 'Administration',
+                icon: 'pi pi-cog',
+                items: [
+                    {
+                        label: 'Categories',
+                        icon: 'pi pi-tags',
+                        command: () => navigate('/admin/categories')
+                    },
+                    {
+                        label: 'Auctions',
+                        icon: 'pi pi-shopping-cart',
+                        command: () => navigate('/admin/auctions')
+                    },
+                    {
+                        label: 'Users',
+                        icon: 'pi pi-users',
+                        command: () => navigate('/admin/users')
+                    },
+                    {
+                        label: 'Reports',
+                        icon: 'pi pi-chart-bar',
+                        command: () => navigate('/admin/reports')
+                    }
+                ]
+            });
+        }
+    } else {
+        // Menu for unauthenticated users
+        menuItems.push({
+            label: 'Auctions',
+            icon: 'pi pi-shopping-cart',
+            command: () => navigate('/auctions')
         });
     }
 
