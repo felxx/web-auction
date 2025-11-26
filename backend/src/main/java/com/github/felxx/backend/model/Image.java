@@ -17,6 +17,16 @@ public class Image {
     @NotBlank(message = "Image name cannot be blank")
     private String imageName;
     
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] imageData;
+    
+    private String contentType;
+    
+    private Long fileSize;
+    
+    private Integer displayOrder;
+    
     @PastOrPresent(message = "Upload date cannot be in the future")
     private LocalDateTime uploadedAt;
 

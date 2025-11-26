@@ -26,4 +26,6 @@ public class AuctionResponseDTO {
     private Long publisherId;
     private String publisherName;
     private Integer totalBids;
+    private Long mainImageId;
+    private Float currentPrice;
 }

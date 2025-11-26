@@ -179,6 +179,23 @@ public class AuctionService {
             dto.setTotalBids(0);
         }
         
+        if (auction.getImages() != null && !auction.getImages().isEmpty()) {
+            auction.getImages().stream()
+                .filter(img -> img.getDisplayOrder() != null && img.getDisplayOrder() == 0)
+                .findFirst()
+                .ifPresent(mainImage -> dto.setMainImageId(mainImage.getId()));
+        }
+        
+        if (auction.getBids() != null && !auction.getBids().isEmpty()) {
+            Float maxBid = auction.getBids().stream()
+                .map(bid -> bid.getAmount())
+                .max(Float::compare)
+                .orElse(0f);
+            dto.setCurrentPrice(maxBid);
+        } else {
+            dto.setCurrentPrice(0f);
+        }
+        
         return dto;
     }
     
@@ -233,9 +250,15 @@ public class AuctionService {
         }
         dto.setCurrentPrice(currentPrice);
         
-        // Get first image URL if available
+        // Get first image (main image) if available
         if (auction.getImages() != null && !auction.getImages().isEmpty()) {
-            dto.setImageUrl(auction.getImages().get(0).getImageName());
+            auction.getImages().stream()
+                    .filter(image -> image.getDisplayOrder() != null && image.getDisplayOrder() == 0)
+                    .findFirst()
+                    .ifPresent(image -> {
+                        dto.setMainImageId(image.getId());
+                        dto.setImageUrl(image.getImageName());
+                    });
         }
         
         // Total bids
@@ -279,9 +302,15 @@ public class AuctionService {
         // Images
         if (auction.getImages() != null && !auction.getImages().isEmpty()) {
             List<AuctionDetailDTO.ImageDTO> imageDTOs = auction.getImages().stream()
+                    .sorted((a, b) -> {
+                        if (a.getDisplayOrder() == null) return 1;
+                        if (b.getDisplayOrder() == null) return -1;
+                        return a.getDisplayOrder().compareTo(b.getDisplayOrder());
+                    })
                     .map(img -> new AuctionDetailDTO.ImageDTO(
                             img.getId(),
                             img.getImageName(),
+                            img.getDisplayOrder(),
                             img.getUploadedAt()
                     ))
                     .collect(Collectors.toList());

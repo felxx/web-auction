@@ -36,6 +36,7 @@ public class AuctionDetailDTO {
     public static class ImageDTO {
         private Long id;
         private String imageName;
+        private Integer displayOrder;
         private LocalDateTime uploadedAt;
     }
     

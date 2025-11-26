@@ -21,6 +21,7 @@ public class PublicAuctionResponseDTO {
     private LocalDateTime endDateTime;
     private Float currentPrice;
     private String imageUrl;
+    private Long mainImageId;
     private AuctionStatus status;
     private Integer totalBids;
 }
