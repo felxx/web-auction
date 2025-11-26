@@ -1,85 +1,343 @@
 package com.github.felxx.backend.service;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.github.felxx.backend.dto.auction.AuctionDetailDTO;
+import com.github.felxx.backend.dto.auction.AuctionRequestDTO;
+import com.github.felxx.backend.dto.auction.AuctionResponseDTO;
+import com.github.felxx.backend.dto.auction.PublicAuctionResponseDTO;
 import com.github.felxx.backend.exception.NotFoundException;
 import com.github.felxx.backend.model.Auction;
+import com.github.felxx.backend.model.AuctionStatus;
+import com.github.felxx.backend.model.Bid;
 import com.github.felxx.backend.model.Category;
+import com.github.felxx.backend.model.Feedback;
+import com.github.felxx.backend.model.Person;
 import com.github.felxx.backend.repository.AuctionRepository;
+import com.github.felxx.backend.repository.BidRepository;
 import com.github.felxx.backend.repository.CategoryRepository;
+import com.github.felxx.backend.repository.FeedbackRepository;
+import com.github.felxx.backend.repository.PersonRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AuctionService {
     
     private final AuctionRepository auctionRepository;
     private final CategoryRepository categoryRepository;
+    private final PersonRepository personRepository;
+    private final BidRepository bidRepository;
+    private final FeedbackRepository feedbackRepository;
 
-    public Auction insert(Auction auction){
-        if (auction.getCategory() != null && auction.getCategory().getId() != null) {
-            Category category = categoryRepository.findById(auction.getCategory().getId())
-                .orElseThrow(() -> new NotFoundException("Category not found!"));
-            auction.setCategory(category);
+    @Scheduled(fixedRate = 60000)
+    @Transactional
+    public void checkAndCloseExpiredAuctions() {
+        List<Auction> expiredAuctions = auctionRepository.findAllByStatusAndEndDateTimeBefore(
+                AuctionStatus.OPEN, LocalDateTime.now());
+
+        for (Auction auction : expiredAuctions) {
+            auction.setStatus(AuctionStatus.CLOSED);
+            auctionRepository.save(auction);
         }
-        return auctionRepository.save(auction);
     }
 
-    public Auction update(Long id, Auction auction){
-        Auction existingAuction = auctionRepository.findById(id).orElseThrow(() -> new NotFoundException("Auction not found!"));
+    @Transactional
+    public AuctionResponseDTO insert(AuctionRequestDTO requestDTO) {
+        Auction auction = new Auction();
+        mapDTOToEntity(requestDTO, auction);
         
-        if (auction.getCategory() != null && auction.getCategory().getId() != null) {
-            Category category = categoryRepository.findById(auction.getCategory().getId())
-                .orElseThrow(() -> new NotFoundException("Category not found!"));
-            existingAuction.setCategory(category);
-        }
-        
-        if (auction.getTitle() != null) {
-            existingAuction.setTitle(auction.getTitle());
-        }
-        if (auction.getDescription() != null) {
-            existingAuction.setDescription(auction.getDescription());
+        // Get authenticated user as publisher
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String email = authentication.getName();
+            Person publisher = personRepository.findByEmail(email)
+                    .orElseThrow(() -> new NotFoundException("User not found"));
+            auction.setPublisher(publisher);
         }
         
-        if (auction.getDetailedDescription() != null) {
-            existingAuction.setDetailedDescription(auction.getDetailedDescription());
-        }
-        if (auction.getStartDateTime() != null) {
-            existingAuction.setStartDateTime(auction.getStartDateTime());
-        }
-        if (auction.getEndDateTime() != null) {
-            existingAuction.setEndDateTime(auction.getEndDateTime());
-        }
-        if (auction.getStatus() != null) {
-            existingAuction.setStatus(auction.getStatus());
-        }
-        if (auction.getNotes() != null) {
-            existingAuction.setNotes(auction.getNotes());
-        }
-        if (auction.getIncrementValue() != null) {
-            existingAuction.setIncrementValue(auction.getIncrementValue());
-        }
-        if (auction.getMinimumBid() != null) {
-            existingAuction.setMinimumBid(auction.getMinimumBid());
-        }
-        
-    
-        return auctionRepository.save(existingAuction);
+        Auction savedAuction = auctionRepository.save(auction);
+        return toResponseDTO(savedAuction);
     }
 
-    public void delete(Long id){
-        Auction auction = auctionRepository.findById(id).orElseThrow(() -> new NotFoundException("Auction not found!"));
+    @Transactional
+    public AuctionResponseDTO update(Long id, AuctionRequestDTO requestDTO) {
+        Auction existingAuction = findById(id);
+        mapDTOToEntity(requestDTO, existingAuction);
+        Auction updatedAuction = auctionRepository.save(existingAuction);
+        return toResponseDTO(updatedAuction);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        Auction auction = findById(id);
         auctionRepository.delete(auction);
     }
 
-    public Auction findById(Long id){
-        return auctionRepository.findById(id).orElseThrow(() -> new NotFoundException("Auction not found!"));
+    public Auction findById(Long id) {
+        return auctionRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Auction not found with id: " + id));
     }
 
-    public Page<Auction> findAll(Pageable pageable){
-        return auctionRepository.findAll(pageable);
+    public AuctionResponseDTO findByIdDTO(Long id) {
+        Auction auction = findById(id);
+        return toResponseDTO(auction);
+    }
+
+    public Page<AuctionResponseDTO> findAll(Pageable pageable) {
+        return auctionRepository.findAll(pageable).map(this::toResponseDTO);
+    }
+
+    public Page<AuctionResponseDTO> findByFilters(
+            String status,
+            Long categoryId,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            String search,
+            Pageable pageable) {
+        
+        AuctionStatus auctionStatus = null;
+        if (status != null && !status.trim().isEmpty()) {
+            try {
+                auctionStatus = AuctionStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                // Ignore invalid status
+            }
+        }
+        
+        return auctionRepository.findByFilters(
+                auctionStatus,
+                categoryId,
+                startDate,
+                endDate,
+                search,
+                pageable
+        ).map(this::toResponseDTO);
+    }
+
+    private void mapDTOToEntity(AuctionRequestDTO dto, Auction auction) {
+        auction.setTitle(dto.getTitle());
+        auction.setDescription(dto.getDescription());
+        auction.setDetailedDescription(dto.getDetailedDescription());
+        auction.setStartDateTime(dto.getStartDateTime());
+        auction.setEndDateTime(dto.getEndDateTime());
+        auction.setMinimumBid(dto.getMinimumBid());
+        
+        // Set default status
+        if (auction.getStatus() == null) {
+            auction.setStatus(AuctionStatus.OPEN);
+        }
+        
+        // Set category
+        if (dto.getCategoryId() != null) {
+            Category category = categoryRepository.findById(dto.getCategoryId())
+                    .orElseThrow(() -> new NotFoundException("Category not found with id: " + dto.getCategoryId()));
+            auction.setCategory(category);
+        }
+    }
+
+    private AuctionResponseDTO toResponseDTO(Auction auction) {
+        AuctionResponseDTO dto = new AuctionResponseDTO();
+        dto.setId(auction.getId());
+        dto.setTitle(auction.getTitle());
+        dto.setDescription(auction.getDescription());
+        dto.setDetailedDescription(auction.getDetailedDescription());
+        dto.setStartDateTime(auction.getStartDateTime());
+        dto.setEndDateTime(auction.getEndDateTime());
+        dto.setStatus(auction.getStatus() != null ? auction.getStatus().name() : null);
+        dto.setNotes(auction.getNotes());
+        dto.setIncrementValue(auction.getIncrementValue());
+        dto.setMinimumBid(auction.getMinimumBid());
+        
+        if (auction.getCategory() != null) {
+            dto.setCategoryId(auction.getCategory().getId());
+            dto.setCategoryName(auction.getCategory().getName());
+        }
+        
+        if (auction.getPublisher() != null) {
+            dto.setPublisherId(auction.getPublisher().getId());
+            dto.setPublisherName(auction.getPublisher().getName());
+        }
+        
+        if (auction.getBids() != null) {
+            dto.setTotalBids(auction.getBids().size());
+        } else {
+            dto.setTotalBids(0);
+        }
+        
+        return dto;
+    }
+    
+    // Public method for listing auctions without authentication
+    public Page<PublicAuctionResponseDTO> findPublicAuctions(
+            String status,
+            Long categoryId,
+            String search,
+            Pageable pageable) {
+        
+        AuctionStatus auctionStatus = null;
+        if (status != null && !status.trim().isEmpty()) {
+            try {
+                auctionStatus = AuctionStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                // Default to OPEN if invalid
+                auctionStatus = AuctionStatus.OPEN;
+            }
+        }
+        
+        return auctionRepository.findByFilters(
+                auctionStatus,
+                categoryId,
+                null,
+                null,
+                search,
+                pageable
+        ).map(this::toPublicResponseDTO);
+    }
+    
+    private PublicAuctionResponseDTO toPublicResponseDTO(Auction auction) {
+        PublicAuctionResponseDTO dto = new PublicAuctionResponseDTO();
+        dto.setId(auction.getId());
+        dto.setTitle(auction.getTitle());
+        dto.setDescription(auction.getDescription());
+        dto.setStartDateTime(auction.getStartDateTime());
+        dto.setEndDateTime(auction.getEndDateTime());
+        dto.setStatus(auction.getStatus());
+        
+        if (auction.getCategory() != null) {
+            dto.setCategoryId(auction.getCategory().getId());
+            dto.setCategoryName(auction.getCategory().getName());
+        }
+        
+        // Calculate current price (highest bid or minimum bid)
+        Float currentPrice = auction.getMinimumBid();
+        if (auction.getBids() != null && !auction.getBids().isEmpty()) {
+            currentPrice = auction.getBids().stream()
+                    .map(bid -> bid.getAmount())
+                    .max(Comparator.naturalOrder())
+                    .orElse(auction.getMinimumBid());
+        }
+        dto.setCurrentPrice(currentPrice);
+        
+        // Get first image URL if available
+        if (auction.getImages() != null && !auction.getImages().isEmpty()) {
+            dto.setImageUrl(auction.getImages().get(0).getImageName());
+        }
+        
+        // Total bids
+        dto.setTotalBids(auction.getBids() != null ? auction.getBids().size() : 0);
+        
+        return dto;
+    }
+    
+    // Public method for getting auction details
+    public AuctionDetailDTO getPublicAuctionDetail(Long id) {
+        Auction auction = findById(id);
+        
+        AuctionDetailDTO dto = new AuctionDetailDTO();
+        dto.setId(auction.getId());
+        dto.setTitle(auction.getTitle());
+        dto.setDescription(auction.getDescription());
+        dto.setDetailedDescription(auction.getDetailedDescription());
+        dto.setStartDateTime(auction.getStartDateTime());
+        dto.setEndDateTime(auction.getEndDateTime());
+        dto.setStatus(auction.getStatus());
+        dto.setMinimumBid(auction.getMinimumBid());
+        dto.setIncrementValue(auction.getIncrementValue());
+        
+        // Category
+        if (auction.getCategory() != null) {
+            dto.setCategoryId(auction.getCategory().getId());
+            dto.setCategoryName(auction.getCategory().getName());
+        }
+        
+        // Calculate current price
+        Float currentPrice = auction.getMinimumBid();
+        if (auction.getBids() != null && !auction.getBids().isEmpty()) {
+            currentPrice = auction.getBids().stream()
+                    .map(Bid::getAmount)
+                    .max(Comparator.naturalOrder())
+                    .orElse(auction.getMinimumBid());
+        }
+        dto.setCurrentPrice(currentPrice);
+        dto.setTotalBids(auction.getBids() != null ? auction.getBids().size() : 0);
+        
+        // Images
+        if (auction.getImages() != null && !auction.getImages().isEmpty()) {
+            List<AuctionDetailDTO.ImageDTO> imageDTOs = auction.getImages().stream()
+                    .map(img -> new AuctionDetailDTO.ImageDTO(
+                            img.getId(),
+                            img.getImageName(),
+                            img.getUploadedAt()
+                    ))
+                    .collect(Collectors.toList());
+            dto.setImages(imageDTOs);
+        }
+        
+        // Recent bids (last 10)
+        List<Bid> recentBids = bidRepository.findRecentBidsByAuctionId(
+                auction.getId(),
+                PageRequest.of(0, 10)
+        );
+        
+        if (recentBids != null && !recentBids.isEmpty()) {
+            List<AuctionDetailDTO.RecentBidDTO> bidDTOs = recentBids.stream()
+                    .map(bid -> new AuctionDetailDTO.RecentBidDTO(
+                            bid.getId(),
+                            bid.getAmount(),
+                            bid.getBidDateTime(),
+                            bid.getBidder().getName()
+                    ))
+                    .collect(Collectors.toList());
+            dto.setRecentBids(bidDTOs);
+        }
+        
+        // Seller info with feedback
+        if (auction.getPublisher() != null) {
+            Person seller = auction.getPublisher();
+            
+            // Calculate average rating and total feedbacks
+            Page<Feedback> sellerFeedbacks = feedbackRepository.findByRecipientId(
+                    seller.getId(),
+                    PageRequest.of(0, 1000) // Get all feedbacks for calculation
+            );
+            
+            Double averageRating = null;
+            Integer totalFeedbacks = 0;
+            
+            if (sellerFeedbacks != null && sellerFeedbacks.hasContent()) {
+                List<Feedback> feedbackList = sellerFeedbacks.getContent();
+                totalFeedbacks = feedbackList.size();
+                
+                averageRating = feedbackList.stream()
+                        .mapToInt(Feedback::getRating)
+                        .average()
+                        .orElse(0.0);
+            }
+            
+            AuctionDetailDTO.SellerInfoDTO sellerDTO = new AuctionDetailDTO.SellerInfoDTO(
+                    seller.getId(),
+                    seller.getName(),
+                    averageRating,
+                    totalFeedbacks
+            );
+            dto.setSeller(sellerDTO);
+        }
+        
+        return dto;
     }
 }
