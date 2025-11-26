@@ -18,6 +18,7 @@ import MyAuctions from './pages/(authenticated)/seller/my-auctions/MyAuctions.js
 import SellerAuctionForm from './pages/(authenticated)/seller/my-auctions/SellerAuctionForm.js';
 import MyBids from './pages/(authenticated)/buyer/my-bids/MyBids.js';
 import WonAuctions from './pages/(authenticated)/buyer/won-auctions/WonAuctions.js';
+import Profile from './pages/(authenticated)/profile/Profile.js';
 import Layout from './components/Layout/Layout.js';
 
 import 'primereact/resources/themes/lara-dark-amber/theme.css';
@@ -57,6 +58,14 @@ function App() {
         <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
         
         {/* Protected routes */}
+        
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <Layout>
+              <Profile />
+            </Layout>
+          </ProtectedRoute>
+        } />
         
         <Route path="/change-password" element={
           <ProtectedRoute>
