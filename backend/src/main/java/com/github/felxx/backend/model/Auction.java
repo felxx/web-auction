@@ -3,6 +3,7 @@ package com.github.felxx.backend.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
@@ -28,14 +29,22 @@ public class Auction {
     @Column(columnDefinition = "TEXT")
     private String detailedDescription;
 
+    @NotNull(message = "Start date and time cannot be null")
     private LocalDateTime startDateTime;
+    
+    @NotNull(message = "End date and time cannot be null")
     private LocalDateTime endDateTime;
 
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "Status cannot be null")
     private AuctionStatus status;
 
     private String notes;
+    
+    @Positive(message = "Increment value must be positive")
     private Float incrementValue;
+    
+    @Positive(message = "Minimum bid must be positive")
     private Float minimumBid;
 
     @ManyToOne

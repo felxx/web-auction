@@ -23,7 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "person")
+@Table(name = "persons")
 public class Person implements UserDetails {
 
     @Id
