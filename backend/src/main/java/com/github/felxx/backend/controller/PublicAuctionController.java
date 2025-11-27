@@ -11,6 +11,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/public/auctions")
 @RequiredArgsConstructor
@@ -32,6 +34,20 @@ public class PublicAuctionController {
                 pageable
         );
         
+        return ResponseEntity.ok(auctions);
+    }
+    
+    @GetMapping("/ending-soon")
+    public ResponseEntity<List<PublicAuctionResponseDTO>> findEndingSoonAuctions(
+            @RequestParam(defaultValue = "3") int limit) {
+        List<PublicAuctionResponseDTO> auctions = auctionService.findEndingSoonAuctions(limit);
+        return ResponseEntity.ok(auctions);
+    }
+    
+    @GetMapping("/most-popular")
+    public ResponseEntity<List<PublicAuctionResponseDTO>> findMostPopularAuctions(
+            @RequestParam(defaultValue = "3") int limit) {
+        List<PublicAuctionResponseDTO> auctions = auctionService.findMostPopularAuctions(limit);
         return ResponseEntity.ok(auctions);
     }
     

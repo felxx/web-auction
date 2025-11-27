@@ -159,6 +159,8 @@ const AuctionDetail = () => {
 
     const getStatusSeverity = (status) => {
         switch (status) {
+            case 'SCHEDULED':
+                return 'info';
             case 'OPEN':
                 return 'success';
             case 'CLOSED':
@@ -172,6 +174,8 @@ const AuctionDetail = () => {
 
     const getStatusLabel = (status) => {
         switch (status) {
+            case 'SCHEDULED':
+                return 'Scheduled';
             case 'OPEN':
                 return 'Open';
             case 'CLOSED':
@@ -186,7 +190,7 @@ const AuctionDetail = () => {
     };
 
     const itemTemplate = (item) => {
-        const imageUrl = item.id ? `http://localhost:8080/images/${item.id}/data` : null;
+        const imageUrl = item.id ? `http://localhost:8080/images/${item.id}/data?t=${Date.now()}` : null;
         
         if (!imageUrl) {
             return (
@@ -217,7 +221,7 @@ const AuctionDetail = () => {
     };
 
     const thumbnailTemplate = (item) => {
-        const imageUrl = item.id ? `http://localhost:8080/images/${item.id}/data` : null;
+        const imageUrl = item.id ? `http://localhost:8080/images/${item.id}/data?t=${Date.now()}` : null;
         
         if (!imageUrl) {
             return (
@@ -393,6 +397,14 @@ const AuctionDetail = () => {
                                 <span className="info-value">{auction.totalBids || 0}</span>
                             </div>
 
+                            {auction.status === 'SCHEDULED' && (
+                                <Message 
+                                    severity="info" 
+                                    text="This auction hasn't started yet" 
+                                    className="w-full mt-3"
+                                />
+                            )}
+
                             {auction.status === 'OPEN' && (
                                 <Button
                                     label={isAuthenticated ? "Place bid" : "Login to bid"}
@@ -400,6 +412,14 @@ const AuctionDetail = () => {
                                     className="w-full mt-3 p-button-warning"
                                     onClick={handlePlaceBid}
                                     aria-label={isAuthenticated ? "Place a bid" : "Login to place bids"}
+                                />
+                            )}
+
+                            {auction.status === 'CLOSED' && (
+                                <Message 
+                                    severity="warning" 
+                                    text="This auction has ended" 
+                                    className="w-full mt-3"
                                 />
                             )}
                         </div>

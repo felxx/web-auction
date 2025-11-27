@@ -19,6 +19,16 @@ export const publicAuctionService = {
         return response.data;
     },
 
+    getEndingSoonAuctions: async (limit = 3) => {
+        const response = await axios.get(`${API_URL}/ending-soon?limit=${limit}`);
+        return response.data;
+    },
+
+    getMostPopularAuctions: async (limit = 3) => {
+        const response = await axios.get(`${API_URL}/most-popular?limit=${limit}`);
+        return response.data;
+    },
+
     getAuctionDetail: async (id) => {
         const response = await axios.get(`${API_URL}/${id}`);
         return response.data;

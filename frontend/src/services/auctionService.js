@@ -42,14 +42,6 @@ const deleteAuction = (id) => {
   return api.delete(`/auctions/${id}`);
 };
 
-const searchAuctions = (searchTerm, page = 0, size = 10) => {
-  return getAuctions(page, size, 'title', { search: searchTerm });
-};
-
-const filterAuctions = (filters, page = 0, size = 10, sort = 'title') => {
-  return getAuctions(page, size, sort, filters);
-};
-
 const getMyBids = (page = 0, size = 10, sort = 'endDateTime,asc', filters = {}) => {
   const params = new URLSearchParams({
     page: page.toString(),
@@ -76,8 +68,6 @@ const auctionService = {
   createAuction,
   updateAuction,
   deleteAuction,
-  searchAuctions,
-  filterAuctions,
   getMyBids,
 };
 

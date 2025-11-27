@@ -46,10 +46,18 @@ public class AuctionService {
 
     @Scheduled(fixedRate = 60000)
     @Transactional
-    public void checkAndCloseExpiredAuctions() {
+    public void checkAndUpdateAuctionStatuses() {
+        LocalDateTime now = LocalDateTime.now();
+        
+        List<Auction> scheduledAuctions = auctionRepository.findAllByStatusAndStartDateTimeBefore(
+                AuctionStatus.SCHEDULED, now);
+        for (Auction auction : scheduledAuctions) {
+            auction.setStatus(AuctionStatus.OPEN);
+            auctionRepository.save(auction);
+        }
+        
         List<Auction> expiredAuctions = auctionRepository.findAllByStatusAndEndDateTimeBefore(
-                AuctionStatus.OPEN, LocalDateTime.now());
-
+                AuctionStatus.OPEN, now);
         for (Auction auction : expiredAuctions) {
             auction.setStatus(AuctionStatus.CLOSED);
             auctionRepository.save(auction);
@@ -130,13 +138,19 @@ public class AuctionService {
     private void mapDTOToEntity(AuctionRequestDTO dto, Auction auction) {
         auction.setTitle(dto.getTitle());
         auction.setDescription(dto.getDescription());
-        auction.setDetailedDescription(dto.getDetailedDescription());
         auction.setStartDateTime(dto.getStartDateTime());
         auction.setEndDateTime(dto.getEndDateTime());
         auction.setMinimumBid(dto.getMinimumBid());
         
         if (auction.getStatus() == null) {
-            auction.setStatus(AuctionStatus.OPEN);
+            LocalDateTime now = LocalDateTime.now();
+            if (dto.getStartDateTime().isAfter(now)) {
+                auction.setStatus(AuctionStatus.SCHEDULED);
+            } else if (dto.getEndDateTime().isBefore(now)) {
+                auction.setStatus(AuctionStatus.CLOSED);
+            } else {
+                auction.setStatus(AuctionStatus.OPEN);
+            }
         }
         
         if (dto.getCategoryId() != null) {
@@ -151,12 +165,10 @@ public class AuctionService {
         dto.setId(auction.getId());
         dto.setTitle(auction.getTitle());
         dto.setDescription(auction.getDescription());
-        dto.setDetailedDescription(auction.getDetailedDescription());
         dto.setStartDateTime(auction.getStartDateTime());
         dto.setEndDateTime(auction.getEndDateTime());
         dto.setStatus(auction.getStatus() != null ? auction.getStatus().name() : null);
         dto.setNotes(auction.getNotes());
-        dto.setIncrementValue(auction.getIncrementValue());
         dto.setMinimumBid(auction.getMinimumBid());
         
         if (auction.getCategory() != null) {
@@ -177,8 +189,14 @@ public class AuctionService {
         
         if (auction.getImages() != null && !auction.getImages().isEmpty()) {
             auction.getImages().stream()
-                .filter(img -> img.getDisplayOrder() != null && img.getDisplayOrder() == 0)
-                .findFirst()
+                .min((img1, img2) -> {
+                    if (img1.getDisplayOrder() != null && img2.getDisplayOrder() != null) {
+                        return img1.getDisplayOrder().compareTo(img2.getDisplayOrder());
+                    }
+                    if (img1.getUploadedAt() == null) return 1;
+                    if (img2.getUploadedAt() == null) return -1;
+                    return img1.getUploadedAt().compareTo(img2.getUploadedAt());
+                })
                 .ifPresent(mainImage -> dto.setMainImageId(mainImage.getId()));
         }
         
@@ -220,6 +238,33 @@ public class AuctionService {
         ).map(this::toPublicResponseDTO);
     }
     
+    public List<PublicAuctionResponseDTO> findEndingSoonAuctions(int limit) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime maxEndTime = now.plusHours(24);
+        
+        List<Auction> auctions = auctionRepository.findEndingSoon(
+                AuctionStatus.OPEN,
+                now,
+                maxEndTime,
+                PageRequest.of(0, limit)
+        );
+        
+        return auctions.stream()
+                .map(this::toPublicResponseDTO)
+                .collect(Collectors.toList());
+    }
+    
+    public List<PublicAuctionResponseDTO> findMostPopularAuctions(int limit) {
+        List<Auction> auctions = auctionRepository.findMostPopular(
+                AuctionStatus.OPEN,
+                PageRequest.of(0, limit)
+        );
+        
+        return auctions.stream()
+                .map(this::toPublicResponseDTO)
+                .collect(Collectors.toList());
+    }
+    
     private PublicAuctionResponseDTO toPublicResponseDTO(Auction auction) {
         PublicAuctionResponseDTO dto = new PublicAuctionResponseDTO();
         dto.setId(auction.getId());
@@ -245,8 +290,14 @@ public class AuctionService {
         
         if (auction.getImages() != null && !auction.getImages().isEmpty()) {
             auction.getImages().stream()
-                    .filter(image -> image.getDisplayOrder() != null && image.getDisplayOrder() == 0)
-                    .findFirst()
+                    .min((img1, img2) -> {
+                        if (img1.getDisplayOrder() != null && img2.getDisplayOrder() != null) {
+                            return img1.getDisplayOrder().compareTo(img2.getDisplayOrder());
+                        }
+                        if (img1.getUploadedAt() == null) return 1;
+                        if (img2.getUploadedAt() == null) return -1;
+                        return img1.getUploadedAt().compareTo(img2.getUploadedAt());
+                    })
                     .ifPresent(image -> {
                         dto.setMainImageId(image.getId());
                         dto.setImageUrl(image.getImageName());
@@ -265,12 +316,10 @@ public class AuctionService {
         dto.setId(auction.getId());
         dto.setTitle(auction.getTitle());
         dto.setDescription(auction.getDescription());
-        dto.setDetailedDescription(auction.getDetailedDescription());
         dto.setStartDateTime(auction.getStartDateTime());
         dto.setEndDateTime(auction.getEndDateTime());
         dto.setStatus(auction.getStatus());
         dto.setMinimumBid(auction.getMinimumBid());
-        dto.setIncrementValue(auction.getIncrementValue());
         
         if (auction.getCategory() != null) {
             dto.setCategoryId(auction.getCategory().getId());

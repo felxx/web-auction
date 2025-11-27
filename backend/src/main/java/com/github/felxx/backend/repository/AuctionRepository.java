@@ -16,9 +16,9 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
     
     List<Auction> findAllByStatusAndEndDateTimeBefore(AuctionStatus status, LocalDateTime dateTime);
 
+    List<Auction> findAllByStatusAndStartDateTimeBefore(AuctionStatus status, LocalDateTime dateTime);
+
     Page<Auction> findByStatus(AuctionStatus status, Pageable pageable);
-    
-    Page<Auction> findByCategoryId(Long categoryId, Pageable pageable);
     
     @Query("SELECT a FROM Auction a " +
            "LEFT JOIN a.category c " +
@@ -37,6 +37,29 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
     );
     
     List<Auction> findByStatus(AuctionStatus status);
+    
+    @Query("SELECT a FROM Auction a " +
+           "WHERE a.status = :status " +
+           "AND a.endDateTime > :now " +
+           "AND a.endDateTime <= :maxEndTime " +
+           "ORDER BY a.endDateTime ASC")
+    List<Auction> findEndingSoon(
+        @Param("status") AuctionStatus status,
+        @Param("now") LocalDateTime now,
+        @Param("maxEndTime") LocalDateTime maxEndTime,
+        Pageable pageable
+    );
+    
+    @Query("SELECT a FROM Auction a " +
+           "LEFT JOIN a.bids b " +
+           "WHERE a.status = :status " +
+           "GROUP BY a.id " +
+           "HAVING COUNT(b.id) > 0 " +
+           "ORDER BY COUNT(b.id) DESC")
+    List<Auction> findMostPopular(
+        @Param("status") AuctionStatus status,
+        Pageable pageable
+    );
     
     @Query("SELECT a FROM Auction a " +
            "LEFT JOIN a.category c " +

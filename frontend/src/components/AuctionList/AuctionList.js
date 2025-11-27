@@ -42,6 +42,7 @@ const AuctionList = ({
     
     const statusOptions = [
         { label: 'Open Auctions', value: 'OPEN' },
+        { label: 'Scheduled Auctions', value: 'SCHEDULED' },
         { label: 'Closed Auctions', value: 'CLOSED' },
         { label: 'All Auctions', value: '' }
     ];

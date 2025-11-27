@@ -24,10 +24,8 @@ public class Auction {
     private String title;
     
     @NotBlank(message = "Description cannot be blank")
-    private String description;
-
     @Column(columnDefinition = "TEXT")
-    private String detailedDescription;
+    private String description;
 
     @NotNull(message = "Start date and time cannot be null")
     private LocalDateTime startDateTime;
@@ -40,9 +38,6 @@ public class Auction {
     private AuctionStatus status;
 
     private String notes;
-    
-    @Positive(message = "Increment value must be positive")
-    private Float incrementValue;
     
     @Positive(message = "Minimum bid must be positive")
     private Float minimumBid;

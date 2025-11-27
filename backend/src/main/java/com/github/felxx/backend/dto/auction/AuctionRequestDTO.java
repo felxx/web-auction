@@ -20,8 +20,6 @@ public class AuctionRequestDTO {
     @NotBlank(message = "Description cannot be blank")
     private String description;
     
-    private String detailedDescription;
-    
     @NotNull(message = "Start date and time cannot be null")
     private LocalDateTime startDateTime;
     

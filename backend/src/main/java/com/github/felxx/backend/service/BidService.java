@@ -41,11 +41,21 @@ public class BidService {
         Auction auction = auctionRepository.findById(requestDTO.getAuctionId())
                 .orElseThrow(() -> new NotFoundException("Auction not found"));
         
+        if (auction.getStatus() == AuctionStatus.SCHEDULED) {
+            throw new BusinessException("Auction has not started yet");
+        }
+        
         if (auction.getStatus() != AuctionStatus.OPEN) {
             throw new BusinessException("Auction is not open for bidding");
         }
         
-        if (auction.getEndDateTime().isBefore(LocalDateTime.now())) {
+        LocalDateTime now = LocalDateTime.now();
+        
+        if (auction.getStartDateTime().isAfter(now)) {
+            throw new BusinessException("Auction has not started yet");
+        }
+        
+        if (auction.getEndDateTime().isBefore(now)) {
             throw new BusinessException("Auction has ended");
         }
         

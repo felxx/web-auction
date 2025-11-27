@@ -14,12 +14,10 @@ public class AuctionResponseDTO {
     private Long id;
     private String title;
     private String description;
-    private String detailedDescription;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
     private String status;
     private String notes;
-    private Float incrementValue;
     private Float minimumBid;
     private Long categoryId;
     private String categoryName;

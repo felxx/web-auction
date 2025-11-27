@@ -31,6 +31,8 @@ const AuctionCard = ({ auction }) => {
     
     const getStatusSeverity = (status) => {
         switch (status) {
+            case 'SCHEDULED':
+                return 'info';
             case 'OPEN':
                 return 'success';
             case 'CLOSED':
@@ -44,6 +46,8 @@ const AuctionCard = ({ auction }) => {
     
     const getStatusLabel = (status) => {
         switch (status) {
+            case 'SCHEDULED':
+                return 'Scheduled';
             case 'OPEN':
                 return 'Open';
             case 'CLOSED':
@@ -62,7 +66,7 @@ const AuctionCard = ({ auction }) => {
             {auction.mainImageId ? (
                 <img
                     alt={`Auction image ${auction.title}`}
-                    src={`http://localhost:8080/images/${auction.mainImageId}/data`}
+                    src={`http://localhost:8080/images/${auction.mainImageId}/data?t=${Date.now()}`}
                     className="auction-card-image"
                     onError={(e) => {
                         e.target.style.display = 'none';
@@ -115,8 +119,8 @@ const AuctionCard = ({ auction }) => {
                 <div className="auction-card-info-item">
                     <i className="pi pi-clock" aria-hidden="true"></i>
                     <div>
-                        <small>Ends at:</small>
-                        <strong>{formatDateTime(auction.endDateTime)}</strong>
+                        <small>{auction.status === 'SCHEDULED' ? 'Opens at:' : 'Ends at:'}</small>
+                        <strong>{formatDateTime(auction.status === 'SCHEDULED' ? auction.startDateTime : auction.endDateTime)}</strong>
                     </div>
                 </div>
                 

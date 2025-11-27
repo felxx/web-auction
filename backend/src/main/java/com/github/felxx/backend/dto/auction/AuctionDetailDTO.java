@@ -16,14 +16,12 @@ public class AuctionDetailDTO {
     private Long id;
     private String title;
     private String description;
-    private String detailedDescription;
     private String categoryName;
     private Long categoryId;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
     private AuctionStatus status;
     private Float minimumBid;
-    private Float incrementValue;
     private Float currentPrice;
     private Integer totalBids;
     private List<ImageDTO> images;

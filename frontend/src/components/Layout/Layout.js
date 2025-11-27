@@ -4,6 +4,7 @@ import { Menubar } from 'primereact/menubar';
 import { Avatar } from 'primereact/avatar';
 import { Menu } from 'primereact/menu';
 import { Toast } from 'primereact/toast';
+import { Button } from 'primereact/button';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import authService from '../../services/auth/authService';
@@ -171,7 +172,7 @@ const Layout = ({ children }) => {
         </div>
     );
 
-    const end = (
+    const end = user ? (
         <div className="flex align-items-center gap-2">
             <Avatar 
                 icon="pi pi-user" 
@@ -185,6 +186,21 @@ const Layout = ({ children }) => {
                 ref={userMenu} 
                 id="user_menu" 
                 popupAlignment="right"
+            />
+        </div>
+    ) : (
+        <div className="flex align-items-center gap-2">
+            <Button 
+                label="Login"
+                icon="pi pi-sign-in"
+                className="p-button-text"
+                onClick={() => navigate('/login')}
+            />
+            <Button 
+                label="Sign Up"
+                icon="pi pi-user-plus"
+                className="p-button-warning"
+                onClick={() => navigate('/sign-up')}
             />
         </div>
     );

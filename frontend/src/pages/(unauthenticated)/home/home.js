@@ -20,26 +20,12 @@ const Home = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                // Fetch auctions ending soon (next 24h)
-                const endingSoonResponse = await publicAuctionService.getPublicAuctions({
-                    status: 'OPEN',
-                    size: 6,
-                    sort: 'endDateTime,asc'
-                });
-                setEndingSoonAuctions(endingSoonResponse.content || []);
+                const endingSoonResponse = await publicAuctionService.getEndingSoonAuctions(3);
+                setEndingSoonAuctions(endingSoonResponse || []);
 
-                // Fetch popular auctions (most bids) - fetch more and sort on frontend
-                const popularResponse = await publicAuctionService.getPublicAuctions({
-                    status: 'OPEN',
-                    size: 50,
-                    sort: 'startDateTime,desc'
-                });
-                // Sort by totalBids descending on frontend
-                const sortedByBids = (popularResponse.content || [])
-                    .sort((a, b) => (b.totalBids || 0) - (a.totalBids || 0));
-                setPopularAuctions(sortedByBids);
+                const popularResponse = await publicAuctionService.getMostPopularAuctions(3);
+                setPopularAuctions(popularResponse || []);
 
-                // Fetch categories
                 const categoriesResponse = await categoryService.getAllCategories(0, 15);
                 setCategories(categoriesResponse.content || []);
             } catch (error) {

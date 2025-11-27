@@ -2,10 +2,7 @@ package com.github.felxx.backend.controller;
 
 import com.github.felxx.backend.model.Image;
 import com.github.felxx.backend.service.ImageService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,41 +34,12 @@ public class ImageController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType(image.getContentType()));
         headers.setContentLength(image.getFileSize());
-        headers.setCacheControl("max-age=31536000");
+        headers.setCacheControl("no-cache, no-store, must-revalidate");
+        headers.setPragma("no-cache");
+        headers.setExpires(0);
         
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(image.getImageData());
-    }
-
-    @PostMapping
-    public ResponseEntity<Image> insert(@Valid @RequestBody Image image) {
-        return ResponseEntity.ok(imageService.insert(image));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Image> update(@PathVariable("id") Long id, @Valid @RequestBody Image image) {
-        return ResponseEntity.ok(imageService.update(id, image));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
-        imageService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Image> findById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(imageService.findById(id));
-    }
-
-    @GetMapping
-    public ResponseEntity<Page<Image>> findAll(Pageable pageable) {
-        return ResponseEntity.ok(imageService.findAll(pageable));
-    }
-
-    @GetMapping("/auction/{auctionId}")
-    public ResponseEntity<Page<Image>> findByAuction(@PathVariable("auctionId") Long auctionId, Pageable pageable) {
-        return ResponseEntity.ok(imageService.findByAuction(auctionId, pageable));
     }
 }
