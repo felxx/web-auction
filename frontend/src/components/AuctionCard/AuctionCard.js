@@ -111,10 +111,6 @@ const AuctionCard = ({ auction }) => {
                 <span>{auction.categoryName}</span>
             </div>
             
-            <p className="auction-card-description">
-                {auction.description}
-            </p>
-            
             <div className="auction-card-info">
                 <div className="auction-card-info-item">
                     <i className="pi pi-clock" aria-hidden="true"></i>

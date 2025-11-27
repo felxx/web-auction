@@ -97,6 +97,21 @@ const Layout = ({ children }) => {
             }
         ];
 
+        if (hasRole('SELLER') || hasRole('ADMIN')) {
+            auctionSubItems.push(
+                {
+                    label: 'My Auctions',
+                    icon: 'pi pi-shopping-cart',
+                    command: () => navigate('/my-auctions')
+                },
+                {
+                    label: 'Create Auction',
+                    icon: 'pi pi-plus',
+                    command: () => navigate('/auctions/new')
+                }
+            );
+        }
+
         if (hasRole('BUYER') || hasRole('ADMIN')) {
             auctionSubItems.push(
                 {
@@ -112,25 +127,6 @@ const Layout = ({ children }) => {
             icon: 'pi pi-shopping-cart',
             items: auctionSubItems
         });
-
-        if (hasRole('SELLER') || hasRole('ADMIN')) {
-            menuItems.push({
-                label: 'Seller',
-                icon: 'pi pi-briefcase',
-                items: [
-                    {
-                        label: 'My Auctions',
-                        icon: 'pi pi-shopping-cart',
-                        command: () => navigate('/my-auctions')
-                    },
-                    {
-                        label: 'Create Auction',
-                        icon: 'pi pi-plus',
-                        command: () => navigate('/auctions/new')
-                    }
-                ]
-            });
-        }
 
         if (hasRole('ADMIN')) {
             menuItems.push({
