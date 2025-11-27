@@ -12,6 +12,7 @@ import { publicAuctionService } from '../../../services/publicAuctionService';
 import bidService from '../../../services/bidService';
 import feedbackService from '../../../services/feedbackService';
 import authService from '../../../services/auth/authService';
+import useAuctionUpdates from '../../../hooks/useAuctionUpdates';
 import FeedbackForm from '../../../components/FeedbackForm/FeedbackForm';
 import FeedbackList from '../../../components/FeedbackList/FeedbackList';
 import './AuctionDetail.css';
@@ -32,15 +33,57 @@ const AuctionDetail = () => {
     const [loadingFeedbacks, setLoadingFeedbacks] = useState(false);
     const isAuthenticated = authService.isAuthenticated();
 
+    const handleBidUpdate = (bidData) => {
+        setAuction(prev => {
+            const newBid = {
+                id: bidData.bidId,
+                amount: bidData.amount,
+                bidDateTime: bidData.bidDateTime,
+                bidderName: bidData.bidderName
+            };
+            
+            const updatedRecentBids = prev.recentBids ? [newBid, ...prev.recentBids].slice(0, 10) : [newBid];
+            
+            return {
+                ...prev,
+                currentPrice: bidData.currentPrice,
+                totalBids: bidData.totalBids,
+                recentBids: updatedRecentBids
+            };
+        });
+        
+        toast.current.show({
+            severity: 'info',
+            summary: 'New Bid!',
+            detail: `${bidData.bidderName} placed a bid of R$ ${bidData.amount.toFixed(2)}`,
+            life: 3000
+        });
+    };
+
+    const handleStatusUpdate = (statusData) => {
+        setAuction(prev => ({
+            ...prev,
+            status: statusData.status
+        }));
+        
+        const statusMessages = {
+            'OPEN': 'Auction is now open for bidding!',
+            'CLOSED': 'Auction has ended',
+            'CANCELLED': 'Auction has been cancelled'
+        };
+        
+        toast.current.show({
+            severity: statusData.status === 'OPEN' ? 'success' : 'warn',
+            summary: 'Status Update',
+            detail: statusMessages[statusData.status] || 'Auction status changed',
+            life: 4000
+        });
+    };
+
+    useAuctionUpdates(id, handleBidUpdate, handleStatusUpdate);
+
     useEffect(() => {
         loadAuctionDetail();
-        
-        // Auto-refresh every minute to check for status changes
-        const intervalId = setInterval(() => {
-            loadAuctionDetail();
-        }, 60000); // 60 seconds
-        
-        return () => clearInterval(intervalId);
     }, [id]);
 
     useEffect(() => {
@@ -65,7 +108,6 @@ const AuctionDetail = () => {
             console.log('Images in auction:', data.images);
             setAuction(data);
             
-            // Load seller feedbacks
             if (data.seller?.id) {
                 loadSellerFeedbacks(data.seller.id);
             }
@@ -552,7 +594,7 @@ const AuctionDetail = () => {
 
                 {auction.recentBids && auction.recentBids.length > 0 && (
                     <section className="bids-section" aria-labelledby="bids-title">
-                        <h2 id="bids-title">Últimos Lances</h2>
+                        <h2 id="bids-title">Latest Bids</h2>
                         <div className="bids-list" role="list">
                             {auction.recentBids.map((bid, index) => (
                                 <div key={bid.id} className="bid-item" role="listitem">
