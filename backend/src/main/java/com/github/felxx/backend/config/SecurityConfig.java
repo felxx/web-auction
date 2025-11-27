@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/auth/**", "/public/**", "/images/*/data").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/categories", "/categories/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
