@@ -1,21 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from 'primereact/button';
 import { Tag } from 'primereact/tag';
 import { Skeleton } from 'primereact/skeleton';
 import { Message } from 'primereact/message';
+import { Toast } from 'primereact/toast';
+import { Dialog } from 'primereact/dialog';
+import { InputNumber } from 'primereact/inputnumber';
 import { Galleria } from 'primereact/galleria';
 import { publicAuctionService } from '../../../services/publicAuctionService';
+import bidService from '../../../services/bidService';
 import authService from '../../../services/auth/authService';
 import './AuctionDetail.css';
 
 const AuctionDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const toast = useRef(null);
     const [auction, setAuction] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [notFound, setNotFound] = useState(false);
+    const [showBidDialog, setShowBidDialog] = useState(false);
+    const [bidAmount, setBidAmount] = useState(null);
+    const [submittingBid, setSubmittingBid] = useState(false);
     const isAuthenticated = authService.isAuthenticated();
 
     useEffect(() => {
@@ -74,6 +82,79 @@ const AuctionDetail = () => {
             style: 'currency',
             currency: 'BRL'
         }).format(value);
+    };
+
+    const handlePlaceBid = () => {
+        console.log('handlePlaceBid called');
+        console.log('isAuthenticated:', isAuthenticated);
+        
+        if (!isAuthenticated) {
+            navigate('/login');
+            return;
+        }
+
+        const currentUser = authService.getCurrentUser();
+        console.log('currentUser:', currentUser);
+        console.log('auction.seller:', auction?.seller);
+        
+        const userEmail = currentUser.email || currentUser.id;
+        
+        if (currentUser && auction.seller && userEmail === auction.seller.email) {
+            console.log('User is the seller! Showing toast...');
+            toast.current.show({
+                severity: 'warn',
+                summary: 'Action not allowed',
+                detail: 'You cannot place a bid on your own auction!',
+                life: 4000
+            });
+            return;
+        }
+
+        console.log('Opening bid dialog');
+        const minBidAmount = auction.currentPrice > 0 
+            ? auction.currentPrice + (auction.incrementValue || 0.01)
+            : auction.minimumBid;
+        setBidAmount(minBidAmount);
+        setShowBidDialog(true);
+    };
+
+    const handleSubmitBid = async () => {
+        if (!bidAmount || bidAmount <= auction.currentPrice) {
+            toast.current.show({
+                severity: 'error',
+                summary: 'Invalid bid',
+                detail: 'Your bid must be higher than the current bid.',
+                life: 3000
+            });
+            return;
+        }
+
+        setSubmittingBid(true);
+        
+        try {
+            await bidService.placeBid(auction.id, bidAmount);
+            
+            toast.current.show({
+                severity: 'success',
+                summary: 'Bid placed successfully!',
+                detail: `Your bid of ${formatCurrency(bidAmount)} has been placed.`,
+                life: 4000
+            });
+            
+            setShowBidDialog(false);
+            setBidAmount(null);
+            await loadAuctionDetail();
+        } catch (error) {
+            console.error('Error placing bid:', error);
+            toast.current.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.response?.data?.message || 'Failed to place bid. Please try again.',
+                life: 4000
+            });
+        } finally {
+            setSubmittingBid(false);
+        }
     };
 
     const getStatusSeverity = (status) => {
@@ -230,6 +311,7 @@ const AuctionDetail = () => {
 
     return (
         <main className="auction-detail-page">
+            <Toast ref={toast} />
             <div className="detail-container">
                 <Button
                     icon="pi pi-arrow-left"
@@ -299,11 +381,6 @@ const AuctionDetail = () => {
                                 <span className="info-value">{formatCurrency(auction.minimumBid)}</span>
                             </div>
                             
-                            <div className="info-item">
-                                <span className="info-label">Increment value:</span>
-                                <span className="info-value">{formatCurrency(auction.incrementValue)}</span>
-                            </div>
-                            
                             <div className="info-item highlight">
                                 <span className="info-label">Current bid:</span>
                                 <span className="info-value current-price">
@@ -321,7 +398,7 @@ const AuctionDetail = () => {
                                     label={isAuthenticated ? "Place bid" : "Login to bid"}
                                     icon={isAuthenticated ? "pi pi-dollar" : "pi pi-sign-in"}
                                     className="w-full mt-3 p-button-warning"
-                                    onClick={() => navigate(isAuthenticated ? '#bid-section' : '/login')}
+                                    onClick={handlePlaceBid}
                                     aria-label={isAuthenticated ? "Place a bid" : "Login to place bids"}
                                 />
                             )}
@@ -383,6 +460,66 @@ const AuctionDetail = () => {
                     </section>
                 )}
             </div>
+
+            <Dialog
+                header="Place Your Bid"
+                visible={showBidDialog}
+                style={{ width: '450px' }}
+                onHide={() => {
+                    setShowBidDialog(false);
+                    setBidAmount(null);
+                }}
+                footer={
+                    <div style={{ paddingTop: '1rem' }}>
+                        <Button
+                            label="Cancel"
+                            icon="pi pi-times"
+                            onClick={() => {
+                                setShowBidDialog(false);
+                                setBidAmount(null);
+                            }}
+                            className="p-button-text"
+                            disabled={submittingBid}
+                        />
+                        <Button
+                            label="Place Bid"
+                            icon="pi pi-check"
+                            onClick={handleSubmitBid}
+                            loading={submittingBid}
+                            disabled={submittingBid || !bidAmount}
+                            className="p-button-success"
+                        />
+                    </div>
+                }
+            >
+                <div className="bid-dialog-content" style={{ paddingBottom: '0' }}>
+                    <div className="field mt-3 mb-0">
+                        <label htmlFor="bidAmount" className="font-semibold">Your bid amount</label>
+                        <InputNumber
+                            id="bidAmount"
+                            value={bidAmount}
+                            onValueChange={(e) => setBidAmount(e.value)}
+                            mode="currency"
+                            currency="BRL"
+                            locale="pt-BR"
+                            minFractionDigits={2}
+                            className="w-full"
+                            inputStyle={{ backgroundColor: '#1f1f1fff' }}
+                            disabled={submittingBid}
+                            min={auction?.currentPrice > 0 
+                                ? auction.currentPrice + (auction.incrementValue || 0.01)
+                                : auction?.minimumBid}
+                        />
+                        <small className="text-500 mt-1 block">
+                            Minimum: {formatCurrency(
+                                auction?.currentPrice > 0 
+                                    ? auction.currentPrice + (auction.incrementValue || 0.01)
+                                    : auction?.minimumBid || 0
+                            )}
+                        </small>
+                    </div>
+                </div>
+            </Dialog>
         </main>
     );
 };

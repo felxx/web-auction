@@ -345,6 +345,7 @@ public class AuctionService {
             AuctionDetailDTO.SellerInfoDTO sellerDTO = new AuctionDetailDTO.SellerInfoDTO(
                     seller.getId(),
                     seller.getName(),
+                    seller.getEmail(),
                     averageRating,
                     totalFeedbacks
             );

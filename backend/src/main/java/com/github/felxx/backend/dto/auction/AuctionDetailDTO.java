@@ -56,6 +56,7 @@ public class AuctionDetailDTO {
     public static class SellerInfoDTO {
         private Long id;
         private String name;
+        private String email;
         private Double averageRating;
         private Integer totalFeedbacks;
     }
