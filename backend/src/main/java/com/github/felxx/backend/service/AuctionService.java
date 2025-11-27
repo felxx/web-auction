@@ -48,20 +48,31 @@ public class AuctionService {
     @Transactional
     public void checkAndUpdateAuctionStatuses() {
         LocalDateTime now = LocalDateTime.now();
+        System.out.println("=== Auction Status Scheduler running at: " + now + " ===");
         
         List<Auction> scheduledAuctions = auctionRepository.findAllByStatusAndStartDateTimeBefore(
                 AuctionStatus.SCHEDULED, now);
+        if (!scheduledAuctions.isEmpty()) {
+            System.out.println("Found " + scheduledAuctions.size() + " scheduled auctions to open");
+        }
         for (Auction auction : scheduledAuctions) {
+            System.out.println("Opening auction ID: " + auction.getId() + " - " + auction.getTitle());
             auction.setStatus(AuctionStatus.OPEN);
             auctionRepository.save(auction);
         }
         
         List<Auction> expiredAuctions = auctionRepository.findAllByStatusAndEndDateTimeBefore(
                 AuctionStatus.OPEN, now);
+        if (!expiredAuctions.isEmpty()) {
+            System.out.println("Found " + expiredAuctions.size() + " open auctions to close");
+        }
         for (Auction auction : expiredAuctions) {
+            System.out.println("Closing auction ID: " + auction.getId() + " - " + auction.getTitle());
             auction.setStatus(AuctionStatus.CLOSED);
             auctionRepository.save(auction);
         }
+        
+        System.out.println("=== Scheduler finished ===");
     }
 
     @Transactional
@@ -335,6 +346,21 @@ public class AuctionService {
         }
         dto.setCurrentPrice(currentPrice);
         dto.setTotalBids(auction.getBids() != null ? auction.getBids().size() : 0);
+        
+        Boolean currentUserHasBids = false;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && 
+            !"anonymousUser".equals(authentication.getPrincipal())) {
+            String email = authentication.getName();
+            Person currentUser = personRepository.findByEmail(email).orElse(null);
+            
+            if (currentUser != null && auction.getBids() != null) {
+                currentUserHasBids = auction.getBids().stream()
+                    .anyMatch(bid -> bid.getBidder() != null && 
+                                   bid.getBidder().getId().equals(currentUser.getId()));
+            }
+        }
+        dto.setCurrentUserHasBids(currentUserHasBids);
         
         if (auction.getImages() != null && !auction.getImages().isEmpty()) {
             List<AuctionDetailDTO.ImageDTO> imageDTOs = auction.getImages().stream()

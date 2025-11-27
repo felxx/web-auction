@@ -58,6 +58,9 @@ public class AuthService {
         personRepository.save(user);
 
         Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("userId", user.getId());
+        extraClaims.put("name", user.getName());
+        extraClaims.put("email", user.getEmail());
         extraClaims.put("roles", user.getAuthorities().stream()
                 .map(authority -> authority.getAuthority())
                 .collect(Collectors.toList()));
@@ -77,6 +80,9 @@ public class AuthService {
                 .orElseThrow(() -> new NotFoundException("User not found with email: " + request.getEmail()));
         
         Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("userId", user.getId());
+        extraClaims.put("name", user.getName());
+        extraClaims.put("email", user.getEmail());
         extraClaims.put("roles", user.getAuthorities().stream()
                 .map(authority -> authority.getAuthority())
                 .collect(Collectors.toList()));

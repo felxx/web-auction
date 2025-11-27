@@ -21,6 +21,7 @@ import com.github.felxx.backend.model.Profile;
 import com.github.felxx.backend.model.ProfileType;
 import com.github.felxx.backend.repository.PersonRepository;
 import com.github.felxx.backend.repository.ProfileRepository;
+import com.github.felxx.backend.repository.FeedbackRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,6 +41,9 @@ public class PersonService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private FeedbackRepository feedbackRepository;
 
     private void sendSuccessEmail(Person person) {
         try {
@@ -178,6 +182,12 @@ public class PersonService {
         } else {
             dto.setProfiles(new ArrayList<>());
         }
+        
+        Double averageRating = feedbackRepository.getAverageRatingByRecipientId(person.getId());
+        Long totalFeedbacks = feedbackRepository.countByRecipientId(person.getId());
+        
+        dto.setAverageRating(averageRating != null ? averageRating : 0.0);
+        dto.setTotalFeedbacks(totalFeedbacks != null ? totalFeedbacks.intValue() : 0);
 
         return dto;
     }

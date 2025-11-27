@@ -15,4 +15,6 @@ public class PersonResponseDTO {
     private String name;
     private String email;
     private List<String> profiles;
+    private Double averageRating;
+    private Integer totalFeedbacks;
 }
