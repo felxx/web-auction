@@ -2,6 +2,7 @@ package com.github.felxx.backend.service;
 
 import com.github.felxx.backend.dto.bid.BidRequestDTO;
 import com.github.felxx.backend.dto.bid.BidResponseDTO;
+import com.github.felxx.backend.dto.websocket.BidNotificationDTO;
 import com.github.felxx.backend.exception.BusinessException;
 import com.github.felxx.backend.exception.NotFoundException;
 import com.github.felxx.backend.model.Auction;
@@ -14,12 +15,14 @@ import com.github.felxx.backend.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -29,6 +32,7 @@ public class BidService {
     private final BidRepository bidRepository;
     private final PersonRepository personRepository;
     private final AuctionRepository auctionRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Transactional
     public BidResponseDTO insert(BidRequestDTO requestDTO) {
@@ -80,6 +84,23 @@ public class BidService {
         bid.setAuction(auction);
         
         Bid savedBid = bidRepository.save(bid);
+        
+        Float currentPrice = auction.getBids().stream()
+                .map(Bid::getAmount)
+                .max(Comparator.naturalOrder())
+                .orElse(auction.getMinimumBid());
+        
+        BidNotificationDTO notification = new BidNotificationDTO(
+                auction.getId(),
+                savedBid.getId(),
+                savedBid.getAmount(),
+                bidder.getName(),
+                savedBid.getBidDateTime(),
+                currentPrice,
+                auction.getBids().size()
+        );
+        
+        messagingTemplate.convertAndSend("/topic/auction/" + auction.getId(), notification);
         
         return toResponseDTO(savedBid);
     }

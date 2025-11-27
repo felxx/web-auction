@@ -3,6 +3,7 @@ package com.github.felxx.backend.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import com.github.felxx.backend.dto.auction.AuctionDetailDTO;
 import com.github.felxx.backend.dto.auction.AuctionRequestDTO;
 import com.github.felxx.backend.dto.auction.AuctionResponseDTO;
 import com.github.felxx.backend.dto.auction.PublicAuctionResponseDTO;
+import com.github.felxx.backend.dto.websocket.AuctionStatusUpdateDTO;
 import com.github.felxx.backend.exception.NotFoundException;
 import com.github.felxx.backend.model.Auction;
 import com.github.felxx.backend.model.AuctionStatus;
@@ -43,6 +45,7 @@ public class AuctionService {
     private final PersonRepository personRepository;
     private final BidRepository bidRepository;
     private final FeedbackRepository feedbackRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Scheduled(fixedRate = 60000)
     @Transactional
@@ -59,6 +62,13 @@ public class AuctionService {
             System.out.println("Opening auction ID: " + auction.getId() + " - " + auction.getTitle());
             auction.setStatus(AuctionStatus.OPEN);
             auctionRepository.save(auction);
+            
+            AuctionStatusUpdateDTO statusUpdate = new AuctionStatusUpdateDTO(
+                    auction.getId(),
+                    AuctionStatus.OPEN,
+                    LocalDateTime.now()
+            );
+            messagingTemplate.convertAndSend("/topic/auction/" + auction.getId() + "/status", statusUpdate);
         }
         
         List<Auction> expiredAuctions = auctionRepository.findAllByStatusAndEndDateTimeBefore(
@@ -70,6 +80,13 @@ public class AuctionService {
             System.out.println("Closing auction ID: " + auction.getId() + " - " + auction.getTitle());
             auction.setStatus(AuctionStatus.CLOSED);
             auctionRepository.save(auction);
+            
+            AuctionStatusUpdateDTO statusUpdate = new AuctionStatusUpdateDTO(
+                    auction.getId(),
+                    AuctionStatus.CLOSED,
+                    LocalDateTime.now()
+            );
+            messagingTemplate.convertAndSend("/topic/auction/" + auction.getId() + "/status", statusUpdate);
         }
         
         System.out.println("=== Scheduler finished ===");
