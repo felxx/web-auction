@@ -10,7 +10,10 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Galleria } from 'primereact/galleria';
 import { publicAuctionService } from '../../../services/publicAuctionService';
 import bidService from '../../../services/bidService';
+import feedbackService from '../../../services/feedbackService';
 import authService from '../../../services/auth/authService';
+import FeedbackForm from '../../../components/FeedbackForm/FeedbackForm';
+import FeedbackList from '../../../components/FeedbackList/FeedbackList';
 import './AuctionDetail.css';
 
 const AuctionDetail = () => {
@@ -24,10 +27,20 @@ const AuctionDetail = () => {
     const [showBidDialog, setShowBidDialog] = useState(false);
     const [bidAmount, setBidAmount] = useState(null);
     const [submittingBid, setSubmittingBid] = useState(false);
+    const [showFeedbackDialog, setShowFeedbackDialog] = useState(false);
+    const [sellerFeedbacks, setSellerFeedbacks] = useState([]);
+    const [loadingFeedbacks, setLoadingFeedbacks] = useState(false);
     const isAuthenticated = authService.isAuthenticated();
 
     useEffect(() => {
         loadAuctionDetail();
+        
+        // Auto-refresh every minute to check for status changes
+        const intervalId = setInterval(() => {
+            loadAuctionDetail();
+        }, 60000); // 60 seconds
+        
+        return () => clearInterval(intervalId);
     }, [id]);
 
     useEffect(() => {
@@ -51,6 +64,11 @@ const AuctionDetail = () => {
             console.log('Auction data loaded:', data);
             console.log('Images in auction:', data.images);
             setAuction(data);
+            
+            // Load seller feedbacks
+            if (data.seller?.id) {
+                loadSellerFeedbacks(data.seller.id);
+            }
         } catch (err) {
             console.error('Error loading auction details:', err);
             if (err.response && err.response.status === 404) {
@@ -60,6 +78,18 @@ const AuctionDetail = () => {
             }
         } finally {
             setLoading(false);
+        }
+    };
+
+    const loadSellerFeedbacks = async (sellerId) => {
+        setLoadingFeedbacks(true);
+        try {
+            const feedbacks = await feedbackService.getFeedbacksByRecipient(sellerId);
+            setSellerFeedbacks(feedbacks);
+        } catch (err) {
+            console.error('Error loading seller feedbacks:', err);
+        } finally {
+            setLoadingFeedbacks(false);
         }
     };
 
@@ -155,6 +185,47 @@ const AuctionDetail = () => {
         } finally {
             setSubmittingBid(false);
         }
+    };
+
+    const handleFeedbackSubmit = async (feedbackData) => {
+        try {
+            await feedbackService.createFeedback({
+                ...feedbackData,
+                recipientId: auction.seller.id
+            });
+            
+            toast.current.show({
+                severity: 'success',
+                summary: 'Feedback sent!',
+                detail: 'Your feedback has been submitted successfully.',
+                life: 4000
+            });
+            
+            setShowFeedbackDialog(false);
+            // Reload feedbacks to show the new one
+            await loadSellerFeedbacks(auction.seller.id);
+        } catch (error) {
+            console.error('Error submitting feedback:', error);
+            toast.current.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.response?.data?.message || 'Failed to submit feedback. Please try again.',
+                life: 4000
+            });
+        }
+    };
+
+    const canLeaveFeedback = () => {
+        if (!isAuthenticated || !auction) return false;
+        const currentUser = authService.getCurrentUser();
+        
+        // Can leave feedback if:
+        // 1. Auction is closed
+        // 2. User is not the seller
+        // 3. User has participated (has bids)
+        return auction.status === 'CLOSED' && 
+               currentUser?.id !== auction.seller?.id &&
+               auction.currentUserHasBids === true;
     };
 
     const getStatusSeverity = (status) => {
@@ -430,9 +501,19 @@ const AuctionDetail = () => {
                                 <div className="seller-info">
                                     <i className="pi pi-user" aria-hidden="true"></i>
                                     <div>
-                                        <strong>{auction.seller.name}</strong>
+                                        <strong 
+                                            className="seller-name-link"
+                                            onClick={() => navigate(`/sellers/${auction.seller.id}`)}
+                                            style={{ cursor: 'pointer' }}
+                                        >
+                                            {auction.seller.name}
+                                        </strong>
                                         {auction.seller.totalFeedbacks > 0 && (
-                                            <div className="rating-info">
+                                            <div 
+                                                className="rating-info"
+                                                onClick={() => navigate(`/sellers/${auction.seller.id}`)}
+                                                style={{ cursor: 'pointer' }}
+                                            >
                                                 <i className="pi pi-star-fill" style={{ color: '#fbbf24' }}></i>
                                                 <span>
                                                     {auction.seller.averageRating?.toFixed(1)} 
@@ -442,6 +523,15 @@ const AuctionDetail = () => {
                                         )}
                                     </div>
                                 </div>
+                                
+                                {canLeaveFeedback() && (
+                                    <Button
+                                        label="Leave Feedback"
+                                        icon="pi pi-star"
+                                        className="w-full mt-3 p-button-outlined"
+                                        onClick={() => setShowFeedbackDialog(true)}
+                                    />
+                                )}
                             </div>
                         )}
                     </aside>
@@ -477,6 +567,16 @@ const AuctionDetail = () => {
                                 </div>
                             ))}
                         </div>
+                    </section>
+                )}
+
+                {auction.seller && (
+                    <section className="feedbacks-section" aria-labelledby="feedbacks-title">
+                        <h2 id="feedbacks-title">Seller Reviews</h2>
+                        <FeedbackList 
+                            feedbacks={sellerFeedbacks} 
+                            loading={loadingFeedbacks}
+                        />
                     </section>
                 )}
             </div>
@@ -540,6 +640,13 @@ const AuctionDetail = () => {
                     </div>
                 </div>
             </Dialog>
+
+            <FeedbackForm
+                visible={showFeedbackDialog}
+                onHide={() => setShowFeedbackDialog(false)}
+                onSubmit={handleFeedbackSubmit}
+                recipientName={auction?.seller?.name}
+            />
         </main>
     );
 };

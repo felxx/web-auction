@@ -14,6 +14,7 @@ import AdminAuctionForm from './pages/(authenticated)/admin/auctions/AdminAuctio
 import Home from './pages/(unauthenticated)/home/home.js';
 import PublicAuctions from './pages/(unauthenticated)/auctions/PublicAuctions.js';
 import AuctionDetail from './pages/(unauthenticated)/auctions/AuctionDetail.js';
+import SellerProfile from './pages/(unauthenticated)/seller/SellerProfile.js';
 import MyAuctions from './pages/(authenticated)/seller/my-auctions/MyAuctions.js';
 import SellerAuctionForm from './pages/(authenticated)/seller/my-auctions/SellerAuctionForm.js';
 import MyBids from './pages/(authenticated)/buyer/my-bids/MyBids.js';
@@ -48,6 +49,11 @@ function App() {
         <Route path="/auctions/:id" element={
           <Layout>
             <AuctionDetail />
+          </Layout>
+        } />
+        <Route path="/sellers/:id" element={
+          <Layout>
+            <SellerProfile />
           </Layout>
         } />
         <Route path="/login" element={<LoginPage />} />

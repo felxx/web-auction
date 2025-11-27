@@ -1,0 +1,227 @@
+.seller-profile-page {
+    min-height: 100vh;
+    background-color: #1a1a1a;
+    padding: 2rem 1rem;
+}
+
+.profile-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Back button */
+.profile-container > .p-button-text {
+    color: #e0e0e0 !important;
+    border: 1px solid #4a4a4a !important;
+    background: transparent !important;
+    border-radius: 8px !important;
+}
+
+.profile-container > .p-button-text:hover {
+    background: #4a4a4a !important;
+    border-color: #ff8c00 !important;
+    color: #ff8c00 !important;
+}
+
+/* Profile Header */
+.profile-header {
+    background: #2a2a2a;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid #4a4a4a;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.profile-avatar {
+    width: 8rem;
+    height: 8rem;
+    background: linear-gradient(135deg, #ff8c00, #ff6b00);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-info h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 1rem 0;
+}
+
+.rating-display {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.stars {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.rating-text {
+    color: #b0b0b0;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.no-rating {
+    color: #888;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.profile-stats {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #e0e0e0;
+    font-size: 1rem;
+}
+
+.stat-item i {
+    color: #ff8c00;
+    font-size: 1.2rem;
+}
+
+/* Feedbacks Container */
+.feedbacks-container {
+    background: #2a2a2a;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid #4a4a4a;
+}
+
+.feedbacks-container h2 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #ffffff;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #4a4a4a;
+}
+
+/* Paginator Styling */
+.feedbacks-container .p-paginator {
+    background: #3a3a3a !important;
+    border: 1px solid #4a4a4a !important;
+    border-radius: 8px !important;
+    padding: 0.75rem !important;
+}
+
+.feedbacks-container .p-paginator .p-paginator-pages .p-paginator-page {
+    background: transparent !important;
+    color: #e0e0e0 !important;
+    border-radius: 6px !important;
+    min-width: 2.5rem !important;
+    height: 2.5rem !important;
+}
+
+.feedbacks-container .p-paginator .p-paginator-pages .p-paginator-page:hover {
+    background: #4a4a4a !important;
+    color: #ff8c00 !important;
+}
+
+.feedbacks-container .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    background: #ff8c00 !important;
+    color: white !important;
+}
+
+.feedbacks-container .p-paginator .p-paginator-first,
+.feedbacks-container .p-paginator .p-paginator-prev,
+.feedbacks-container .p-paginator .p-paginator-next,
+.feedbacks-container .p-paginator .p-paginator-last {
+    background: transparent !important;
+    color: #e0e0e0 !important;
+    min-width: 2.5rem !important;
+    height: 2.5rem !important;
+    border-radius: 6px !important;
+}
+
+.feedbacks-container .p-paginator .p-paginator-first:hover,
+.feedbacks-container .p-paginator .p-paginator-prev:hover,
+.feedbacks-container .p-paginator .p-paginator-next:hover,
+.feedbacks-container .p-paginator .p-paginator-last:hover {
+    background: #4a4a4a !important;
+    color: #ff8c00 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .seller-profile-page {
+        padding: 1rem 0.5rem;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 2rem 1.5rem;
+    }
+
+    .profile-avatar {
+        width: 6rem;
+        height: 6rem;
+        font-size: 3rem;
+    }
+
+    .profile-info h1 {
+        font-size: 1.5rem;
+    }
+
+    .rating-display {
+        align-items: center;
+    }
+
+    .profile-stats {
+        justify-content: center;
+    }
+
+    .feedbacks-container {
+        padding: 1.5rem 1rem;
+    }
+
+    .feedbacks-container h2 {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-avatar {
+        width: 5rem;
+        height: 5rem;
+        font-size: 2.5rem;
+    }
+
+    .profile-info h1 {
+        font-size: 1.25rem;
+    }
+
+    .stars i {
+        font-size: 1.25rem !important;
+    }
+
+    .rating-text {
+        font-size: 0.9rem;
+    }
+}

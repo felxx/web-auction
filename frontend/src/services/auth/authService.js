@@ -42,9 +42,9 @@ const getCurrentUser = () => {
     try {
         const decodedToken = jwtDecode(token);
         return {
-            id: decodedToken.sub,
+            id: decodedToken.userId || decodedToken.sub,
             name: decodedToken.name || decodedToken.username || 'User',
-            email: decodedToken.email || '',
+            email: decodedToken.email || decodedToken.sub || '',
             role: decodedToken.role || decodedToken.authorities?.[0] || 'USER',
             roles: decodedToken.roles || decodedToken.authorities || []
         };
