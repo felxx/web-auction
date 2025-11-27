@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
-import { Carousel } from 'primereact/carousel';
-import { Tag } from 'primereact/tag';
+import { InputText } from 'primereact/inputtext';
 import { Skeleton } from 'primereact/skeleton';
 import { useNavigate } from 'react-router-dom';
+import AuctionCard from '../../../components/AuctionCard/AuctionCard';
+import { publicAuctionService } from '../../../services/publicAuctionService';
+import categoryService from '../../../services/categoryService';
 import './home.css';
 
 const Home = () => {
-    const [featuredAuctions, setFeaturedAuctions] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [endingSoonAuctions, setEndingSoonAuctions] = useState([]);
+    const [popularAuctions, setPopularAuctions] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -16,36 +20,28 @@ const Home = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                
-                setFeaturedAuctions([
-                    {
-                        id: 1,
-                        title: 'Samsung Galaxy S23 Smartphone',
-                        currentBid: 1250.00,
-                        endDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
-                        image: 'https://placehold.co/300x200',
-                        category: 'Electronics'
-                    },
-                    {
-                        id: 2,
-                        title: 'Dell Inspiron Laptop',
-                        currentBid: 2100.00,
-                        endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
-                        image:  'https://placehold.co/300x200',
-                        category: 'Computing'
-                    },
-                    {
-                        id: 3,
-                        title: 'Apple Watch Series 8',
-                        currentBid: 890.00,
-                        endDate: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
-                        image:  'https://placehold.co/300x200',
-                        category: 'Accessories'
-                    }
-                ]);
+                // Fetch auctions ending soon (next 24h)
+                const endingSoonResponse = await publicAuctionService.getPublicAuctions({
+                    status: 'OPEN',
+                    size: 6,
+                    sort: 'endDateTime,asc'
+                });
+                setEndingSoonAuctions(endingSoonResponse.content || []);
 
-                
+                // Fetch popular auctions (most bids) - fetch more and sort on frontend
+                const popularResponse = await publicAuctionService.getPublicAuctions({
+                    status: 'OPEN',
+                    size: 50,
+                    sort: 'startDateTime,desc'
+                });
+                // Sort by totalBids descending on frontend
+                const sortedByBids = (popularResponse.content || [])
+                    .sort((a, b) => (b.totalBids || 0) - (a.totalBids || 0));
+                setPopularAuctions(sortedByBids);
+
+                // Fetch categories
+                const categoriesResponse = await categoryService.getAllCategories(0, 15);
+                setCategories(categoriesResponse.content || []);
             } catch (error) {
                 console.error('Error fetching data:', error);
             } finally {
@@ -56,112 +52,157 @@ const Home = () => {
         fetchData();
     }, []);
 
-    const formatPrice = (price) => {
-        return new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL'
-        }).format(price);
+    const handleSearch = () => {
+        navigate(`/auctions?search=${searchTerm}`);
     };
 
-    const getTimeRemaining = (endDate) => {
-        const now = new Date();
-        const difference = endDate - now;
-        
-        if (difference > 0) {
-            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            
-            if (days > 0) {
-                return `${days}d ${hours}h`;
-            } else {
-                return `${hours}h`;
-            }
-        }
-        return 'Closed';
-    };
-
-    const auctionTemplate = (auction) => {
-        return (
-            <div className="auction-card-container">
-                <Card className="auction-card">
-                    <div className="auction-image">
-                        <img 
-                            src={auction.image || 'https://via.placeholder.com/300x200'} 
-                            alt={auction.title}
-                            onError={(e) => {
-                                e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
-                            }}
-                        />
-                        <Tag value={auction.category} className="auction-category-tag" />
-                    </div>
-                    <div className="auction-content">
-                        <h3 className="auction-title">{auction.title}</h3>
-                        <div className="auction-bid">
-                            <span className="bid-label">Current bid:</span>
-                            <span className="bid-value">{formatPrice(auction.currentBid)}</span>
-                        </div>
-                        <div className="auction-time">
-                            <i className="pi pi-clock"></i>
-                            <span>{getTimeRemaining(auction.endDate)}</span>
-                        </div>
-                        <Button 
-                            label="View Auction" 
-                            icon="pi pi-eye"
-                            className="w-full auction-button"
-                            onClick={() => navigate(`/auctions/${auction.id}`)}
-                        />
-                    </div>
-                </Card>
-            </div>
-        );
+    const handleCategoryClick = (categoryId) => {
+        navigate(`/auctions?categoryId=${categoryId}`);
     };
 
     return (
         <div className="home-page">
+            {/* Hero Banner with Search */}
             <div className="hero-section">
                 <div className="hero-content">
                     <h1 className="hero-title">Welcome to Web Auction</h1>
                     <p className="hero-subtitle">
                         Discover unique products and bid in real time.
                     </p>
-                    <div className="hero-buttons">
-                        <Button 
-                            label="Explore Auctions" 
+                    <div className="hero-search">
+                        <span className="p-input-icon-left search-wrapper">
+                            <i className="pi pi-search" />
+                            <InputText
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                                placeholder="Search for auctions..."
+                                className="hero-search-input"
+                            />
+                        </span>
+                    </div>
+                    <div className="hero-button-container">
+                        <Button
+                            label="Explore Auctions"
                             icon="pi pi-search"
-                            className="hero-button primary"
-                            onClick={() => navigate('/auctions')}
+                            className="hero-search-button"
+                            onClick={handleSearch}
                         />
                     </div>
                 </div>
             </div>
 
-            <div className="featured-section">
+            {/* Ending Soon Section */}
+            <div className="section-container">
                 <div className="section-header">
-                    <h2>Featured Auctions</h2>
-                    <p>The best products available now</p>
+                    <h2>Ending Soon</h2>
+                    <p>Auctions ending in the next 24 hours</p>
                 </div>
-                
-                <Carousel 
-                    value={featuredAuctions} 
-                    itemTemplate={auctionTemplate}
-                    numVisible={3}
-                    numScroll={1}
-                    responsiveOptions={[
-                        {
-                            breakpoint: '1024px',
-                            numVisible: 2,
-                            numScroll: 1
-                        },
-                        {
-                            breakpoint: '768px',
-                            numVisible: 1,
-                            numScroll: 1
-                        }
-                    ]}
-                    showNavigators
-                    showIndicators
-                    className="featured-carousel"
-                />
+                {loading ? (
+                    <div className="auctions-grid">
+                        {[...Array(6)].map((_, i) => (
+                            <Skeleton key={i} height="400px" borderRadius="15px" />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="auctions-grid">
+                        {endingSoonAuctions.slice(0, 3).map((auction) => (
+                            <AuctionCard key={auction.id} auction={auction} />
+                        ))}
+                    </div>
+                )}
+                {!loading && endingSoonAuctions.length === 0 && (
+                    <p className="no-auctions">No auctions ending soon</p>
+                )}
+            </div>
+
+            {/* Popular Auctions Section */}
+            <div className="section-container">
+                <div className="section-header">
+                    <h2>Most Popular</h2>
+                    <p>Auctions with the most bids</p>
+                </div>
+                {loading ? (
+                    <div className="auctions-grid">
+                        {[...Array(6)].map((_, i) => (
+                            <Skeleton key={i} height="400px" borderRadius="15px" />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="auctions-grid">
+                        {popularAuctions.slice(0, 3).map((auction) => (
+                            <AuctionCard key={auction.id} auction={auction} />
+                        ))}
+                    </div>
+                )}
+                {!loading && popularAuctions.length === 0 && (
+                    <p className="no-auctions">No popular auctions available</p>
+                )}
+            </div>
+
+            {/* Categories Grid */}
+            <div className="section-container">
+                <div className="section-header">
+                    <h2>Browse by Category</h2>
+                    <p>Find auctions in your favorite categories</p>
+                </div>
+                {loading ? (
+                    <div className="categories-grid">
+                        {[...Array(8)].map((_, i) => (
+                            <Skeleton key={i} height="120px" borderRadius="15px" />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="categories-grid">
+                        {categories.map((category) => (
+                            <div
+                                key={category.id}
+                                className="category-card"
+                                onClick={() => handleCategoryClick(category.id)}
+                            >
+                                <i className="pi pi-tag category-icon"></i>
+                                <h3>{category.name}</h3>
+                                <p>{category.description || 'Browse category'}</p>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {/* How It Works Section */}
+            <div className="section-container how-it-works-section">
+                <div className="section-header">
+                    <h2>How It Works</h2>
+                    <p>Start bidding in three simple steps</p>
+                </div>
+                <div className="how-it-works-grid">
+                    <div className="how-it-works-card">
+                        <div className="step-number">1</div>
+                        <i className="pi pi-user-plus step-icon"></i>
+                        <h3>Create an Account</h3>
+                        <p>Sign up quickly and securely to start your auction journey</p>
+                    </div>
+                    <div className="how-it-works-card">
+                        <div className="step-number">2</div>
+                        <i className="pi pi-search step-icon"></i>
+                        <h3>Find Your Item</h3>
+                        <p>Browse through our curated selection of unique products</p>
+                    </div>
+                    <div className="how-it-works-card">
+                        <div className="step-number">3</div>
+                        <i className="pi pi-dollar step-icon"></i>
+                        <h3>Place Your Bid</h3>
+                        <p>Bid in real-time and compete for the items you want</p>
+                    </div>
+                </div>
+                <div className="how-it-works-cta">
+                    <Button
+                        label="Get Started Now"
+                        icon="pi pi-arrow-right"
+                        className="cta-button"
+                        onClick={() => navigate('/sign-up')}
+                    />
+                </div>
             </div>
         </div>
     );

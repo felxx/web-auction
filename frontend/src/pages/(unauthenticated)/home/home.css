@@ -10,6 +10,7 @@ html, body {
     overflow-y: auto;
 }
 
+/* Hero Section with Search */
 .hero-section {
     background: linear-gradient(135deg, rgba(255, 140, 0, 0.034) 0%, rgba(255, 168, 38, 0.027) 100%);
     border-radius: 20px;
@@ -57,106 +58,79 @@ html, body {
     margin-right: auto;
 }
 
-.hero-buttons {
+.hero-search {
     display: flex;
     gap: 1rem;
     justify-content: center;
+    align-items: center;
+    max-width: 700px;
+    margin: 0 auto 1rem auto;
     flex-wrap: wrap;
 }
 
-.hero-button {
-    font-size: 1.1rem;
-    padding: 0.75rem 2rem;
+.search-wrapper {
+    flex: 1;
+    width: 100%;
+}
+
+.hero-button-container {
+    display: flex;
+    justify-content: center;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.hero-search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
     border-radius: 50px;
+    border: 2px solid #4a4a4a;
+    background: #2a2a2a;
+    color: #e0e0e0;
+    font-size: 1rem;
+    transition: all 0.3s ease;
 }
 
-.hero-button.primary {
-    background: linear-gradient(135deg, #ff8c00, #ffa726);
-    border: none;
-}
-
-.hero-button.secondary {
+.hero-search-input:focus {
     border-color: #ff8c00;
+    box-shadow: 0 0 0 0.2rem rgba(255, 140, 0, 0.25);
+    background: #333;
+}
+
+.hero-search-input::placeholder {
+    color: #888;
+}
+
+.p-input-icon-left > i:first-of-type {
+    left: 1rem;
     color: #ff8c00;
 }
 
-/* Stats Section */
-.stats-section {
-    margin-bottom: 3rem;
+.hero-search-button {
+    background: linear-gradient(135deg, #ff8c00, #ffa726) !important;
+    border: none !important;
+    color: #000 !important;
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    white-space: nowrap;
+    min-width: 200px;
 }
 
-.stat-card {
-    text-align: center;
-    padding: 1.5rem;
-    border-radius: 15px;
-    transition: all 0.3s ease;
-    height: 100%;
-    background-color: #2a2a2a;
-    border: 1px solid #4a4a4a;
-    color: #e0e0e0;
+.hero-search-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 140, 0, 0.4);
 }
 
-.stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(255, 140, 0, 0.2);
-    border-color: #ff8c00;
-}
-
-.stat-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-}
-
-.stat-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1.5rem;
-}
-
-.stat-icon.auctions {
-    background: linear-gradient(135deg, #ff8c00, #ffa726);
-}
-
-.stat-icon.active {
-    background: linear-gradient(135deg, #ff6b35, #f7931e);
-}
-
-.stat-icon.users {
-    background: linear-gradient(135deg, #ff8c00, #ffab40);
-}
-
-.stat-icon.bids {
-    background: linear-gradient(135deg, #ff7043, #ff8a65);
-}
-
-.stat-info h3 {
-    font-size: 2rem;
-    font-weight: 700;
-    margin: 0;
-    color: #e0e0e0;
-}
-
-.stat-info p {
-    margin: 0;
-    color: #b0b0b0;
-    font-size: 0.9rem;
-}
-
-/* Featured Section */
-.featured-section {
-    margin-bottom: 3rem;
+/* Section Container */
+.section-container {
+    margin-bottom: 4rem;
 }
 
 .section-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
 }
 
 .section-header h2 {
@@ -171,228 +145,153 @@ html, body {
     font-size: 1.1rem;
 }
 
-/* Auction Cards */
-.auction-card-container {
-    padding: 0 0.5rem;
-    height: 100%;
-    display: flex;
-    align-items: stretch;
+/* Auctions Grid */
+.auctions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 2rem;
 }
 
-.auction-card {
-    border-radius: 15px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    height: 100%;
-    border: 1px solid #4a4a4a;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    background-color: #2a2a2a;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    min-height: 500px;
-}
-
-.auction-card:hover {
-    transform: translateY(-10px);
-    border-color: #ff8c00;
-}
-
-.auction-image {
-    position: relative;
-    height: 200px;
-    overflow: hidden;
-}
-
-.auction-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.auction-card:hover .auction-image img {
-    transform: scale(1.05);
-}
-
-.auction-category-tag {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(42, 42, 42, 0.9);
-    color: #ff8c00;
-    border-radius: 20px;
-    padding: 0.25rem 0.75rem;
-    font-size: 0.8rem;
-    font-weight: 600;
-    border: 1px solid #ff8c00;
-}
-
-.auction-content {
-    padding: 1.5rem;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.auction-title {
+.no-auctions {
+    text-align: center;
+    color: #888;
     font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: #e0e0e0;
-    line-height: 1.3;
-    text-align: left;
-    min-height: 2.8rem;
+    padding: 3rem;
 }
 
-.auction-bid {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    margin-bottom: 1rem;
-    padding: 0.75rem;
-    background: #3a3a3a;
-    border-radius: 10px;
+/* Categories Grid */
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5rem;
+}
+
+.category-card {
+    background: #2a2a2a;
     border: 1px solid #4a4a4a;
-}
-
-.bid-label {
-    font-size: 0.9rem;
-    color: #b0b0b0;
-    text-align: left;
-}
-
-.bid-value {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #ff8c00;
-    text-align: right;
-}
-
-.auction-time {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-    color: #b0b0b0;
-    font-size: 0.9rem;
-}
-
-.auction-button {
-    border-radius: 10px;
-    font-weight: 600;
-    width: 100%;
-    margin-top: auto;
-    background: linear-gradient(135deg, #ff8c00, #ffa726) !important;
-    border: none !important;
-    color: rgb(0, 0, 0) !important;
-}
-
-/* Recent Section */
-.recent-section {
-    margin-bottom: 3rem;
-}
-
-.recent-section .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align: left;
-}
-
-.recent-auction-card {
     border-radius: 15px;
-    margin-bottom: 1rem;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
     transition: all 0.3s ease;
-    border: 1px solid #4a4a4a;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    background-color: #2a2a2a;
 }
 
-.recent-auction-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(255, 140, 0, 0.2);
+.category-card:hover {
+    transform: translateY(-5px);
     border-color: #ff8c00;
+    box-shadow: 0 10px 30px rgba(255, 140, 0, 0.2);
 }
 
-.auction-placeholder {
-    width: 60px;
-    height: 60px;
-    background: #4a4a4a;
-    border-radius: 10px;
+.category-icon {
+    font-size: 3rem;
+    color: #ff8c00;
+    margin-bottom: 1rem;
+}
+
+.category-card h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #e0e0e0;
+    margin-bottom: 0.5rem;
+}
+
+.category-card p {
+    color: #888;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* How It Works Section */
+.how-it-works-section {
+    background: linear-gradient(135deg, rgba(255, 140, 0, 0.034) 0%, rgba(255, 168, 38, 0.027) 100%);
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    border: 1px solid rgba(255, 140, 0, 0.2);
+}
+
+.how-it-works-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+}
+
+.how-it-works-card {
+    background: #2a2a2a;
+    border: 1px solid #4a4a4a;
+    border-radius: 15px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.how-it-works-card:hover {
+    transform: translateY(-5px);
+    border-color: #ff8c00;
+    box-shadow: 0 10px 30px rgba(255, 140, 0, 0.2);
+}
+
+.step-number {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #ff8c00, #ffa726);
+    color: #000;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #b0b0b0;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border: 3px solid #1a1a1a;
 }
 
-/* Loading */
-.home-loading {
-    padding: 2rem;
-}
-
-/* Carousel customization */
-.featured-carousel .p-carousel-content {
-    padding: 1rem 0;
-}
-
-/* Alinhamento dos cards no carousel */
-.featured-carousel .p-carousel-container {
-    align-items: stretch;
-}
-
-.featured-carousel .p-carousel-items-content {
-    display: flex;
-    align-items: stretch;
-    height: 100%;
-}
-
-.featured-carousel .p-carousel-item {
-    display: flex;
-    align-items: stretch;
-    height: 100%;
-}
-
-.featured-carousel .p-carousel-items-container {
-    height: 100%;
-}
-
-.featured-carousel .p-carousel-prev,
-.featured-carousel .p-carousel-next {
+.step-icon {
+    font-size: 3rem;
     color: #ff8c00;
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    width: 40px;
-    height: 40px;
-    margin: 0.5rem;
-    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    margin-top: 1rem;
 }
 
-.featured-carousel .p-carousel-prev:hover,
-.featured-carousel .p-carousel-next:hover {
-    background: transparent;
-    color: #ffa726;
-    transform: scale(1.1);
+.how-it-works-card h3 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #e0e0e0;
+    margin-bottom: 1rem;
 }
 
-.featured-carousel .p-carousel-indicators .p-carousel-indicator {
-    background: #4a4a4a !important;
-    border: 1px solid #6a6a6a !important;
-    width: 8px !important;
-    height: 8px !important;
+.how-it-works-card p {
+    color: #b0b0b0;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0;
 }
 
-.featured-carousel .p-carousel-indicators .p-carousel-indicator.p-highlight {
-    background: #ff8c00 !important;
-    border: 1px solid #ff8c00 !important;
-    width: 8px !important;
-    height: 8px !important;
+.how-it-works-cta {
+    text-align: center;
 }
 
-/* Mobile responsiveness */
+.cta-button {
+    background: linear-gradient(135deg, #ff8c00, #ffa726) !important;
+    border: none !important;
+    color: #000 !important;
+    font-weight: 600;
+    padding: 1rem 3rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(255, 140, 0, 0.4);
+}
+
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
     .hero-section {
         padding: 2rem 1rem;
@@ -406,31 +305,86 @@ html, body {
         font-size: 1rem;
     }
     
-    .hero-buttons {
+    .hero-search {
         flex-direction: column;
-        align-items: center;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .search-wrapper {
+        width: 100%;
+    }
+
+    .hero-button-container {
+        width: 100%;
     }
     
-    .hero-button {
+    .hero-search-button {
         width: 100%;
-        max-width: 300px;
+        max-width: 400px;
     }
     
     .section-header h2 {
         font-size: 2rem;
     }
+
+    .section-header p {
+        font-size: 1rem;
+    }
     
-    .recent-section .section-header {
-        flex-direction: column;
+    .auctions-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .categories-grid {
+        grid-template-columns: 1fr;
         gap: 1rem;
     }
-    
-    .stat-content {
-        flex-direction: column;
-        text-align: center;
+
+    .how-it-works-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
     }
-    
-    .stat-info h3 {
-        font-size: 1.5rem;
+
+    .section-container {
+        margin-bottom: 3rem;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .auctions-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .categories-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+    }
+}
+
+@media (min-width: 1025px) and (max-width: 1400px) {
+    .categories-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 1.75rem;
+    }
+
+    .category-card {
+        padding: 1.5rem;
+    }
+
+    .category-icon {
+        font-size: 2.5rem;
+    }
+
+    .how-it-works-card {
+        padding: 2rem 1.5rem;
     }
 }

@@ -354,4 +354,42 @@ public class AuctionService {
         
         return dto;
     }
+    
+    public Page<AuctionResponseDTO> getAuctionsWithMyBids(
+            String status, Long categoryId, String search, Pageable pageable) {
+        
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new NotFoundException("User not authenticated");
+        }
+        
+        String email = authentication.getName();
+        Person currentUser = personRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+        
+        List<Bid> userBids = bidRepository.findByBidderId(currentUser.getId());
+        List<Long> auctionIds = userBids.stream()
+                .map(bid -> bid.getAuction().getId())
+                .distinct()
+                .collect(Collectors.toList());
+        
+        if (auctionIds.isEmpty()) {
+            return Page.empty(pageable);
+        }
+        
+        // Convert string status to AuctionStatus enum
+        AuctionStatus auctionStatus = null;
+        if (status != null && !status.trim().isEmpty()) {
+            try {
+                auctionStatus = AuctionStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                // If invalid status, ignore it
+            }
+        }
+        
+        Page<Auction> auctions = auctionRepository.findByIdInAndFilters(
+                auctionIds, auctionStatus, categoryId, search, pageable);
+        
+        return auctions.map(this::toResponseDTO);
+    }
 }

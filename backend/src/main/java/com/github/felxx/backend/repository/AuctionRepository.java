@@ -35,5 +35,22 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
         @Param("search") String search,
         Pageable pageable
     );
+    
+    List<Auction> findByStatus(AuctionStatus status);
+    
+    @Query("SELECT a FROM Auction a " +
+           "LEFT JOIN a.category c " +
+           "WHERE a.id IN :auctionIds AND " +
+           "(:status IS NULL OR a.status = :status) AND " +
+           "(:categoryId IS NULL OR c.id = :categoryId) AND " +
+           "(:search IS NULL OR :search = '' OR LOWER(a.title) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(a.description) LIKE LOWER(CONCAT('%', :search, '%')))")
+    Page<Auction> findByIdInAndFilters(
+        @Param("auctionIds") List<Long> auctionIds,
+        @Param("status") AuctionStatus status,
+        @Param("categoryId") Long categoryId,
+        @Param("search") String search,
+        Pageable pageable
+    );
 }
+
 

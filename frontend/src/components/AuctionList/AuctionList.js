@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
 import { Paginator } from 'primereact/paginator';
@@ -25,6 +25,7 @@ const AuctionList = ({
     showSortFilter = true,
 }) => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const [auctions, setAuctions] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -51,6 +52,19 @@ const AuctionList = ({
         { label: 'Highest price', value: 'minimumBid,desc' },
         { label: 'Lowest price', value: 'minimumBid,asc' }
     ];
+    
+    // Read URL parameters on mount
+    useEffect(() => {
+        const categoryIdFromUrl = searchParams.get('categoryId');
+        const searchFromUrl = searchParams.get('search');
+        
+        if (categoryIdFromUrl) {
+            setSelectedCategory(Number(categoryIdFromUrl));
+        }
+        if (searchFromUrl) {
+            setSearch(searchFromUrl);
+        }
+    }, [searchParams]);
     
     useEffect(() => {
         if (fetchCategories && showCategoryFilter) {
@@ -82,7 +96,7 @@ const AuctionList = ({
         try {
             const params = {
                 search: search || undefined,
-                categoryId: selectedCategory || undefined,
+                categoryId: selectedCategory !== null ? selectedCategory : undefined,
                 status: selectedStatus || undefined,
                 page: first / rows,
                 size: rows,

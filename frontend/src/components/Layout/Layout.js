@@ -103,11 +103,6 @@ const Layout = ({ children }) => {
                     label: 'My Bids',
                     icon: 'pi pi-heart',
                     command: () => navigate('/my-bids')
-                },
-                {
-                    label: 'Won Auctions',
-                    icon: 'pi pi-trophy',
-                    command: () => navigate('/won-auctions')
                 }
             );
         }

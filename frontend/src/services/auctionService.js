@@ -70,23 +70,6 @@ const getMyBids = (page = 0, size = 10, sort = 'endDateTime,asc', filters = {}) 
   return api.get(`/auctions/my-bids?${params.toString()}`);
 };
 
-const getWonAuctions = (page = 0, size = 10, sort = 'endDateTime,desc', filters = {}) => {
-  const params = new URLSearchParams({
-    page: page.toString(),
-    size: size.toString(),
-    sort: sort
-  });
-  
-  if (filters.categoryId) {
-    params.append('categoryId', filters.categoryId);
-  }
-  if (filters.search && filters.search.trim() !== '') {
-    params.append('search', filters.search.trim());
-  }
-  
-  return api.get(`/auctions/won?${params.toString()}`);
-};
-
 const auctionService = {
   getAuctions,
   getAuction,
@@ -96,7 +79,6 @@ const auctionService = {
   searchAuctions,
   filterAuctions,
   getMyBids,
-  getWonAuctions,
 };
 
 export default auctionService;
