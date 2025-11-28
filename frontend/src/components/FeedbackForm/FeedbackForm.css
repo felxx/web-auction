@@ -1,57 +1,57 @@
 .feedback-dialog .p-dialog-header {
-    background: #2a2a2a;
-    color: #e0e0e0;
-    border-bottom: 1px solid #4a4a4a;
+    background: var(--surface-50);
+    color: var(--text-color);
+    border-bottom: 1px solid var(--surface-200);
 }
 
 .feedback-dialog .p-dialog-content {
-    background: #1a1a1a;
-    color: #e0e0e0;
-    padding: 2rem;
+    background: var(--surface-0);
+    color: var(--text-color);
+    padding: var(--spacing-xl);
 }
 
 .feedback-form {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: var(--spacing-lg);
 }
 
 .feedback-form .field {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
 }
 
 .feedback-form .field-label {
-    font-weight: 600;
-    color: #e0e0e0;
+    font-weight: var(--font-semibold);
+    color: var(--text-color);
     display: flex;
     align-items: center;
 }
 
 .feedback-rating {
-    font-size: 2rem;
+    font-size: var(--font-3xl);
 }
 
 .feedback-rating .p-rating-icon {
-    color: #ff8c00;
+    color: var(--primary-color);
 }
 
 .feedback-rating .p-rating-icon.pi-star-fill {
-    color: #ff8c00;
+    color: var(--primary-color);
 }
 
 .char-counter {
-    color: #999;
-    font-size: 0.875rem;
+    color: var(--surface-500);
+    font-size: var(--font-sm);
     text-align: right;
 }
 
 .error-message {
     background: rgba(239, 68, 68, 0.1);
-    border: 1px solid #ef4444;
-    border-radius: 8px;
-    padding: 0.75rem;
+    border: 1px solid var(--danger-color);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-md);
     color: #fca5a5;
     display: flex;
     align-items: center;
@@ -60,27 +60,27 @@
 .form-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 1rem;
-    margin-top: 1rem;
+    gap: var(--spacing-base);
+    margin-top: var(--spacing-base);
 }
 
 .feedback-form .p-inputtextarea {
-    background: #2a2a2a;
-    border: 1px solid #4a4a4a;
-    color: #e0e0e0;
+    background: var(--surface-50);
+    border: 1px solid var(--surface-200);
+    color: var(--text-color);
 }
 
 .feedback-form .p-inputtextarea:enabled:focus {
-    border-color: #ff8c00;
-    box-shadow: 0 0 0 0.2rem rgba(255, 140, 0, 0.2);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.2);
 }
 
 .p-error {
     color: #fca5a5;
-    font-size: 0.875rem;
+    font-size: var(--font-sm);
 }
 
 .d-block {
     display: block;
-    margin-top: 0.25rem;
+    margin-top: var(--spacing-xs);
 }

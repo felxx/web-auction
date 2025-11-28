@@ -1,187 +1,183 @@
 .auction-form {
     min-height: 100vh;
-    background: #1a1a1a;
-    padding: 2rem 1rem;
+    background: var(--surface-0);
+    padding: var(--spacing-xl) var(--spacing-base);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .auction-form .form-card {
-    background: #2a2a2a !important;
-    border: 1px solid #4a4a4a !important;
-    border-radius: 20px !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+    background: var(--surface-50) !important;
+    border: 1px solid var(--surface-200) !important;
+    border-radius: var(--radius-2xl) !important;
+    box-shadow: var(--shadow-xl) !important;
     width: 100%;
     max-width: 600px;
 }
 
 .auction-form .form-header {
     text-align: center;
-    margin-bottom: 2rem;
-    padding: 1.5rem 1.5rem 0;
+    margin-bottom: var(--spacing-2xl);
+    padding: var(--spacing-lg) var(--spacing-lg) 0;
 }
 
 .auction-form .form-header h2 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #e0e0e0;
-    margin-bottom: 0.5rem;
+    font-size: var(--font-2xl);
+    font-weight: var(--font-bold);
+    color: var(--text-color-secondary);
+    margin-bottom: var(--spacing-sm);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .auction-form .form-header p {
-    color: #b0b0b0;
-    font-size: 1rem;
+    color: var(--text-color-tertiary);
+    font-size: var(--font-base);
     margin: 0;
 }
 
 .auction-form-content {
-    padding: 0 1.5rem 1.5rem;
+    padding: 0 var(--spacing-lg) var(--spacing-lg);
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: var(--spacing-lg);
 }
 
 .auction-form-content .field {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
 }
 
 .auction-form-content .field-label {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #e0e0e0;
+    font-size: var(--font-base);
+    font-weight: var(--font-semibold);
+    color: var(--text-color-secondary);
     display: flex;
     align-items: center;
-    margin-bottom: 0.25rem;
+    margin-bottom: var(--spacing-xs);
 }
 
 .auction-form-content .field-label i {
-    color: #ff8c00;
-    font-size: 0.9rem;
+    color: var(--primary-color);
+    font-size: var(--font-base);
 }
 
-/* Input styling */
 .auction-form-content .p-inputtext,
 .auction-form-content .p-inputtextarea {
-    background: #3a3a3a !important;
-    border: 1px solid #4a4a4a !important;
-    color: #e0e0e0 !important;
-    border-radius: 10px !important;
-    padding: 0.75rem 1rem !important;
-    font-size: 1rem !important;
-    transition: all 0.3s ease !important;
+    background: var(--surface-100) !important;
+    border: 1px solid var(--surface-200) !important;
+    color: var(--text-color-secondary) !important;
+    border-radius: var(--radius-md) !important;
+    padding: var(--spacing-md) var(--spacing-base) !important;
+    font-size: var(--font-base) !important;
+    transition: all var(--transition-base) !important;
 }
 
 .auction-form-content .p-inputtext:focus,
 .auction-form-content .p-inputtextarea:focus {
-    border-color: #ff8c00 !important;
-    box-shadow: 0 0 0 0.2rem rgba(255, 140, 0, 0.2) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.2) !important;
 }
 
 .auction-form-content .p-inputtext::placeholder,
 .auction-form-content .p-inputtextarea::placeholder {
-    color: #888 !important;
+    color: var(--surface-600) !important;
 }
 
-/* Dropdown styling */
 .auction-form-content .p-dropdown {
-    background: #3a3a3a !important;
-    border: 1px solid #4a4a4a !important;
-    border-radius: 10px !important;
-    transition: all 0.3s ease !important;
+    background: var(--surface-100) !important;
+    border: 1px solid var(--surface-200) !important;
+    border-radius: var(--radius-md) !important;
+    transition: all var(--transition-base) !important;
 }
 
 .auction-form-content .p-dropdown:not(.p-disabled):hover {
-    border-color: #6a6a6a !important;
+    border-color: var(--surface-400) !important;
 }
 
 .auction-form-content .p-dropdown:not(.p-disabled).p-focus {
-    border-color: #ff8c00 !important;
-    box-shadow: 0 0 0 0.2rem rgba(255, 140, 0, 0.2) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.2) !important;
 }
 
 .auction-form-content .p-dropdown .p-dropdown-label {
     background: transparent !important;
-    color: #e0e0e0 !important;
-    padding: 0.75rem 1rem !important;
+    color: var(--text-color-secondary) !important;
+    padding: var(--spacing-md) var(--spacing-base) !important;
 }
 
 .auction-form-content .p-dropdown .p-dropdown-label.p-placeholder {
-    color: #888 !important;
+    color: var(--surface-600) !important;
 }
 
 .auction-form-content .p-dropdown .p-dropdown-trigger {
-    color: #e0e0e0 !important;
+    color: var(--text-color-secondary) !important;
     width: 2.5rem !important;
 }
 
-/* Dropdown panel */
 .p-dropdown-panel {
-    background: #2a2a2a !important;
-    border: 1px solid #4a4a4a !important;
-    border-radius: 10px !important;
+    background: var(--surface-50) !important;
+    border: 1px solid var(--surface-200) !important;
+    border-radius: var(--radius-md) !important;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
 }
 
 .p-dropdown-items .p-dropdown-item {
-    color: #e0e0e0 !important;
-    padding: 0.75rem 1rem !important;
-    transition: all 0.2s ease !important;
+    color: var(--text-color-secondary) !important;
+    padding: var(--spacing-md) var(--spacing-base) !important;
+    transition: all var(--transition-fast) !important;
 }
 
 .p-dropdown-items .p-dropdown-item:hover {
-    background: #4a4a4a !important;
-    color: #ff8c00 !important;
+    background: var(--surface-200) !important;
+    color: var(--primary-color) !important;
 }
 
 .p-dropdown-items .p-dropdown-item.p-highlight {
-    background: #ff8c00 !important;
+    background: var(--primary-color) !important;
     color: white !important;
 }
 
-/* Form actions */
 .form-actions {
     display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
+    gap: var(--spacing-base);
+    margin-top: var(--spacing-base);
     justify-content: flex-end;
 }
 
 .form-actions .p-button {
-    padding: 0.75rem 1.5rem !important;
-    border-radius: 10px !important;
-    font-weight: 600 !important;
-    font-size: 1rem !important;
-    transition: all 0.3s ease !important;
+    padding: var(--spacing-md) var(--spacing-lg) !important;
+    border-radius: var(--radius-md) !important;
+    font-weight: var(--font-semibold) !important;
+    font-size: var(--font-base) !important;
+    transition: all var(--transition-base) !important;
 }
 
 .form-actions .p-button-outlined {
     background: transparent !important;
-    border: 1px solid #6a6a6a !important;
-    color: #e0e0e0 !important;
+    border: 1px solid var(--surface-400) !important;
+    color: var(--text-color-secondary) !important;
 }
 
 .form-actions .p-button-outlined:hover {
-    background: #4a4a4a !important;
-    border-color: #ff8c00 !important;
-    color: #ff8c00 !important;
+    background: var(--surface-200) !important;
+    border-color: var(--primary-color) !important;
+    color: var(--primary-color) !important;
 }
 
 .form-actions .p-button-success {
-    background: linear-gradient(135deg, #ff8c00, #ffa726) !important;
+    background: var(--gradient-primary) !important;
     border: none !important;
     color: white !important;
 }
 
 .form-actions .p-button-success:hover:not(:disabled) {
-    background: linear-gradient(135deg, #e67e22, #f39c12) !important;
+    background: var(--gradient-primary-hover) !important;
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 140, 0, 0.3) !important;
+    box-shadow: 0 5px 15px rgba(var(--primary-color-rgb), 0.3) !important;
 }
 
 .form-actions .p-button:disabled {
@@ -189,15 +185,13 @@
     cursor: not-allowed !important;
 }
 
-/* Skeleton styling */
 .auction-form .p-skeleton {
-    background: #3a3a3a !important;
+    background: var(--surface-100) !important;
 }
 
-/* Mobile responsiveness */
 @media (max-width: 768px) {
     .auction-form {
-        padding: 1rem 0.5rem;
+        padding: var(--spacing-base) var(--spacing-sm);
     }
     
     .auction-form .form-card {
@@ -205,15 +199,15 @@
     }
     
     .auction-form .form-header {
-        padding: 1rem 1rem 0;
+        padding: var(--spacing-base) var(--spacing-base) 0;
     }
     
     .auction-form-content {
-        padding: 0 1rem 1rem;
+        padding: 0 var(--spacing-base) var(--spacing-base);
     }
     
     .auction-form .form-header h2 {
-        font-size: 1.5rem;
+        font-size: var(--font-xl);
     }
     
     .form-actions {
@@ -225,149 +219,139 @@
     }
 }
 
-/* Toast customization */
 .p-toast .p-toast-message {
-    background: #2a2a2a !important;
-    border: 1px solid #4a4a4a !important;
-    color: #e0e0e0 !important;
-    border-radius: 10px !important;
+    background: var(--surface-50) !important;
+    border: 1px solid var(--surface-200) !important;
+    color: var(--text-color-secondary) !important;
+    border-radius: var(--radius-md) !important;
 }
 
 .p-toast .p-toast-message.p-toast-message-success {
-    border-left: 4px solid #27ae60 !important;
+    border-left: 4px solid var(--success-color) !important;
 }
 
 .p-toast .p-toast-message.p-toast-message-error {
-    border-left: 4px solid #e74c3c !important;
+    border-left: 4px solid var(--danger-color) !important;
 }
 
 .p-toast .p-toast-icon-close {
-    color: #e0e0e0 !important;
+    color: var(--text-color-secondary) !important;
 }
 
-/* Calendar styling */
 .auction-form-content .p-calendar {
     width: 100%;
 }
 
 .auction-form-content .p-calendar .p-inputtext {
-    background: #3a3a3a !important;
-    border: 1px solid #4a4a4a !important;
-    color: #e0e0e0 !important;
-    border-radius: 10px !important;
-    padding: 0.75rem 1rem !important;
-    font-size: 1rem !important;
+    background: var(--surface-100) !important;
+    border: 1px solid var(--surface-200) !important;
+    color: var(--text-color-secondary) !important;
+    border-radius: var(--radius-md) !important;
+    padding: var(--spacing-md) var(--spacing-base) !important;
+    font-size: var(--font-base) !important;
 }
 
 .auction-form-content .p-calendar .p-inputtext:focus {
-    border-color: #ff8c00 !important;
-    box-shadow: 0 0 0 0.2rem rgba(255, 140, 0, 0.2) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.2) !important;
 }
 
-/* Calendar panel */
 .p-datepicker {
-    background: #2a2a2a !important;
-    border: 1px solid #4a4a4a !important;
-    border-radius: 10px !important;
+    background: var(--surface-50) !important;
+    border: 1px solid var(--surface-200) !important;
+    border-radius: var(--radius-md) !important;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
-    color: #e0e0e0 !important;
-    /* Prevent animation/sliding */
+    color: var(--text-color-secondary) !important;
     transition: none !important;
     animation: none !important;
 }
 
 .p-datepicker:not(.p-datepicker-inline) {
-    /* Keep it in place, don't center */
     transform: none !important;
 }
 
-/* Calendar header */
 .p-datepicker .p-datepicker-header {
-    background: #3a3a3a !important;
-    border-bottom: 1px solid #4a4a4a !important;
-    color: #e0e0e0 !important;
+    background: var(--surface-100) !important;
+    border-bottom: 1px solid var(--surface-200) !important;
+    color: var(--text-color-secondary) !important;
 }
 
 .p-datepicker .p-datepicker-header .p-datepicker-title {
-    color: #e0e0e0 !important;
+    color: var(--text-color-secondary) !important;
 }
 
 .p-datepicker .p-datepicker-header .p-datepicker-prev,
 .p-datepicker .p-datepicker-header .p-datepicker-next {
-    color: #e0e0e0 !important;
+    color: var(--text-color-secondary) !important;
 }
 
 .p-datepicker .p-datepicker-header .p-datepicker-prev:hover,
 .p-datepicker .p-datepicker-header .p-datepicker-next:hover {
-    background: #4a4a4a !important;
-    color: #ff8c00 !important;
+    background: var(--surface-200) !important;
+    color: var(--primary-color) !important;
 }
 
-/* Calendar days */
 .p-datepicker table td {
-    padding: 0.25rem !important;
+    padding: var(--spacing-xs) !important;
 }
 
 .p-datepicker table td > span {
-    color: #e0e0e0 !important;
-    border-radius: 8px !important;
+    color: var(--text-color-secondary) !important;
+    border-radius: var(--radius-sm) !important;
 }
 
 .p-datepicker table td > span:hover {
-    background: #4a4a4a !important;
-    color: #ff8c00 !important;
+    background: var(--surface-200) !important;
+    color: var(--primary-color) !important;
 }
 
 .p-datepicker table td.p-datepicker-today > span {
-    background: #3a3a3a !important;
-    color: #ff8c00 !important;
-    border: 1px solid #ff8c00 !important;
+    background: var(--surface-100) !important;
+    color: var(--primary-color) !important;
+    border: 1px solid var(--primary-color) !important;
 }
 
 .p-datepicker table td > span.p-highlight {
-    background: #ff8c00 !important;
+    background: var(--primary-color) !important;
     color: white !important;
 }
 
-/* Weekday headers */
 .p-datepicker .p-datepicker-calendar thead tr th {
-    color: #b0b0b0 !important;
+    color: var(--text-color-tertiary) !important;
 }
 
-/* Time picker */
 .p-datepicker .p-timepicker {
-    border-top: 1px solid #4a4a4a !important;
-    background: #3a3a3a !important;
+    border-top: 1px solid var(--surface-200) !important;
+    background: var(--surface-100) !important;
 }
 
 .p-datepicker .p-timepicker button {
-    color: #e0e0e0 !important;
+    color: var(--text-color-secondary) !important;
 }
 
 .p-datepicker .p-timepicker button:hover {
-    background: #4a4a4a !important;
-    color: #ff8c00 !important;
+    background: var(--surface-200) !important;
+    color: var(--primary-color) !important;
 }
 
 .p-datepicker .p-timepicker span {
-    color: #e0e0e0 !important;
+    color: var(--text-color-secondary) !important;
 }
 
-/* InputNumber styling for minimumBid */
 .auction-form-content .p-inputnumber {
     width: 100%;
 }
 
 .auction-form-content .p-inputnumber .p-inputtext {
-    background: #3a3a3a !important;
-    border: 1px solid #4a4a4a !important;
-    color: #e0e0e0 !important;
-    border-radius: 10px !important;
-    padding: 0.75rem 1rem !important;
-    font-size: 1rem !important;
+    background: var(--surface-100) !important;
+    border: 1px solid var(--surface-200) !important;
+    color: var(--text-color-secondary) !important;
+    border-radius: var(--radius-md) !important;
+    padding: var(--spacing-md) var(--spacing-base) !important;
+    font-size: var(--font-base) !important;
 }
 
 .auction-form-content .p-inputnumber .p-inputtext:focus {
-    border-color: #ff8c00 !important;
-    box-shadow: 0 0 0 0.2rem rgba(255, 140, 0, 0.2) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.2) !important;
 }

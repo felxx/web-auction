@@ -51,7 +51,6 @@ const Home = () => {
 
     return (
         <div className="home-page">
-            {/* Hero Banner with Search */}
             <div className="hero-section">
                 <div className="hero-content">
                     <h1 className="hero-title">Welcome to Web Auction</h1>
@@ -81,7 +80,6 @@ const Home = () => {
                 </div>
             </div>
 
-            {/* Ending Soon Section */}
             <div className="section-container">
                 <div className="section-header">
                     <h2>Ending Soon</h2>
@@ -105,7 +103,6 @@ const Home = () => {
                 )}
             </div>
 
-            {/* Popular Auctions Section */}
             <div className="section-container">
                 <div className="section-header">
                     <h2>Most Popular</h2>
@@ -129,7 +126,6 @@ const Home = () => {
                 )}
             </div>
 
-            {/* Categories Grid */}
             <div className="section-container">
                 <div className="section-header">
                     <h2>Browse by Category</h2>
@@ -158,7 +154,6 @@ const Home = () => {
                 )}
             </div>
 
-            {/* How It Works Section */}
             <div className="section-container how-it-works-section">
                 <div className="section-header">
                     <h2>How It Works</h2>

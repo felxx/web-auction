@@ -2,10 +2,10 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    transition: transform 0.2s, box-shadow 0.2s;
-    background: #2a2a2a !important;
-    border: 1px solid #4a4a4a !important;
-    border-radius: 12px !important;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    background: var(--surface-50) !important;
+    border: 1px solid var(--surface-200) !important;
+    border-radius: var(--radius-lg) !important;
 }
 
 .auction-card .p-card-body {
@@ -22,8 +22,8 @@
 
 .auction-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(255, 140, 0, 0.2);
-    border-color: #ff8c00 !important;
+    box-shadow: 0 8px 16px rgba(var(--primary-color-rgb), 0.2);
+    border-color: var(--primary-color) !important;
 }
 
 .auction-card-image-wrapper {
@@ -31,8 +31,8 @@
     width: 100%;
     height: 200px;
     overflow: hidden;
-    background-color: #3a3a3a;
-    border-radius: 12px 12px 0 0;
+    background-color: var(--surface-100);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .auction-card-image {
@@ -47,11 +47,11 @@
     justify-content: center;
     width: 100%;
     height: 100%;
-    background-color: #3a3a3a;
+    background-color: var(--surface-100);
 }
 
 .auction-card-no-image i {
-    color: #6a6a6a;
+    color: var(--surface-400);
 }
 
 .auction-card-status-tag {
@@ -60,33 +60,32 @@
     right: 10px;
 }
 
-/* Status Tag styling */
 .auction-card-status-tag .p-tag {
-    font-weight: 600 !important;
-    padding: 0.5rem 0.75rem !important;
-    border-radius: 8px !important;
+    font-weight: var(--font-semibold) !important;
+    padding: var(--spacing-sm) var(--spacing-md) !important;
+    border-radius: var(--radius-sm) !important;
 }
 
 .auction-card-status-tag .p-tag.p-tag-success {
-    background: #4caf50 !important;
-    color: white !important;
+    background: var(--success-color) !important;
+    color: var(--text-color-white) !important;
 }
 
 .auction-card-status-tag .p-tag.p-tag-warning {
-    background: #ff8c00 !important;
-    color: white !important;
+    background: var(--warning-color) !important;
+    color: var(--text-color-white) !important;
 }
 
 .auction-card-status-tag .p-tag.p-tag-danger {
-    background: #e74c3c !important;
-    color: white !important;
+    background: var(--danger-color) !important;
+    color: var(--text-color-white) !important;
 }
 
 .auction-card-title {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #ffffff;
+    margin: 0 0 var(--spacing-sm) 0;
+    font-size: var(--font-lg);
+    font-weight: var(--font-semibold);
+    color: var(--text-color-white);
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -98,21 +97,21 @@
 .auction-card-category {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    color: #b0b0b0;
-    font-size: 0.875rem;
-    margin-bottom: 0.75rem;
+    gap: var(--spacing-sm);
+    color: var(--text-color-secondary);
+    font-size: var(--font-sm);
+    margin-bottom: var(--spacing-md);
 }
 
 .auction-card-category i {
-    font-size: 0.875rem;
-    color: #ff8c00;
+    font-size: var(--font-sm);
+    color: var(--primary-color);
 }
 
 .auction-card-description {
-    color: #b0b0b0;
-    font-size: 0.9rem;
-    margin: 0 0 1rem 0;
+    color: var(--text-color-secondary);
+    font-size: var(--font-base);
+    margin: 0 0 var(--spacing-base) 0;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -124,20 +123,20 @@
 .auction-card-info {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    margin-top: 1rem;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-base);
 }
 
 .auction-card-info-item {
     display: flex;
     align-items: flex-start;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
 }
 
 .auction-card-info-item i {
-    margin-top: 0.25rem;
-    color: #ff8c00;
-    font-size: 1rem;
+    margin-top: var(--spacing-xs);
+    color: var(--primary-color);
+    font-size: var(--font-base);
 }
 
 .auction-card-info-item div {
@@ -147,54 +146,51 @@
 }
 
 .auction-card-info-item small {
-    color: #888;
-    font-size: 0.75rem;
+    color: var(--text-color-tertiary);
+    font-size: var(--font-xs);
 }
 
 .auction-card-info-item strong {
-    color: #ffffff;
-    font-size: 0.9rem;
+    color: var(--text-color-white);
+    font-size: var(--font-base);
 }
 
 .auction-card-price {
-    color: #4caf50 !important;
-    font-size: 1.1rem !important;
-    font-weight: 600 !important;
+    color: var(--success-color) !important;
+    font-size: var(--font-md) !important;
+    font-weight: var(--font-semibold) !important;
 }
 
 .auction-card-footer {
     display: flex;
     justify-content: flex-end;
-    padding-top: 0.5rem;
-    border-top: 1px solid #4a4a4a;
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid var(--surface-200);
 }
 
-/* Button styling */
 .auction-card-footer .p-button {
-    background: linear-gradient(135deg, #ff8c00, #ffa726) !important;
+    background: var(--gradient-primary) !important;
     border: none !important;
-    color: white !important;
-    border-radius: 8px !important;
-    font-weight: 600 !important;
-    transition: all 0.3s ease !important;
+    color: var(--text-color-white) !important;
+    border-radius: var(--radius-sm) !important;
+    font-weight: var(--font-semibold) !important;
+    transition: all var(--transition-base) !important;
 }
 
 .auction-card-footer .p-button:hover {
-    background: linear-gradient(135deg, #e67e22, #f39c12) !important;
+    background: var(--gradient-primary-hover) !important;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3) !important;
+    box-shadow: var(--shadow-primary) !important;
 }
 
-/* Focus visible for accessibility */
 .auction-card:focus-visible {
-    outline: 2px solid #ff8c00;
+    outline: 2px solid var(--primary-color);
     outline-offset: 2px;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .auction-card-title {
-        font-size: 1.1rem;
+        font-size: var(--font-md);
     }
     
     .auction-card-image-wrapper {

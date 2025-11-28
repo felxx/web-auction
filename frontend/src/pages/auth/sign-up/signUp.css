@@ -9,7 +9,7 @@ html, body {
     height: 100vh;
     display: flex;
     position: relative;
-    background: #1a1a1a;
+    background: var(--surface-0);
     overflow: hidden;
 }
 
@@ -20,7 +20,7 @@ html, body {
     justify-content: center;
     position: relative;
     z-index: 2;
-    padding: 1rem;
+    padding: var(--spacing-base);
     box-sizing: border-box;
     max-height: 100vh;
     overflow: hidden;
@@ -54,17 +54,17 @@ html, body {
 .signup-card {
     background: rgba(42, 42, 42, 0.95);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 140, 0, 0.2);
-    border-radius: 20px;
-    padding: 2rem;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    color: #e0e0e0;
+    border: 1px solid rgba(var(--primary-color-rgb), 0.2);
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-lg);
+    color: var(--text-color);
     box-sizing: border-box;
 }
 
 .signup-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: var(--spacing-xl);
 }
 
 .signup-logo {
@@ -73,54 +73,54 @@ html, body {
     justify-content: center;
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, #ff8c00, #ffa726);
-    border-radius: 50%;
-    margin-bottom: 1rem;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-full);
+    margin-bottom: var(--spacing-base);
 }
 
 .signup-logo i {
-    font-size: 1.5rem;
-    color: white;
+    font-size: var(--font-xl);
+    color: var(--text-color-white);
 }
 
 .signup-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #e0e0e0;
-    margin: 0 0 0.5rem 0;
-    background: linear-gradient(135deg, #ff8c00, #ffa726);
+    font-size: var(--font-3xl);
+    font-weight: var(--font-bold);
+    color: var(--text-color);
+    margin: 0 0 var(--spacing-sm) 0;
+    background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
 .signup-subtitle {
-    color: #b0b0b0;
+    color: var(--text-color-secondary);
     margin: 0;
-    font-size: 0.9rem;
+    font-size: var(--font-base);
 }
 
 .signup-form {
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--spacing-lg);
 }
 
 .signup-form .field {
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-base);
 }
 
 .signup-button {
-    height: 3rem;
-    font-size: 1rem;
-    font-weight: 600;
-    background: linear-gradient(135deg, #ff8c00, #ffa726);
+    height: var(--button-height);
+    font-size: var(--font-base);
+    font-weight: var(--font-semibold);
+    background: var(--gradient-primary);
     border: none;
-    margin-top: 1rem;
+    margin-top: var(--spacing-base);
 }
 
 .signup-button:hover {
-    background: linear-gradient(135deg, #ff7700, #ff9500);
+    background: var(--gradient-primary-hover);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(255, 140, 0, 0.3);
+    box-shadow: var(--shadow-primary-lg);
 }
 
 .signup-login {
@@ -128,25 +128,23 @@ html, body {
     padding-top: 1rem;
 }
 
-/* Mobile responsiveness */
 @media (max-width: 768px) {
     .signup-container {
-        padding: 1rem;
+        padding: var(--spacing-base);
     }
     
     .signup-card {
-        padding: 2rem 1.5rem;
-        border-radius: 15px;
+        padding: var(--spacing-xl) var(--spacing-lg);
+        border-radius: var(--radius-xl);
     }
     
     .signup-title {
-        font-size: 1.75rem;
+        font-size: var(--font-2xl);
     }
 }
 
-/* Animation for card entrance */
 .signup-card {
-    animation: slideInUp 0.6s ease-out;
+    animation: slideInUp var(--transition-slow);
 }
 
 @keyframes slideInUp {
@@ -160,30 +158,29 @@ html, body {
     }
 }
 
-/* Custom input styles */
 .signup-form .p-inputtext,
 .signup-form .p-password input,
 .signup-form .p-dropdown {
-    border-radius: 10px;
-    border: 2px solid #4a4a4a;
-    transition: all 0.3s ease;
-    height: 3rem;
-    background-color: #3a3a3a;
-    color: #e0e0e0;
+    border-radius: var(--radius-md);
+    border: 2px solid var(--surface-200);
+    transition: all var(--transition-base);
+    height: var(--input-height);
+    background-color: var(--surface-100);
+    color: var(--text-color);
 }
 
 .signup-form .p-inputtext:focus,
 .signup-form .p-password input:focus,
 .signup-form .p-dropdown:not(.p-disabled):hover,
 .signup-form .p-dropdown:not(.p-disabled).p-focus {
-    border-color: #ff8c00;
-    box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.2);
-    background-color: #2a2a2a;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.2);
+    background-color: var(--surface-50);
 }
 
 .signup-form .p-float-label label {
-    color: #b0b0b0;
-    font-weight: 500;
+    color: var(--text-color-secondary);
+    font-weight: var(--font-medium);
 }
 
 .signup-form .p-dropdown {
@@ -191,66 +188,66 @@ html, body {
 }
 
 .p-dropdown-panel {
-    background-color: #2a2a2a !important;
-    border: 2px solid #4a4a4a !important;
-    border-radius: 10px !important;
+    background-color: var(--surface-50) !important;
+    border: 2px solid var(--surface-200) !important;
+    border-radius: var(--radius-md) !important;
     z-index: 9999 !important;
     transform: none !important;
     transition: opacity 0.15s ease-in-out !important;
 }
 
 .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
-    background-color: #2a2a2a !important;
-    color: #e0e0e0 !important;
+    background-color: var(--surface-50) !important;
+    color: var(--text-color) !important;
     border: none !important;
     transition: background-color 0.15s ease !important;
 }
 
 .p-dropdown-panel .p-dropdown-items .p-dropdown-item:not(.p-highlight):not(.p-disabled):hover {
-    background-color: #ff8c00 !important;
-    color: #000000 !important;
+    background-color: var(--primary-color) !important;
+    color: var(--text-color-white) !important;
 }
 
 .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
-    background-color: #ff8c00 !important;
-    color: #000000 !important;
+    background-color: var(--primary-color) !important;
+    color: var(--text-color-white) !important;
 }
 
 .signup-login a {
-    color: #ff8c00 !important;
+    color: var(--primary-color) !important;
     text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s ease;
+    font-weight: var(--font-medium);
+    transition: all var(--transition-base);
 }
 
 .signup-login a:hover {
-    color: #ffa726 !important;
+    color: var(--primary-400) !important;
     text-decoration: underline;
 }
 
 .password-strength-indicator {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
+    margin-top: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
 }
 
 .password-strength-label {
-    font-size: 0.875rem;
-    font-weight: 600;
+    font-size: var(--font-sm);
+    font-weight: var(--font-semibold);
 }
 
 .password-requirements {
-    margin-top: 0.75rem;
-    padding: 0.75rem;
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md);
     background-color: rgba(24, 24, 24, 0.1);
-    border-radius: 8px;
-    border: 1px solid #4a4a4a;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--surface-200);
 }
 
 .requirements-title {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #e0e0e0;
-    margin-bottom: 0.5rem;
+    font-size: var(--font-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-color);
+    margin-bottom: var(--spacing-sm);
 }
 
 .requirements-list {
@@ -259,43 +256,42 @@ html, body {
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: var(--spacing-xs);
 }
 
 .requirements-list li {
-    font-size: 0.8rem;
+    font-size: var(--font-xs);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    transition: color 0.3s ease;
+    gap: var(--spacing-sm);
+    transition: color var(--transition-base);
 }
 
 .requirements-list li:before {
     content: '';
     width: 12px;
     height: 12px;
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     flex-shrink: 0;
-    transition: background-color 0.3s ease;
+    transition: background-color var(--transition-base);
 }
 
 .requirement-met {
-    color: #4CAF50 !important;
+    color: var(--success-color) !important;
 }
 
 .requirement-met:before {
-    background-color: #4CAF50;
+    background-color: var(--success-color);
 }
 
 .requirement-unmet {
-    color: #b0b0b0 !important;
+    color: var(--text-color-secondary) !important;
 }
 
 .requirement-unmet:before {
-    background-color: #F44336;
+    background-color: var(--danger-color);
 }
 
-/* Password field with visibility toggle */
 .password-field-wrapper {
     position: relative;
     display: block !important;
@@ -310,8 +306,8 @@ html, body {
     right: 0 !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
-    color: #b0b0b0 !important;
-    padding: 0.5rem !important;
+    color: var(--text-color-secondary) !important;
+    padding: var(--spacing-sm) !important;
     min-width: 2.5rem !important;
     width: 2.5rem !important;
     height: 2.5rem !important;
@@ -320,7 +316,7 @@ html, body {
 
 .password-toggle-btn:hover {
     background-color: rgba(176, 176, 176, 0.1) !important;
-    color: #e0e0e0 !important;
+    color: var(--text-color) !important;
 }
 
 .password-toggle-btn:focus {

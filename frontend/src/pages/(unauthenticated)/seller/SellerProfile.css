@@ -1,7 +1,7 @@
 .seller-profile-page {
     min-height: 100vh;
-    background-color: #1a1a1a;
-    padding: 2rem 1rem;
+    background-color: var(--surface-0);
+    padding: var(--spacing-xl) var(--spacing-base);
 }
 
 .profile-container {
@@ -9,45 +9,43 @@
     margin: 0 auto;
 }
 
-/* Back button */
 .profile-container > .p-button-text {
-    color: #e0e0e0 !important;
-    border: 1px solid #4a4a4a !important;
+    color: var(--text-color-secondary) !important;
+    border: 1px solid var(--surface-200) !important;
     background: transparent !important;
-    border-radius: 8px !important;
+    border-radius: var(--radius-sm) !important;
 }
 
 .profile-container > .p-button-text:hover {
-    background: #4a4a4a !important;
-    border-color: #ff8c00 !important;
-    color: #ff8c00 !important;
+    background: var(--surface-200) !important;
+    border-color: var(--primary-color) !important;
+    color: var(--primary-color) !important;
 }
 
-/* Profile Header */
 .profile-header {
-    background: #2a2a2a;
-    padding: 2.5rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    border: 1px solid #4a4a4a;
-    margin-bottom: 2rem;
+    background: var(--surface-50);
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--surface-200);
+    margin-bottom: var(--spacing-xl);
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: var(--spacing-xl);
 }
 
 .profile-avatar {
     width: 8rem;
     height: 8rem;
-    background: linear-gradient(135deg, #ff8c00, #ff6b00);
-    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), #ff6b00);
+    border-radius: var(--radius-full);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 4rem;
+    font-size: var(--font-3xl);
     color: white;
     flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
 }
 
 .profile-info {
@@ -55,96 +53,94 @@
 }
 
 .profile-info h1 {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #ffffff;
-    margin: 0 0 1rem 0;
+    font-size: var(--font-3xl);
+    font-weight: var(--font-bold);
+    color: var(--text-color-white);
+    margin: 0 0 var(--spacing-base) 0;
 }
 
 .rating-display {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
 }
 
 .stars {
     display: flex;
-    gap: 0.25rem;
+    gap: var(--spacing-xs);
 }
 
 .rating-text {
-    color: #b0b0b0;
-    font-size: 1.1rem;
-    font-weight: 500;
+    color: var(--text-color-secondary);
+    font-size: var(--font-md);
+    font-weight: var(--font-medium);
 }
 
 .no-rating {
-    color: #888;
-    font-size: 1rem;
-    margin-bottom: 1.5rem;
+    color: var(--surface-600);
+    font-size: var(--font-base);
+    margin-bottom: var(--spacing-lg);
 }
 
 .profile-stats {
     display: flex;
-    gap: 2rem;
+    gap: var(--spacing-xl);
     flex-wrap: wrap;
 }
 
 .stat-item {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    color: #e0e0e0;
-    font-size: 1rem;
+    gap: var(--spacing-sm);
+    color: var(--text-color);
+    font-size: var(--font-base);
 }
 
 .stat-item i {
-    color: #ff8c00;
-    font-size: 1.2rem;
+    color: var(--primary-color);
+    font-size: var(--font-lg);
 }
 
-/* Feedbacks Container */
 .feedbacks-container {
-    background: #2a2a2a;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    border: 1px solid #4a4a4a;
+    background: var(--surface-50);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--surface-200);
 }
 
 .feedbacks-container h2 {
-    margin: 0 0 1.5rem 0;
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #ffffff;
-    padding-bottom: 0.75rem;
-    border-bottom: 2px solid #4a4a4a;
+    margin: 0 0 var(--spacing-lg) 0;
+    font-size: var(--font-xl);
+    font-weight: var(--font-semibold);
+    color: var(--text-color-white);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 2px solid var(--surface-200);
 }
 
-/* Paginator Styling */
 .feedbacks-container .p-paginator {
-    background: #3a3a3a !important;
-    border: 1px solid #4a4a4a !important;
-    border-radius: 8px !important;
-    padding: 0.75rem !important;
+    background: var(--surface-100) !important;
+    border: 1px solid var(--surface-200) !important;
+    border-radius: var(--radius-sm) !important;
+    padding: var(--spacing-md) !important;
 }
 
 .feedbacks-container .p-paginator .p-paginator-pages .p-paginator-page {
     background: transparent !important;
-    color: #e0e0e0 !important;
-    border-radius: 6px !important;
+    color: var(--text-color-secondary) !important;
+    border-radius: var(--radius-xs) !important;
     min-width: 2.5rem !important;
     height: 2.5rem !important;
 }
 
 .feedbacks-container .p-paginator .p-paginator-pages .p-paginator-page:hover {
-    background: #4a4a4a !important;
-    color: #ff8c00 !important;
+    background: var(--surface-200) !important;
+    color: var(--primary-color) !important;
 }
 
 .feedbacks-container .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
-    background: #ff8c00 !important;
+    background: var(--primary-color) !important;
     color: white !important;
 }
 
@@ -153,40 +149,39 @@
 .feedbacks-container .p-paginator .p-paginator-next,
 .feedbacks-container .p-paginator .p-paginator-last {
     background: transparent !important;
-    color: #e0e0e0 !important;
+    color: var(--text-color-secondary) !important;
     min-width: 2.5rem !important;
     height: 2.5rem !important;
-    border-radius: 6px !important;
+    border-radius: var(--radius-xs) !important;
 }
 
 .feedbacks-container .p-paginator .p-paginator-first:hover,
 .feedbacks-container .p-paginator .p-paginator-prev:hover,
 .feedbacks-container .p-paginator .p-paginator-next:hover,
 .feedbacks-container .p-paginator .p-paginator-last:hover {
-    background: #4a4a4a !important;
-    color: #ff8c00 !important;
+    background: var(--surface-200) !important;
+    color: var(--primary-color) !important;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
     .seller-profile-page {
-        padding: 1rem 0.5rem;
+        padding: var(--spacing-base) var(--spacing-sm);
     }
 
     .profile-header {
         flex-direction: column;
         text-align: center;
-        padding: 2rem 1.5rem;
+        padding: var(--spacing-2xl) var(--spacing-lg);
     }
 
     .profile-avatar {
         width: 6rem;
         height: 6rem;
-        font-size: 3rem;
+        font-size: var(--font-3xl);
     }
 
     .profile-info h1 {
-        font-size: 1.5rem;
+        font-size: var(--font-xl);
     }
 
     .rating-display {
@@ -198,11 +193,11 @@
     }
 
     .feedbacks-container {
-        padding: 1.5rem 1rem;
+        padding: var(--spacing-lg) var(--spacing-base);
     }
 
     .feedbacks-container h2 {
-        font-size: 1.25rem;
+        font-size: var(--font-lg);
     }
 }
 
