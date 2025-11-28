@@ -352,7 +352,7 @@ public class AuctionService {
         return dto;
     }
     
-    public AuctionDetailDTO getPublicAuctionDetail(Long id) {
+public AuctionDetailDTO getPublicAuctionDetail(Long id) {
         Auction auction = findById(id);
         
         AuctionDetailDTO dto = new AuctionDetailDTO();
@@ -370,30 +370,55 @@ public class AuctionService {
         }
         
         Float currentPrice = auction.getMinimumBid();
+        Bid winningBid = null;
+
         if (auction.getBids() != null && !auction.getBids().isEmpty()) {
-            currentPrice = auction.getBids().stream()
-                    .map(Bid::getAmount)
-                    .max(Comparator.naturalOrder())
-                    .orElse(auction.getMinimumBid());
+            winningBid = auction.getBids().stream()
+                    .max(Comparator.comparing(Bid::getAmount))
+                    .orElse(null);
+            
+            if (winningBid != null) {
+                currentPrice = winningBid.getAmount();
+            }
         }
         dto.setCurrentPrice(currentPrice);
         dto.setTotalBids(auction.getBids() != null ? auction.getBids().size() : 0);
         
         Boolean currentUserHasBids = false;
+        Boolean isWinner = false;
+        Boolean hasFeedback = false;
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated() && 
             !"anonymousUser".equals(authentication.getPrincipal())) {
+            
             String email = authentication.getName();
             Person currentUser = personRepository.findByEmail(email).orElse(null);
             
-            if (currentUser != null && auction.getBids() != null) {
-                currentUserHasBids = auction.getBids().stream()
-                    .anyMatch(bid -> bid.getBidder() != null && 
-                                   bid.getBidder().getId().equals(currentUser.getId()));
+            if (currentUser != null) {
+                if (auction.getBids() != null) {
+                    currentUserHasBids = auction.getBids().stream()
+                        .anyMatch(bid -> bid.getBidder() != null && 
+                                       bid.getBidder().getId().equals(currentUser.getId()));
+                }
+
+                if (auction.getStatus() == AuctionStatus.CLOSED && winningBid != null) {
+                    if (winningBid.getBidder().getId().equals(currentUser.getId())) {
+                        isWinner = true;
+                        hasFeedback = feedbackRepository.existsByWriterIdAndAuctionId(
+                            currentUser.getId(), 
+                            auction.getId()
+                        );
+                    }
+                }
             }
         }
-        dto.setCurrentUserHasBids(currentUserHasBids);
         
+        dto.setCurrentUserHasBids(currentUserHasBids);
+        dto.setIsWinner(isWinner);
+        dto.setHasFeedback(hasFeedback);
+        
+        // Mapeamento de Imagens
         if (auction.getImages() != null && !auction.getImages().isEmpty()) {
             List<AuctionDetailDTO.ImageDTO> imageDTOs = auction.getImages().stream()
                     .sorted((a, b) -> {
@@ -442,7 +467,6 @@ public class AuctionService {
             if (sellerFeedbacks != null && sellerFeedbacks.hasContent()) {
                 List<Feedback> feedbackList = sellerFeedbacks.getContent();
                 totalFeedbacks = feedbackList.size();
-                
                 averageRating = feedbackList.stream()
                         .mapToInt(Feedback::getRating)
                         .average()

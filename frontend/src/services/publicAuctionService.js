@@ -1,6 +1,6 @@
-import axios from 'axios';
+import api from './api'; 
 
-const API_URL = 'http://localhost:8080/public/auctions';
+const BASE_PATH = '/public/auctions'; 
 
 export const publicAuctionService = {
     getPublicAuctions: async (params = {}) => {
@@ -15,23 +15,22 @@ export const publicAuctionService = {
         if (params.size !== undefined) queryParams.append('size', params.size);
         if (params.sort) queryParams.append('sort', params.sort);
         
-        const response = await axios.get(`${API_URL}?${queryParams.toString()}`);
+        const response = await api.get(`${BASE_PATH}?${queryParams.toString()}`);
         return response.data;
     },
 
     getEndingSoonAuctions: async (limit = 3) => {
-        const response = await axios.get(`${API_URL}/ending-soon?limit=${limit}`);
+        const response = await api.get(`${BASE_PATH}/ending-soon?limit=${limit}`);
         return response.data;
     },
 
     getMostPopularAuctions: async (limit = 3) => {
-        const response = await axios.get(`${API_URL}/most-popular?limit=${limit}`);
+        const response = await api.get(`${BASE_PATH}/most-popular?limit=${limit}`);
         return response.data;
     },
 
     getAuctionDetail: async (id) => {
-        const response = await axios.get(`${API_URL}/${id}`);
+        const response = await api.get(`${BASE_PATH}/${id}`);
         return response.data;
     }
 };
-

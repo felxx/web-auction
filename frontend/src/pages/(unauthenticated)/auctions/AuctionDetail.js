@@ -236,7 +236,8 @@ const AuctionDetail = () => {
         try {
             await feedbackService.createFeedback({
                 ...feedbackData,
-                recipientId: auction.seller.id
+                recipientId: auction.seller.id,
+                auctionId: auction.id
             });
             
             toast.current.show({
@@ -245,9 +246,15 @@ const AuctionDetail = () => {
                 detail: 'Your feedback has been submitted successfully.',
                 life: 4000
             });
+
+            setAuction(prev => ({
+                ...prev,
+                hasFeedback: true
+            }));
             
             setShowFeedbackDialog(false);
             await loadSellerFeedbacks(auction.seller.id);
+            
         } catch (error) {
             console.error('Error submitting feedback:', error);
             toast.current.show({
@@ -259,13 +266,12 @@ const AuctionDetail = () => {
         }
     };
 
-    const canLeaveFeedback = () => {
+const canLeaveFeedback = () => {
         if (!isAuthenticated || !auction) return false;
-        const currentUser = authService.getCurrentUser();
         
         return auction.status === 'CLOSED' && 
-               currentUser?.id !== auction.seller?.id &&
-               auction.currentUserHasBids === true;
+               auction.isWinner === true && 
+               auction.hasFeedback === false;
     };
 
     const getStatusSeverity = (status) => {
@@ -684,8 +690,21 @@ const AuctionDetail = () => {
             <FeedbackForm
                 visible={showFeedbackDialog}
                 onHide={() => setShowFeedbackDialog(false)}
-                onSubmit={handleFeedbackSubmit}
+                recipientId={auction?.seller?.id} 
+                auctionId={auction?.id}
                 recipientName={auction?.seller?.name}
+                onSuccess={async () => {
+                    setShowFeedbackDialog(false);
+                    setAuction(prev => ({ ...prev, hasFeedback: true }));
+                    await loadSellerFeedbacks(auction?.seller?.id);
+                    
+                    toast.current.show({
+                        severity: 'success',
+                        summary: 'Feedback sent!',
+                        detail: 'Your feedback has been submitted successfully.',
+                        life: 4000
+                    });
+                }}
             />
         </main>
     );

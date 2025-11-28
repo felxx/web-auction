@@ -29,6 +29,8 @@ public class Feedback {
 
     @PastOrPresent(message = "Created date cannot be in the future")
     private LocalDateTime createdAt;
+    
+    private Long auctionId;
 
     @ManyToOne
     @JoinColumn(name = "writer_id")

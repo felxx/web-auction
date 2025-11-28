@@ -25,6 +25,10 @@ public class AuctionDetailDTO {
     private Float currentPrice;
     private Integer totalBids;
     private Boolean currentUserHasBids;
+    
+    private Boolean isWinner; 
+    private Boolean hasFeedback;
+
     private List<ImageDTO> images;
     private List<RecentBidDTO> recentBids;
     private SellerInfoDTO seller;
