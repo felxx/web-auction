@@ -17,11 +17,14 @@ const SignUpPage = () => {
         name: '',
         email: '',
         password: '',
+        confirmPassword: '',
         profileType: 'BUYER'
     });
     const [loading, setLoading] = useState(false);
     const [passwordErrors, setPasswordErrors] = useState([]);
     const [passwordStrength, setPasswordStrength] = useState(null);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const navigate = useNavigate();
     const toast = useRef(null);
 
@@ -56,6 +59,16 @@ const SignUpPage = () => {
                 life: 5000
             });
             setPasswordErrors(passwordValidationErrors);
+            return;
+        }
+
+        if (formData.password !== formData.confirmPassword) {
+            toast.current.show({
+                severity: 'error',
+                summary: 'Password Mismatch',
+                detail: 'Passwords do not match. Please check and try again.',
+                life: 5000
+            });
             return;
         }
         
@@ -136,18 +149,44 @@ const SignUpPage = () => {
                             </div>
 
                             <div className="field">
-                                <span className="p-float-label">
-                                    <Password
+                                <span className="p-float-label password-field-wrapper">
+                                    <InputText
                                         id="password"
+                                        type={showPassword ? 'text' : 'password'}
                                         value={formData.password}
                                         onChange={(e) => handleInputChange('password', e.target.value)}
                                         required
-                                        className="w-full"
-                                        inputClassName="w-full"
-                                        promptLabel=""
-                                        feedback={false}
+                                        className="w-full password-input"
                                     />
                                     <label htmlFor="password">Password</label>
+                                    <Button
+                                        type="button"
+                                        icon={showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'}
+                                        className="p-button-text password-toggle-btn"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        tabIndex={-1}
+                                    />
+                                </span>
+                            </div>
+
+                            <div className="field">
+                                <span className="p-float-label password-field-wrapper">
+                                    <InputText
+                                        id="confirmPassword"
+                                        type={showConfirmPassword ? 'text' : 'password'}
+                                        value={formData.confirmPassword}
+                                        onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                                        required
+                                        className="w-full password-input"
+                                    />
+                                    <label htmlFor="confirmPassword">Confirm Password</label>
+                                    <Button
+                                        type="button"
+                                        icon={showConfirmPassword ? 'pi pi-eye-slash' : 'pi pi-eye'}
+                                        className="p-button-text password-toggle-btn"
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        tabIndex={-1}
+                                    />
                                 </span>
                                 
                                 <div className="password-requirements">
@@ -167,6 +206,9 @@ const SignUpPage = () => {
                                         </li>
                                         <li className={/[!@#$%^&*(),.?":{}|<>]/.test(formData.password) ? 'requirement-met' : 'requirement-unmet'}>
                                             One special character
+                                        </li>
+                                        <li className={formData.password && formData.confirmPassword && formData.password === formData.confirmPassword ? 'requirement-met' : 'requirement-unmet'}>
+                                            Passwords match
                                         </li>
                                     </ul>
                                 </div>

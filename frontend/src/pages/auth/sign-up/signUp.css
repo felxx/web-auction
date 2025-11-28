@@ -294,3 +294,35 @@ html, body {
 .requirement-unmet:before {
     background-color: #F44336;
 }
+
+/* Password field with visibility toggle */
+.password-field-wrapper {
+    position: relative;
+    display: block !important;
+}
+
+.password-field-wrapper .password-input {
+    padding-right: 3rem !important;
+}
+
+.password-toggle-btn {
+    position: absolute !important;
+    right: 0 !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    color: #ff8c00 !important;
+    padding: 0.5rem !important;
+    min-width: 2.5rem !important;
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    z-index: 1;
+}
+
+.password-toggle-btn:hover {
+    background-color: rgba(255, 140, 0, 0.1) !important;
+}
+
+.password-toggle-btn:focus {
+    box-shadow: none !important;
+}
+
