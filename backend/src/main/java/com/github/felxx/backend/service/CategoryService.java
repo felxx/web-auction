@@ -11,6 +11,8 @@ import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -25,6 +27,7 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final PersonRepository personRepository;
+    private final ModelMapper modelMapper;
 
     @Transactional
     @Timed(value = "categories.create.time", description = "Tempo de criação de categoria")
@@ -90,14 +93,6 @@ public class CategoryService {
     }
 
     private CategoryResponseDTO toResponseDTO(Category category) {
-        CategoryResponseDTO dto = new CategoryResponseDTO();
-        dto.setId(category.getId());
-        dto.setName(category.getName());
-        dto.setDescription(category.getDescription());
-        if (category.getCreator() != null) {
-            dto.setCreatorId(category.getCreator().getId());
-            dto.setCreatorName(category.getCreator().getName());
-        }
-        return dto;
+        return modelMapper.map(category, CategoryResponseDTO.class);
     }
 }

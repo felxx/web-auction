@@ -16,6 +16,8 @@ import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -37,6 +39,7 @@ public class BidService {
     private final PersonRepository personRepository;
     private final AuctionRepository auctionRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final ModelMapper modelMapper;
 
     @Transactional
     @Timed(value = "bids.create.time", description = "Tempo de criação de lance")
@@ -149,14 +152,6 @@ public class BidService {
     }
     
     public BidResponseDTO toResponseDTO(Bid bid) {
-        BidResponseDTO dto = new BidResponseDTO();
-        dto.setId(bid.getId());
-        dto.setAmount(bid.getAmount());
-        dto.setBidDateTime(bid.getBidDateTime());
-        dto.setBidderId(bid.getBidder().getId());
-        dto.setBidderName(bid.getBidder().getName());
-        dto.setAuctionId(bid.getAuction().getId());
-        dto.setAuctionTitle(bid.getAuction().getTitle());
-        return dto;
+        return modelMapper.map(bid, BidResponseDTO.class);
     }
 }

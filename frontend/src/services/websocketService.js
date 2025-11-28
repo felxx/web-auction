@@ -6,6 +6,7 @@ class WebSocketService {
         this.client = null;
         this.connected = false;
         this.subscriptions = new Map();
+        this.baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8080';
     }
 
     connect(onConnected, onError) {
@@ -15,7 +16,7 @@ class WebSocketService {
         }
 
         this.client = new Client({
-            webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
+            webSocketFactory: () => new SockJS(`${this.baseUrl}/ws`),
             reconnectDelay: 5000,
             heartbeatIncoming: 4000,
             heartbeatOutgoing: 4000,

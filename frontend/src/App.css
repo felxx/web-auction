@@ -231,3 +231,215 @@
 .font-bold { font-weight: var(--font-bold); }
 .font-medium { font-weight: var(--font-medium); }
 .font-normal { font-weight: var(--font-normal); }
+
+/* --- Global List Styles --- */
+
+/* Card Container */
+.list-card {
+    background: var(--surface-50) !important;
+    border: 1px solid var(--surface-200) !important;
+    border-radius: var(--radius-2xl) !important;
+    box-shadow: var(--shadow-xl) !important;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.list-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-lg) var(--spacing-lg) 0;
+}
+
+.list-header h2 {
+    font-size: var(--font-2xl);
+    font-weight: var(--font-bold);
+    color: var(--text-color);
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.list-header p {
+    color: var(--text-color-secondary);
+    font-size: var(--font-base);
+    margin: 0 0 var(--spacing-lg) 0;
+}
+
+.list-content {
+    padding: 0 var(--spacing-lg) var(--spacing-lg);
+}
+
+/* Header Actions & Search */
+.header-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-base);
+    margin-bottom: var(--spacing-base);
+    flex-wrap: wrap;
+}
+
+.search-input {
+    position: relative;
+    display: inline-block;
+}
+
+.search-input .p-inputtext {
+    background: var(--surface-100) !important;
+    border: 1px solid var(--surface-200) !important;
+    color: var(--text-color) !important;
+    border-radius: var(--radius-md) !important;
+    width: 300px;
+    padding-left: 2.5rem !important;
+}
+
+.search-input .p-inputtext:focus {
+    border-color: var(--primary-color) !important;
+}
+
+.search-input i {
+    color: var(--text-color-secondary);
+    position: absolute;
+    top: 50% !important;
+    left: 0.75rem !important;
+    transform: translateY(-50%) !important;
+    margin-top: 0 !important;
+    z-index: 1;
+}
+
+/* Global DataTable Styles */
+.p-datatable {
+    background: transparent !important;
+    border: 1px solid var(--surface-200) !important;
+    border-radius: var(--radius-xl) !important;
+}
+
+.p-datatable .p-datatable-header {
+    background: var(--surface-100) !important;
+    border: none !important;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0 !important;
+    color: var(--text-color) !important;
+    padding: var(--spacing-base) !important;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+    background: var(--surface-100) !important;
+    border: none !important;
+    color: var(--text-color) !important;
+    font-weight: var(--font-semibold) !important;
+    padding: var(--spacing-base) !important;
+    border-bottom: 1px solid var(--surface-200) !important;
+}
+
+.p-datatable .p-datatable-tbody > tr {
+    background: transparent !important;
+    border: none !important;
+    transition: all var(--transition-fast) !important;
+}
+
+.p-datatable .p-datatable-tbody > tr:hover {
+    background: rgba(var(--primary-color-rgb), 0.1) !important;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px solid var(--surface-200) !important;
+    color: var(--text-color) !important;
+    padding: var(--spacing-base) !important;
+}
+
+.p-datatable .p-datatable-tbody > tr:last-child > td {
+    border-bottom: none !important;
+}
+
+/* Global Paginator Styles */
+.p-paginator {
+    background: var(--surface-100) !important;
+    border: none !important;
+    border-radius: 0 0 var(--radius-xl) var(--radius-xl) !important;
+    color: var(--text-color) !important;
+    padding: var(--spacing-base) !important;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page,
+.p-paginator .p-paginator-first,
+.p-paginator .p-paginator-prev,
+.p-paginator .p-paginator-next,
+.p-paginator .p-paginator-last {
+    color: var(--text-color) !important;
+    border: 1px solid var(--surface-200) !important;
+    background: transparent !important;
+    margin: 0 0.125rem !important;
+    border-radius: var(--radius-sm) !important;
+    min-width: 2.5rem;
+    height: 2.5rem;
+}
+
+.p-paginator .p-paginator-element:hover {
+    background: var(--surface-200) !important;
+    border-color: var(--primary-color) !important;
+    color: var(--primary-color) !important;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    background: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: var(--text-color-white) !important;
+}
+
+.p-paginator .p-dropdown {
+    background: var(--surface-200) !important;
+    border: 1px solid var(--surface-200) !important;
+    color: var(--text-color) !important;
+}
+
+/* Global Empty State */
+.empty-state {
+    text-align: center;
+    padding: var(--spacing-3xl) var(--spacing-base);
+    color: var(--text-color-secondary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-state h3 {
+    color: var(--text-color);
+    margin: var(--spacing-base) 0 var(--spacing-sm) 0;
+    font-size: var(--font-lg);
+}
+
+/* Global Confirm Dialog Overrides */
+.p-confirm-dialog {
+    background: var(--surface-50) !important;
+    border: 1px solid var(--surface-200) !important;
+    border-radius: var(--radius-xl) !important;
+}
+
+.p-confirm-dialog .p-dialog-header,
+.p-confirm-dialog .p-dialog-content,
+.p-confirm-dialog .p-dialog-footer {
+    background: var(--surface-50) !important;
+    color: var(--text-color) !important;
+}
+
+.p-confirm-dialog .p-dialog-header {
+    border-bottom: 1px solid var(--surface-200) !important;
+}
+
+.p-confirm-dialog .p-dialog-footer {
+    border-top: 1px solid var(--surface-200) !important;
+}
+
+/* Global Toast Overrides */
+.p-toast .p-toast-message {
+    background: var(--surface-50) !important;
+    border: 1px solid var(--surface-200) !important;
+    color: var(--text-color-secondary) !important;
+    border-radius: var(--radius-md) !important;
+}
+.p-toast .p-toast-message.p-toast-message-success { border-left: 4px solid var(--success-color) !important; }
+.p-toast .p-toast-message.p-toast-message-error { border-left: 4px solid var(--danger-color) !important; }
+.p-toast .p-toast-icon-close { color: var(--text-color-secondary) !important; }

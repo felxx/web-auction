@@ -10,7 +10,7 @@ import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute.js';
 import CategoryList from './pages/(authenticated)/admin/categories/CategoryList.js';
 import CategoryForm from './pages/(authenticated)/admin/categories/CategoryForm.js';
 import AuctionList from './pages/(authenticated)/admin/auctions/AuctionList.js';
-import AdminAuctionForm from './pages/(authenticated)/admin/auctions/AdminAuctionForm.js';
+import AuctionForm from './components/AuctionForm/AuctionForm.js';
 import PersonList from './pages/(authenticated)/admin/persons/PersonList.js';
 import PersonForm from './pages/(authenticated)/admin/persons/PersonForm.js';
 import ProfileList from './pages/(authenticated)/admin/profiles/ProfileList.js';
@@ -20,7 +20,6 @@ import PublicAuctions from './pages/(unauthenticated)/auctions/PublicAuctions.js
 import AuctionDetail from './pages/(unauthenticated)/auctions/AuctionDetail.js';
 import SellerProfile from './pages/(unauthenticated)/seller/SellerProfile.js';
 import MyAuctions from './pages/(authenticated)/seller/my-auctions/MyAuctions.js';
-import SellerAuctionForm from './pages/(authenticated)/seller/my-auctions/SellerAuctionForm.js';
 import MyBids from './pages/(authenticated)/buyer/my-bids/MyBids.js';
 import Profile from './pages/(authenticated)/profile/Profile.js';
 import Layout from './components/Layout/Layout.js';
@@ -116,7 +115,7 @@ function App() {
         <Route path="/admin/auctions/new" element={
           <ProtectedRoute requiredRole="ADMIN">
             <Layout>
-              <AdminAuctionForm />
+              <AuctionForm returnPath="/admin/auctions" />
             </Layout>
           </ProtectedRoute>
         } />
@@ -124,7 +123,7 @@ function App() {
         <Route path="/admin/auctions/edit/:id" element={
           <ProtectedRoute requiredRole="ADMIN">
             <Layout>
-              <AdminAuctionForm />
+              <AuctionForm returnPath="/admin/auctions" />
             </Layout>
           </ProtectedRoute>
         } />
@@ -188,7 +187,7 @@ function App() {
         <Route path="/auctions/new" element={
           <ProtectedRoute requiredRole="SELLER">
             <Layout>
-              <SellerAuctionForm />
+              <AuctionForm returnPath="/my-auctions" />
             </Layout>
           </ProtectedRoute>
         } />
@@ -196,7 +195,7 @@ function App() {
         <Route path="/auctions/edit/:id" element={
           <ProtectedRoute requiredRole="SELLER">
             <Layout>
-              <SellerAuctionForm />
+              <AuctionForm returnPath="/my-auctions" />
             </Layout>
           </ProtectedRoute>
         } />

@@ -11,7 +11,9 @@ import org.thymeleaf.context.Context;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class EmailService {
     
@@ -43,7 +45,7 @@ public class EmailService {
             helper.setSubject(subject);
             helper.setText(process, true);
         } catch ( MessagingException e) {
-            e.printStackTrace();
+            log.error("Falha ao enviar email de template para: {}", to, e);
         }
 
         javaMail.send(message);
