@@ -22,19 +22,16 @@ const feedbackService = {
 
     getFeedbacksByRecipient: async (recipientId, page = 0, size = 10) => {
         const response = await api.get(`/feedbacks?recipientId=${recipientId}&page=${page}&size=${size}&sort=createdAt,desc`);
-        // Return content array from paginated response
         return response.data.content || response.data;
     },
 
     getFeedbacksByWriter: async (writerId, page = 0, size = 10) => {
         const response = await api.get(`/feedbacks?writerId=${writerId}&page=${page}&size=${size}&sort=createdAt,desc`);
-        // Return content array from paginated response
         return response.data.content || response.data;
     },
 
     getAllFeedbacks: async (page = 0, size = 10) => {
         const response = await api.get(`/feedbacks?page=${page}&size=${size}&sort=createdAt,desc`);
-        // Return content array from paginated response
         return response.data.content || response.data;
     }
 };

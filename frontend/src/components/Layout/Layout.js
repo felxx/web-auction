@@ -148,14 +148,14 @@ const Layout = ({ children }) => {
                         command: () => navigate('/admin/auctions')
                     },
                     {
-                        label: 'Users',
+                        label: 'Persons',
                         icon: 'pi pi-users',
-                        command: () => navigate('/admin/users')
+                        command: () => navigate('/admin/persons')
                     },
                     {
-                        label: 'Reports',
-                        icon: 'pi pi-chart-bar',
-                        command: () => navigate('/admin/reports')
+                        label: 'Profiles',
+                        icon: 'pi pi-id-card',
+                        command: () => navigate('/admin/profiles')
                     }
                 ]
             });

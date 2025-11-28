@@ -247,7 +247,6 @@ const AuctionDetail = () => {
             });
             
             setShowFeedbackDialog(false);
-            // Reload feedbacks to show the new one
             await loadSellerFeedbacks(auction.seller.id);
         } catch (error) {
             console.error('Error submitting feedback:', error);
@@ -264,10 +263,6 @@ const AuctionDetail = () => {
         if (!isAuthenticated || !auction) return false;
         const currentUser = authService.getCurrentUser();
         
-        // Can leave feedback if:
-        // 1. Auction is closed
-        // 2. User is not the seller
-        // 3. User has participated (has bids)
         return auction.status === 'CLOSED' && 
                currentUser?.id !== auction.seller?.id &&
                auction.currentUserHasBids === true;

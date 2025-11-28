@@ -57,7 +57,6 @@ const AuctionList = ({
         { label: 'Lowest price', value: 'minimumBid,asc' }
     ];
     
-    // Read URL parameters on mount
     useEffect(() => {
         const categoryIdFromUrl = searchParams.get('categoryId');
         const searchFromUrl = searchParams.get('search');

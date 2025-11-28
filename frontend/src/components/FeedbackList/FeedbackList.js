@@ -22,7 +22,6 @@ const FeedbackList = ({ feedbacks = [], loading }) => {
         return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
     };
 
-    // Ensure feedbacks is always an array
     const feedbacksArray = Array.isArray(feedbacks) ? feedbacks : [];
 
     if (loading) {

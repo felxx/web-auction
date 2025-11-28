@@ -1,37 +1,38 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card } from 'primereact/card';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
+import { confirmDialog, ConfirmDialog } from 'primereact/confirmdialog';
+import { Card } from 'primereact/card';
 import { Skeleton } from 'primereact/skeleton';
-import auctionService from '../../../../services/auctionService';
-import './AuctionList.css';
+import { Tag } from 'primereact/tag';
+import userService from '../../../../services/userService';
+import './PersonList.css';
 
-const AuctionList = () => {
-    const [auctions, setAuctions] = useState([]);
+const PersonList = () => {
+    const [persons, setPersons] = useState([]);
     const [loading, setLoading] = useState(false);
     const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchAuctions();
+        fetchPersons();
     }, []);
 
-    const fetchAuctions = async () => {
+    const fetchPersons = async () => {
         setLoading(true);
         try {
-            const response = await auctionService.getAuctions(0, 100, 'title', { search: globalFilter });
-            setAuctions(response.data.content);
+            const data = await userService.getUsers(0, 100, globalFilter);
+            setPersons(data.content || []);
         } catch (err) {
-            toast.current?.show({
+            toast.current.show({
                 severity: 'error',
                 summary: 'Error',
-                detail: 'Failed to load auctions.',
+                detail: 'Failed to load persons.',
                 life: 5000
             });
             console.error(err);
@@ -42,33 +43,32 @@ const AuctionList = () => {
 
     const handleSearch = (e) => {
         if (e.key === 'Enter') {
-            fetchAuctions();
+            fetchPersons();
         }
     };
 
-    const handleDelete = async (auction) => {
+    const handleDelete = async (person) => {
         confirmDialog({
-            message: `Are you sure you want to delete the auction "${auction.title}"?`,
+            message: `Are you sure you want to delete "${person.name}"?`,
             header: 'Confirm Deletion',
             icon: 'pi pi-exclamation-triangle',
             accept: async () => {
                 try {
-                    await auctionService.deleteAuction(auction.id);
-                    toast.current?.show({
+                    await userService.deleteUser(person.id);
+                    toast.current.show({
                         severity: 'success',
                         summary: 'Success',
-                        detail: 'Auction deleted successfully!',
+                        detail: 'Person deleted successfully.',
                         life: 3000
                     });
-                    fetchAuctions();
+                    fetchPersons();
                 } catch (err) {
-                    toast.current?.show({
+                    toast.current.show({
                         severity: 'error',
                         summary: 'Error',
-                        detail: 'Failed to delete auction.',
+                        detail: err.response?.data?.message || 'Failed to delete person.',
                         life: 5000
                     });
-                    console.error(err);
                 }
             }
         });
@@ -81,9 +81,9 @@ const AuctionList = () => {
                     icon="pi pi-pencil"
                     size="small"
                     className="p-button-rounded p-button-outlined"
-                    onClick={() => navigate(`/admin/auctions/edit/${rowData.id}`)}
+                    onClick={() => navigate(`/admin/persons/edit/${rowData.id}`)}
                     tooltip="Edit"
-                    tooltipOptions={{ position: 'top' }}
+                    tooltipOptions={{position: 'top'}}
                 />
                 <Button
                     icon="pi pi-trash"
@@ -91,28 +91,53 @@ const AuctionList = () => {
                     className="p-button-rounded p-button-outlined p-button-danger"
                     onClick={() => handleDelete(rowData)}
                     tooltip="Delete"
-                    tooltipOptions={{ position: 'top' }}
+                    tooltipOptions={{position: 'top'}}
                 />
             </div>
         );
     };
 
-    const categoryBodyTemplate = (rowData) => {
-        return rowData.categoryName || 'N/A';
+    const profilesBodyTemplate = (rowData) => {
+        return (
+            <div className="flex gap-1 flex-wrap">
+                {rowData.profiles && rowData.profiles.length > 0 ? (
+                    rowData.profiles.map((profile, index) => (
+                        <Tag 
+                            key={index} 
+                            value={profile}
+                            severity={getProfileSeverity(profile)}
+                        />
+                    ))
+                ) : (
+                    <span style={{color: 'var(--text-color-secondary)'}}>No profiles</span>
+                )}
+            </div>
+        );
     };
 
-    if (loading && !auctions.length) {
+    const getProfileSeverity = (profile) => {
+        switch (profile) {
+            case 'ADMIN': return 'danger';
+            case 'SELLER': return 'success';
+            case 'BUYER': return 'info';
+            default: return 'secondary';
+        }
+    };
+
+    if (loading && !persons.length) {
         return (
-            <div className="auction-list">
-                <Toast ref={toast} />
+            <div className="person-list">
                 <Card className="list-card">
                     <div className="list-header">
-                        <Skeleton width="200px" height="2rem" className="mb-2" />
-                        <Skeleton width="300px" height="1rem" className="mb-3" />
-                        <Skeleton width="150px" height="2.5rem" />
+                        <Skeleton height="2rem" width="50%" className="mb-3" />
+                        <Skeleton height="1rem" width="70%" />
                     </div>
                     <div className="list-content">
-                        <Skeleton width="100%" height="300px" />
+                        <Skeleton height="3rem" className="mb-4" />
+                        <Skeleton height="2rem" className="mb-3" />
+                        <Skeleton height="2rem" className="mb-3" />
+                        <Skeleton height="2rem" className="mb-3" />
+                        <Skeleton height="2rem" />
                     </div>
                 </Card>
             </div>
@@ -120,75 +145,68 @@ const AuctionList = () => {
     }
 
     return (
-        <div className="auction-list">
+        <div className="person-list">
             <Toast ref={toast} />
             <ConfirmDialog />
             
             <Card className="list-card">
                 <div className="list-header">
-                    <h2>Manage Auctions</h2>
-                    <p>Manage all system auctions</p>
+                    <h2>Manage Persons</h2>
+                    <p>Manage all system users and their profiles</p>
                     
                     <div className="header-actions">
                         <span className="p-input-icon-left search-input">
                             <i className="pi pi-search" />
                             <InputText 
-                                placeholder="Search auctions..." 
+                                placeholder="Search persons..." 
                                 value={globalFilter}
                                 onChange={(e) => setGlobalFilter(e.target.value)}
                                 onKeyDown={handleSearch}
                             />
                         </span>
                         <Button
-                            label="New Auction"
+                            label="New Person"
                             icon="pi pi-plus"
-                            className="p-button-success"
-                            onClick={() => navigate('/admin/auctions/new')}
+                            className="p-button-warning"
+                            onClick={() => navigate('/admin/persons/new')}
                         />
                     </div>
                 </div>
-                
+
                 <div className="list-content">
-                    {auctions.length === 0 && !loading ? (
+                    {persons.length === 0 && !loading ? (
                         <div className="empty-state">
-                            <i className="pi pi-shopping-cart" style={{ fontSize: '3rem', color: '#6a6a6a' }} />
-                            <h3>No auctions found</h3>
-                            <p>Click "New Auction" to create the first auction.</p>
+                            <i className="pi pi-users" style={{fontSize: '3rem', color: '#6a6a6a'}}></i>
+                            <h3>No persons found</h3>
+                            <p>Click "New Person" to create the first person.</p>
                         </div>
                     ) : (
                         <DataTable
-                            value={auctions}
+                            value={persons}
                             paginator
                             rows={10}
                             rowsPerPageOptions={[5, 10, 25]}
                             className="p-datatable-sm"
                             responsiveLayout="scroll"
-                            emptyMessage="No auctions found."
+                            emptyMessage="No persons found."
                         >
                             <Column 
-                                field="title" 
-                                header="Title" 
+                                field="name" 
+                                header="Name" 
                                 sortable 
                                 style={{ minWidth: '200px' }}
                             />
                             <Column 
-                                field="description" 
-                                header="Description" 
+                                field="email" 
+                                header="Email" 
+                                sortable
                                 style={{ minWidth: '250px' }}
-                                body={(rowData) => (
-                                    <div className="description-cell">
-                                        {rowData.description?.length > 100 
-                                            ? `${rowData.description.substring(0, 100)}...` 
-                                            : rowData.description
-                                        }
-                                    </div>
-                                )}
                             />
                             <Column 
-                                header="Category" 
-                                body={categoryBodyTemplate}
-                                sortable 
-                                style={{ minWidth: '120px' }}
+                                field="profiles" 
+                                header="Profiles" 
+                                body={profilesBodyTemplate}
+                                style={{ minWidth: '200px' }}
                             />
                             <Column 
                                 header="Actions" 
@@ -203,4 +221,4 @@ const AuctionList = () => {
     );
 };
 
-export default AuctionList;
+export default PersonList;

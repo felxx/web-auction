@@ -11,6 +11,10 @@ import CategoryList from './pages/(authenticated)/admin/categories/CategoryList.
 import CategoryForm from './pages/(authenticated)/admin/categories/CategoryForm.js';
 import AuctionList from './pages/(authenticated)/admin/auctions/AuctionList.js';
 import AdminAuctionForm from './pages/(authenticated)/admin/auctions/AdminAuctionForm.js';
+import PersonList from './pages/(authenticated)/admin/persons/PersonList.js';
+import PersonForm from './pages/(authenticated)/admin/persons/PersonForm.js';
+import ProfileList from './pages/(authenticated)/admin/profiles/ProfileList.js';
+import ProfileForm from './pages/(authenticated)/admin/profiles/ProfileForm.js';
 import Home from './pages/(unauthenticated)/home/home.js';
 import PublicAuctions from './pages/(unauthenticated)/auctions/PublicAuctions.js';
 import AuctionDetail from './pages/(unauthenticated)/auctions/AuctionDetail.js';
@@ -121,6 +125,54 @@ function App() {
           <ProtectedRoute requiredRole="ADMIN">
             <Layout>
               <AdminAuctionForm />
+            </Layout>
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin/persons" element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <Layout>
+              <PersonList />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/admin/persons/new" element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <Layout>
+              <PersonForm />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/admin/persons/edit/:id" element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <Layout>
+              <PersonForm />
+            </Layout>
+          </ProtectedRoute>
+        } />
+
+        <Route path="/admin/profiles" element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <Layout>
+              <ProfileList />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/admin/profiles/new" element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <Layout>
+              <ProfileForm />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/admin/profiles/edit/:id" element={
+          <ProtectedRoute requiredRole="ADMIN">
+            <Layout>
+              <ProfileForm />
             </Layout>
           </ProtectedRoute>
         } />

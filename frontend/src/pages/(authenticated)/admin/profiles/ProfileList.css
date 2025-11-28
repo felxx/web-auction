@@ -1,0 +1,238 @@
+.profile-list {
+    min-height: 100vh;
+    background: var(--surface-0);
+    padding: var(--spacing-xl) var(--spacing-base);
+}
+
+.profile-list .list-card {
+    background: var(--surface-50) !important;
+    border: 1px solid var(--surface-200) !important;
+    border-radius: var(--radius-2xl) !important;
+    box-shadow: var(--shadow-xl) !important;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.profile-list .list-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-lg) var(--spacing-lg) 0;
+}
+
+.profile-list .list-header h2 {
+    font-size: var(--font-2xl);
+    font-weight: var(--font-bold);
+    color: var(--text-color);
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-list .list-header p {
+    color: var(--text-color-secondary);
+    font-size: var(--font-base);
+    margin: 0 0 var(--spacing-lg) 0;
+}
+
+.header-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-base);
+    margin-bottom: var(--spacing-base);
+    flex-wrap: wrap;
+}
+
+.search-input {
+    position: relative;
+    display: inline-block;
+}
+
+.search-input .p-inputtext {
+    background: var(--surface-100) !important;
+    border: 1px solid var(--surface-200) !important;
+    color: var(--text-color) !important;
+    border-radius: var(--radius-md) !important;
+    width: 300px;
+    padding-left: 2.5rem !important;
+}
+
+.search-input .p-inputtext:focus {
+    border-color: var(--primary-color) !important;
+}
+
+.search-input i {
+    color: var(--text-color-secondary);
+    position: absolute;
+    top: 50% !important;
+    left: 0.75rem !important;
+    transform: translateY(-50%) !important;
+    margin-top: 0 !important;
+    z-index: 1;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.list-content {
+    padding: 0 var(--spacing-lg) var(--spacing-lg);
+}
+
+.profile-list .p-button {
+    border-radius: var(--radius-md) !important;
+    font-weight: var(--font-semibold) !important;
+    transition: all var(--transition-base) !important;
+}
+
+.profile-list .p-button-warning {
+    background: var(--gradient-primary) !important;
+    border: none !important;
+    color: var(--text-color-white) !important;
+    padding: var(--spacing-md) var(--spacing-lg) !important;
+}
+
+.profile-list .p-button-warning:hover:not(:disabled) {
+    background: var(--gradient-primary-hover) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(var(--primary-color-rgb), 0.3) !important;
+}
+
+.profile-list .p-button-outlined {
+    background: transparent !important;
+    border: 1px solid var(--surface-400) !important;
+    color: var(--text-color) !important;
+    padding: var(--spacing-sm) !important;
+}
+
+.profile-list .p-toolbar {
+    background: var(--surface-100) !important;
+    border: 1px solid var(--surface-200) !important;
+    border-radius: var(--radius-xl) !important;
+    margin-bottom: var(--spacing-base) !important;
+    padding: var(--spacing-base) !important;
+}
+
+.empty-state {
+    text-align: center;
+    padding: var(--spacing-2xl);
+    color: var(--text-color-secondary);
+}
+
+.empty-state i {
+    margin-bottom: var(--spacing-base);
+}
+
+.empty-state h3 {
+    font-size: var(--font-xl);
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-color);
+}
+
+.empty-state p {
+    font-size: var(--font-base);
+}
+
+.profile-list .p-datatable {
+    background: transparent !important;
+    border: 1px solid #4a4a4a !important;
+    border-radius: 15px !important;
+}
+
+.profile-list .p-datatable .p-datatable-header {
+    background: #3a3a3a !important;
+    border: none !important;
+    border-radius: 15px 15px 0 0 !important;
+    color: #e0e0e0 !important;
+    padding: 1rem !important;
+}
+
+.profile-list .p-datatable .p-datatable-thead > tr > th {
+    background: #3a3a3a !important;
+    border: none !important;
+    color: #e0e0e0 !important;
+    font-weight: 600 !important;
+    padding: 1rem !important;
+    border-bottom: 1px solid #4a4a4a !important;
+}
+
+.profile-list .p-datatable .p-datatable-tbody > tr {
+    background: transparent !important;
+    border: none !important;
+    transition: all 0.2s ease !important;
+}
+
+.profile-list .p-datatable .p-datatable-tbody > tr:hover {
+    background: rgba(255, 140, 0, 0.1) !important;
+}
+
+.profile-list .p-datatable .p-datatable-tbody > tr > td {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px solid #4a4a4a !important;
+    color: #e0e0e0 !important;
+    padding: 1rem !important;
+}
+
+.profile-list .p-datatable .p-datatable-tbody > tr:last-child > td {
+    border-bottom: none !important;
+}
+
+.profile-list .p-paginator {
+    background: #3a3a3a !important;
+    border: none !important;
+    border-radius: 0 0 15px 15px !important;
+    color: #e0e0e0 !important;
+    padding: 1rem !important;
+}
+
+.profile-list .p-paginator .p-paginator-pages .p-paginator-page {
+    color: #e0e0e0 !important;
+    border: 1px solid #4a4a4a !important;
+    background: transparent !important;
+    margin: 0 0.125rem !important;
+    border-radius: 6px !important;
+}
+
+.profile-list .p-paginator .p-paginator-pages .p-paginator-page:hover {
+    background: #4a4a4a !important;
+    border-color: #ff8c00 !important;
+    color: #ff8c00 !important;
+}
+
+.profile-list .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    background: #ff8c00 !important;
+    border-color: #ff8c00 !important;
+    color: white !important;
+}
+
+.profile-list .p-paginator .p-dropdown {
+    background: #4a4a4a !important;
+    border: 1px solid #4a4a4a !important;
+    color: #e0e0e0 !important;
+}
+
+.flex {
+    display: flex;
+}
+
+.gap-2 {
+    gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .profile-list {
+        padding: var(--spacing-base);
+    }
+
+    .profile-list .list-card {
+        border-radius: var(--radius-lg) !important;
+    }
+    
+    .header-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-input .p-inputtext {
+        width: 100%;
+    }
+}

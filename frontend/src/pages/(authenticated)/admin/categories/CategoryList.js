@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
+import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
-import { confirmDialog } from 'primereact/confirmdialog';
-import { ConfirmDialog } from 'primereact/confirmdialog';
+import { confirmDialog, ConfirmDialog } from 'primereact/confirmdialog';
 import { Card } from 'primereact/card';
 import { Skeleton } from 'primereact/skeleton';
 import categoryService from '../../../../services/categoryService';
@@ -14,6 +14,7 @@ import './CategoryList.css';
 const CategoryList = () => {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [globalFilter, setGlobalFilter] = useState('');
     const toast = useRef(null);
     const navigate = useNavigate();
 
@@ -24,7 +25,7 @@ const CategoryList = () => {
     const fetchCategories = async () => {
         setLoading(true);
         try {
-            const response = await categoryService.getCategories();
+            const response = await categoryService.getCategories(0, 100, 'name', globalFilter);
             setCategories(response.data.content || []);
         } catch (err) {
             toast.current.show({
@@ -36,6 +37,12 @@ const CategoryList = () => {
             console.error(err);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleSearch = (e) => {
+        if (e.key === 'Enter') {
+            fetchCategories();
         }
     };
 
@@ -96,7 +103,7 @@ const CategoryList = () => {
         return '-';
     };
 
-    if (loading) {
+    if (loading && !categories.length) {
         return (
             <div className="category-list">
                 <Card className="list-card">
@@ -123,17 +130,26 @@ const CategoryList = () => {
             
             <Card className="list-card">
                 <div className="list-header">
-                    <h2>
-                        Manage Categories
-                    </h2>
+                    <h2>Manage Categories</h2>
                     <p>Manage all system categories</p>
                     
-                    <Button
-                        label="New Category"
-                        icon="pi pi-plus"
-                        className="p-button-success mb-3"
-                        onClick={() => navigate('/admin/categories/new')}
-                    />
+                    <div className="header-actions">
+                        <span className="p-input-icon-left search-input">
+                            <i className="pi pi-search" />
+                            <InputText 
+                                placeholder="Search categories..." 
+                                value={globalFilter}
+                                onChange={(e) => setGlobalFilter(e.target.value)}
+                                onKeyDown={handleSearch}
+                            />
+                        </span>
+                        <Button
+                            label="New Category"
+                            icon="pi pi-plus"
+                            className="p-button-success"
+                            onClick={() => navigate('/admin/categories/new')}
+                        />
+                    </div>
                 </div>
 
                 <div className="list-content">

@@ -149,10 +149,6 @@ const Profile = () => {
 
     return (
         <div className="profile-container">
-            <div className="profile-header">
-                <h1>Profile</h1>
-            </div>
-
             <Card className="profile-card">
                 <div className="profile-content">
                     <div className="profile-avatar">

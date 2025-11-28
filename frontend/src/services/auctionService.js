@@ -10,7 +10,7 @@ const getAuctions = (page = 0, size = 10, sort = 'title', filters = {}) => {
   if (filters.status) {
     params.append('status', filters.status);
   }
-  if (filters.categoryId) {
+  if (filters.categoryId !== undefined && filters.categoryId !== null) {
     params.append('categoryId', filters.categoryId);
   }
   if (filters.startDate) {
@@ -52,7 +52,7 @@ const getMyBids = (page = 0, size = 10, sort = 'endDateTime,asc', filters = {}) 
   if (filters.status) {
     params.append('status', filters.status);
   }
-  if (filters.categoryId) {
+  if (filters.categoryId !== undefined && filters.categoryId !== null) {
     params.append('categoryId', filters.categoryId);
   }
   if (filters.search && filters.search.trim() !== '') {
