@@ -1,5 +1,7 @@
 package com.github.felxx.backend.controller;
 
+import com.github.felxx.backend.dto.personprofile.PersonProfileResponseDTO;
+import com.github.felxx.backend.dto.profile.ProfileResponseDTO;
 import com.github.felxx.backend.model.PersonProfile;
 import com.github.felxx.backend.service.PersonProfileService;
 import jakarta.validation.Valid;
@@ -43,8 +45,15 @@ public class PersonProfileController {
     }
 
     @GetMapping("/person/{personId}")
-    public ResponseEntity<Page<PersonProfile>> findByPerson(@PathVariable("personId") Long personId, Pageable pageable) {
-        return ResponseEntity.ok(personProfileService.findByPerson(personId, pageable));
+    public ResponseEntity<Page<PersonProfileResponseDTO>> findByPerson(@PathVariable("personId") Long personId, Pageable pageable) {
+        Page<PersonProfile> personProfiles = personProfileService.findByPerson(personId, pageable);
+        Page<PersonProfileResponseDTO> dtos = personProfiles.map(pp -> new PersonProfileResponseDTO(
+            pp.getId(),
+            pp.getPerson().getId(),
+            pp.getPerson().getName(),
+            new ProfileResponseDTO(pp.getProfile().getId().longValue(), pp.getProfile().getType().name())
+        ));
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/profile/{profileId}")

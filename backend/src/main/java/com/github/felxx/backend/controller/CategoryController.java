@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -21,6 +22,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<CategoryResponseDTO> insert(@Valid @RequestBody CategoryRequestDTO categoryDTO) {
         log.info("Creating new category: {}", categoryDTO.getName());
         CategoryResponseDTO created = categoryService.insert(categoryDTO);
@@ -29,6 +31,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<CategoryResponseDTO> update(
             @PathVariable("id") Long id, 
             @Valid @RequestBody CategoryRequestDTO categoryDTO) {
@@ -39,6 +42,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         log.info("Deleting category with ID: {}", id);
         categoryService.delete(id);

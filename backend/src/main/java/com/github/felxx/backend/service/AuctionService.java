@@ -484,13 +484,11 @@ public class AuctionService {
             return Page.empty(pageable);
         }
         
-        // Convert string status to AuctionStatus enum
         AuctionStatus auctionStatus = null;
         if (status != null && !status.trim().isEmpty()) {
             try {
                 auctionStatus = AuctionStatus.valueOf(status.toUpperCase());
             } catch (IllegalArgumentException e) {
-                // If invalid status, ignore it
             }
         }
         
