@@ -6,7 +6,10 @@ import { useNavigate } from 'react-router-dom';
 import AuctionCard from '../../../components/AuctionCard/AuctionCard';
 import { publicAuctionService } from '../../../services/publicAuctionService';
 import categoryService from '../../../services/categoryService';
+import { createLogger } from '../../../utils/logger';
 import './home.css';
+
+const logger = createLogger('Home');
 
 const Home = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -29,7 +32,7 @@ const Home = () => {
                 const categoriesResponse = await categoryService.getAllCategories(0, 15);
                 setCategories(categoriesResponse.content || []);
             } catch (error) {
-                console.error('Error fetching data:', error);
+                logger.error('Error fetching data', error);
             } finally {
                 setLoading(false);
             }

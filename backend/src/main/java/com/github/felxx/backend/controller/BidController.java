@@ -6,6 +6,7 @@ import com.github.felxx.backend.model.Bid;
 import com.github.felxx.backend.service.BidService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/bids")
@@ -23,13 +25,17 @@ public class BidController {
     @PostMapping
     @PreAuthorize("hasAnyAuthority('BUYER', 'SELLER', 'ADMIN')")
     public ResponseEntity<BidResponseDTO> insert(@Valid @RequestBody BidRequestDTO requestDTO) {
+        log.info("Creating new bid for auction ID: {} with amount: {}", requestDTO.getAuctionId(), requestDTO.getAmount());
         BidResponseDTO response = bidService.insert(requestDTO);
+        log.info("Bid created successfully with ID: {}", response.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+        log.info("Deleting bid with ID: {}", id);
         bidService.delete(id);
+        log.info("Bid deleted successfully: {}", id);
         return ResponseEntity.noContent().build();
     }
 

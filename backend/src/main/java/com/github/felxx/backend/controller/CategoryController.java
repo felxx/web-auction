@@ -5,12 +5,14 @@ import com.github.felxx.backend.dto.category.CategoryResponseDTO;
 import com.github.felxx.backend.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/categories")
@@ -20,7 +22,9 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<CategoryResponseDTO> insert(@Valid @RequestBody CategoryRequestDTO categoryDTO) {
+        log.info("Creating new category: {}", categoryDTO.getName());
         CategoryResponseDTO created = categoryService.insert(categoryDTO);
+        log.info("Category created successfully with ID: {}", created.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
@@ -28,13 +32,17 @@ public class CategoryController {
     public ResponseEntity<CategoryResponseDTO> update(
             @PathVariable("id") Long id, 
             @Valid @RequestBody CategoryRequestDTO categoryDTO) {
+        log.info("Updating category with ID: {}", id);
         CategoryResponseDTO updated = categoryService.update(id, categoryDTO);
+        log.info("Category updated successfully: {}", id);
         return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+        log.info("Deleting category with ID: {}", id);
         categoryService.delete(id);
+        log.info("Category deleted successfully: {}", id);
         return ResponseEntity.noContent().build();
     }
 

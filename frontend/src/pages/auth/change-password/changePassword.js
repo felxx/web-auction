@@ -9,7 +9,10 @@ import { Toast } from 'primereact/toast';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { validatePassword } from '../../../utils/password-validator';
 import authService from '../../../services/auth/authService';
+import { createLogger } from '../../../utils/logger';
 import './changePassword.css';
+
+const logger = createLogger('ChangePassword');
 
 const ChangePasswordPage = () => {
     const navigate = useNavigate();
@@ -85,7 +88,7 @@ const ChangePasswordPage = () => {
                 navigate('/');
             }, 2000);
         } catch (apiError) {
-            console.error('Change password error:', apiError);
+            logger.error('Change password error', apiError);
             const errorMessage = apiError.response?.data?.message || 
                 'Failed to change password. Please check your current password.';
             toast.current.show({

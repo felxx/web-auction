@@ -15,7 +15,10 @@ import authService from '../../../services/auth/authService';
 import useAuctionUpdates from '../../../hooks/useAuctionUpdates';
 import FeedbackForm from '../../../components/FeedbackForm/FeedbackForm';
 import FeedbackList from '../../../components/FeedbackList/FeedbackList';
+import { createLogger } from '../../../utils/logger';
 import './AuctionDetail.css';
+
+const logger = createLogger('AuctionDetail');
 
 const AuctionDetail = () => {
     const { id } = useParams();
@@ -104,15 +107,15 @@ const AuctionDetail = () => {
 
         try {
             const data = await publicAuctionService.getAuctionDetail(id);
-            console.log('Auction data loaded:', data);
-            console.log('Images in auction:', data.images);
+            logger.debug('Auction data loaded:', data);
+            logger.debug('Images in auction:', data.images);
             setAuction(data);
             
             if (data.seller?.id) {
                 loadSellerFeedbacks(data.seller.id);
             }
         } catch (err) {
-            console.error('Error loading auction details:', err);
+            logger.error('Error loading auction details', err);
             if (err.response && err.response.status === 404) {
                 setNotFound(true);
             } else {

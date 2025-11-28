@@ -22,9 +22,11 @@ import com.github.felxx.backend.dto.auction.AuctionResponseDTO;
 import com.github.felxx.backend.service.AuctionService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/auctions")
@@ -34,7 +36,9 @@ public class AuctionController {
 
     @PostMapping
     public ResponseEntity<AuctionResponseDTO> insert(@Valid @RequestBody AuctionRequestDTO auctionDTO) {
+        log.info("Creating new auction with title: {}", auctionDTO.getTitle());
         AuctionResponseDTO created = auctionService.insert(auctionDTO);
+        log.info("Auction created successfully with ID: {}", created.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
@@ -42,13 +46,17 @@ public class AuctionController {
     public ResponseEntity<AuctionResponseDTO> update(
             @PathVariable("id") Long id, 
             @Valid @RequestBody AuctionRequestDTO auctionDTO) {
+        log.info("Updating auction with ID: {}", id);
         AuctionResponseDTO updated = auctionService.update(id, auctionDTO);
+        log.info("Auction updated successfully: {}", id);
         return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+        log.info("Deleting auction with ID: {}", id);
         auctionService.delete(id);
+        log.info("Auction deleted successfully: {}", id);
         return ResponseEntity.noContent().build();
     }
 
@@ -60,9 +68,10 @@ public class AuctionController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
             @RequestParam(required = false) String search,
             Pageable pageable) {
-        
+        log.debug("Finding auctions with filters - status: {}, categoryId: {}, search: {}", status, categoryId, search);
         Page<AuctionResponseDTO> auctions = auctionService.findByFilters(
                 status, categoryId, startDate, endDate, search, pageable);
+        log.debug("Found {} auctions", auctions.getTotalElements());
         return ResponseEntity.ok(auctions);
     }
     
@@ -80,6 +89,7 @@ public class AuctionController {
     
     @GetMapping("/{id}")
     public ResponseEntity<AuctionResponseDTO> findById(@PathVariable("id") Long id) {
+        log.debug("Finding auction by ID: {}", id);
         AuctionResponseDTO auction = auctionService.findByIdDTO(id);
         return ResponseEntity.ok(auction);
     }

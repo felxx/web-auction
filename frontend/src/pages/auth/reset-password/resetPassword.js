@@ -7,7 +7,10 @@ import { Message } from 'primereact/message';
 import { Toast } from 'primereact/toast';
 import { validatePassword } from '../../../utils/password-validator';
 import authService from '../../../services/auth/authService';
+import { createLogger } from '../../../utils/logger';
 import './resetPassword.css';
+
+const logger = createLogger('ResetPassword');
 
 const ResetPasswordPage = () => {
     const navigate = useNavigate();
@@ -101,7 +104,7 @@ const ResetPasswordPage = () => {
                 navigate('/login');
             }, 2000);
         } catch (apiError) {
-            console.error('Reset password error:', apiError);
+            logger.error('Reset password error', apiError);
             const errorMessage = apiError.response?.data?.message || 
                 'Failed to reset password. The token may be invalid or expired.';
             toast.current.show({

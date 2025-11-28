@@ -8,7 +8,10 @@ import { Button } from 'primereact/button';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import authService from '../../services/auth/authService';
+import { createLogger } from '../../utils/logger';
 import './Layout.css';
+
+const logger = createLogger('Layout');
 
 const Layout = ({ children }) => {
     const navigate = useNavigate();
@@ -18,9 +21,9 @@ const Layout = ({ children }) => {
     const [user] = useState(() => authService.getCurrentUser());
 
     React.useEffect(() => {
-        console.log('Current user:', user);
-        console.log('User role:', user?.role);
-        console.log('User roles:', user?.roles);
+        logger.debug('Current user:', user);
+        logger.debug('User role:', user?.role);
+        logger.debug('User roles:', user?.roles);
     }, [user]);
 
     const hasRole = (roleToCheck) => {

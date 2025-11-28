@@ -6,7 +6,10 @@ import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { Message } from 'primereact/message';
 import authService from '../../../services/auth/authService';
+import { createLogger } from '../../../utils/logger';
 import './forgotPassword.css';
+
+const logger = createLogger('ForgotPassword');
 
 const ForgotPasswordPage = () => {
     const [email, setEmail] = useState('');
@@ -41,7 +44,7 @@ const ForgotPasswordPage = () => {
             });
         } catch (apiError) {
             setMessage('If an account with this email exists, a recovery link has been sent.');
-            console.error('Password recovery error:', apiError);
+            logger.error('Password recovery error', apiError);
         } finally {
             setLoading(false);
         }

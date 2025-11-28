@@ -7,7 +7,10 @@ import { Skeleton } from 'primereact/skeleton';
 import { Message } from 'primereact/message';
 import { Button } from 'primereact/button';
 import AuctionCard from '../AuctionCard/AuctionCard';
+import { createLogger } from '../../utils/logger';
 import './AuctionList.css';
+
+const logger = createLogger('AuctionList');
 
 const AuctionList = ({
     title,
@@ -86,7 +89,7 @@ const AuctionList = ({
             }));
             setCategories([{ label: 'All categories', value: null }, ...categoryOptions]);
         } catch (err) {
-            console.error('Error loading categories:', err);
+            logger.error('Error loading categories', err);
         }
     };
     
@@ -108,7 +111,7 @@ const AuctionList = ({
             setAuctions(data.content);
             setTotalRecords(data.totalElements);
         } catch (err) {
-            console.error('Error loading auctions:', err);
+            logger.error('Error loading auctions', err);
             setError('Unable to load auctions. Please try again.');
         } finally {
             setLoading(false);

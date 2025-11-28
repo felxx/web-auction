@@ -7,7 +7,10 @@ import { Paginator } from 'primereact/paginator';
 import userService from '../../../services/userService';
 import feedbackService from '../../../services/feedbackService';
 import FeedbackList from '../../../components/FeedbackList/FeedbackList';
+import { createLogger } from '../../../utils/logger';
 import './SellerProfile.css';
+
+const logger = createLogger('SellerProfile');
 
 const SellerProfile = () => {
     const { id } = useParams();
@@ -34,7 +37,7 @@ const SellerProfile = () => {
             
             await loadFeedbacks();
         } catch (err) {
-            console.error('Error loading seller profile:', err);
+            logger.error('Error loading seller profile', err);
             setError('Unable to load seller profile. Please try again.');
         } finally {
             setLoading(false);
@@ -47,7 +50,7 @@ const SellerProfile = () => {
             const feedbackData = await feedbackService.getFeedbacksByRecipient(id);
             setFeedbacks(feedbackData);
         } catch (err) {
-            console.error('Error loading feedbacks:', err);
+            logger.error('Error loading feedbacks', err);
         } finally {
             setLoadingFeedbacks(false);
         }

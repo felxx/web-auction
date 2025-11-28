@@ -13,7 +13,10 @@ import auctionService from '../../services/auctionService';
 import categoryService from '../../services/categoryService';
 import ImageUpload from '../ImageUpload/ImageUpload';
 import api from '../../services/api';
+import { createLogger } from '../../utils/logger';
 import './AuctionForm.css';
+
+const logger = createLogger('AuctionForm');
 
 const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
     const [formData, setFormData] = useState({
@@ -45,7 +48,7 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
                     detail: 'Failed to load categories.',
                     life: 5000
                 });
-                console.error(err);
+                logger.error('Failed to load categories', err);
             }
         };
         fetchCategories();
@@ -74,7 +77,7 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
                 detail: 'Failed to load auction.',
                 life: 5000
             });
-            console.error(err);
+            logger.error('Failed to load auction', err);
         } finally {
             setInitialLoading(false);
         }
@@ -154,8 +157,8 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
                         life: 2000
                     });
                 } catch (imgErr) {
-                    console.error('Error uploading images:', imgErr);
-                    console.error('Error details:', imgErr.response?.data);
+                    logger.error('Error uploading images', imgErr);
+                    logger.debug('Error details:', imgErr.response?.data);
                     const errorMessage = imgErr.response?.data?.message || 'Auction saved but image upload failed';
                     toast.current?.show({
                         severity: 'warn',
@@ -174,7 +177,7 @@ const AuctionForm = ({ returnPath = '/admin/auctions' }) => {
                 detail: 'Failed to save auction.',
                 life: 5000
             });
-            console.error(err);
+            logger.error('Failed to save auction', err);
         } finally {
             setLoading(false);
         }

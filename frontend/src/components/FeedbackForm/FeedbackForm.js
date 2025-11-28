@@ -5,7 +5,10 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Rating } from 'primereact/rating';
 import { Toast } from 'primereact/toast';
 import feedbackService from '../../services/feedbackService';
+import { createLogger } from '../../utils/logger';
 import './FeedbackForm.css';
+
+const logger = createLogger('FeedbackForm');
 
 const FeedbackForm = ({ visible, onHide, recipientId, recipientName, auctionId, onSuccess }) => {
     const [rating, setRating] = useState(5);
@@ -54,7 +57,7 @@ const FeedbackForm = ({ visible, onHide, recipientId, recipientName, auctionId, 
                 onSuccess();
             }
         } catch (error) {
-            console.error('Error submitting feedback:', error);
+            logger.error('Error submitting feedback', error);
             setErrors({ submit: error.response?.data?.message || 'Failed to submit feedback' });
         } finally {
             setLoading(false);

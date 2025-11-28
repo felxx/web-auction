@@ -12,7 +12,10 @@ import com.github.felxx.backend.model.Person;
 import com.github.felxx.backend.repository.AuctionRepository;
 import com.github.felxx.backend.repository.BidRepository;
 import com.github.felxx.backend.repository.PersonRepository;
+import io.micrometer.core.annotation.Counted;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -25,6 +28,7 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BidService {
@@ -35,7 +39,10 @@ public class BidService {
     private final SimpMessagingTemplate messagingTemplate;
 
     @Transactional
+    @Timed(value = "bids.create.time", description = "Tempo de criação de lance")
+    @Counted(value = "bids.create.count", description = "Quantidade de lances criados")
     public BidResponseDTO insert(BidRequestDTO requestDTO) {
+        log.info("Processing new bid for auction ID: {} with amount: {}", requestDTO.getAuctionId(), requestDTO.getAmount());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserEmail = authentication.getName();
         
@@ -46,24 +53,29 @@ public class BidService {
                 .orElseThrow(() -> new NotFoundException("Auction not found"));
         
         if (auction.getStatus() == AuctionStatus.SCHEDULED) {
+            log.warn("Bid rejected - Auction {} has not started yet", auction.getId());
             throw new BusinessException("Auction has not started yet");
         }
         
         if (auction.getStatus() != AuctionStatus.OPEN) {
+            log.warn("Bid rejected - Auction {} is not open for bidding", auction.getId());
             throw new BusinessException("Auction is not open for bidding");
         }
         
         LocalDateTime now = LocalDateTime.now();
         
         if (auction.getStartDateTime().isAfter(now)) {
+            log.warn("Bid rejected - Auction {} has not started yet", auction.getId());
             throw new BusinessException("Auction has not started yet");
         }
         
         if (auction.getEndDateTime().isBefore(now)) {
+            log.warn("Bid rejected - Auction {} has ended", auction.getId());
             throw new BusinessException("Auction has ended");
         }
         
         if (auction.getPublisher().getId().equals(bidder.getId())) {
+            log.warn("Bid rejected - Publisher attempting to bid on own auction {}", auction.getId());
             throw new BusinessException("Publisher cannot bid on their own auction");
         }
         
@@ -71,9 +83,11 @@ public class BidService {
         if (!existingBids.isEmpty()) {
             Float highestBid = existingBids.get(0).getAmount();
             if (requestDTO.getAmount() <= highestBid) {
+                log.warn("Bid rejected - Amount {} is not higher than current highest bid {}", requestDTO.getAmount(), highestBid);
                 throw new BusinessException("Bid amount must be higher than current highest bid: " + highestBid);
             }
         } else if (requestDTO.getAmount() < auction.getMinimumBid()) {
+            log.warn("Bid rejected - Amount {} is below minimum bid {}", requestDTO.getAmount(), auction.getMinimumBid());
             throw new BusinessException("Bid amount must be at least the minimum bid: " + auction.getMinimumBid());
         }
         

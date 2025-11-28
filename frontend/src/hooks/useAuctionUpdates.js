@@ -1,5 +1,8 @@
 import { useEffect, useCallback } from 'react';
 import websocketService from '../services/websocketService';
+import { createLogger } from '../utils/logger';
+
+const logger = createLogger('useAuctionUpdates');
 
 const useAuctionUpdates = (auctionId, onBidUpdate, onStatusUpdate) => {
     const handleConnect = useCallback(() => {
@@ -14,7 +17,7 @@ const useAuctionUpdates = (auctionId, onBidUpdate, onStatusUpdate) => {
 
     useEffect(() => {
         websocketService.connect(handleConnect, (error) => {
-            console.error('WebSocket connection error:', error);
+            logger.error('WebSocket connection error', error);
         });
 
         return () => {

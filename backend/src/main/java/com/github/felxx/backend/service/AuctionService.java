@@ -1,5 +1,7 @@
 package com.github.felxx.backend.service;
 
+import io.micrometer.core.annotation.Counted;
+import io.micrometer.core.annotation.Timed;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,12 +31,14 @@ import com.github.felxx.backend.repository.FeedbackRepository;
 import com.github.felxx.backend.repository.PersonRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -47,19 +51,19 @@ public class AuctionService {
     private final FeedbackRepository feedbackRepository;
     private final SimpMessagingTemplate messagingTemplate;
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 5000)
     @Transactional
     public void checkAndUpdateAuctionStatuses() {
         LocalDateTime now = LocalDateTime.now();
-        System.out.println("=== Auction Status Scheduler running at: " + now + " ===");
+        log.info("=== Auction Status Scheduler running at: {} ===", now);
         
         List<Auction> scheduledAuctions = auctionRepository.findAllByStatusAndStartDateTimeBefore(
                 AuctionStatus.SCHEDULED, now);
         if (!scheduledAuctions.isEmpty()) {
-            System.out.println("Found " + scheduledAuctions.size() + " scheduled auctions to open");
+            log.info("Found {} scheduled auctions to open", scheduledAuctions.size());
         }
         for (Auction auction : scheduledAuctions) {
-            System.out.println("Opening auction ID: " + auction.getId() + " - " + auction.getTitle());
+            log.info("Opening auction ID: {} - {}", auction.getId(), auction.getTitle());
             auction.setStatus(AuctionStatus.OPEN);
             auctionRepository.save(auction);
             
@@ -74,10 +78,10 @@ public class AuctionService {
         List<Auction> expiredAuctions = auctionRepository.findAllByStatusAndEndDateTimeBefore(
                 AuctionStatus.OPEN, now);
         if (!expiredAuctions.isEmpty()) {
-            System.out.println("Found " + expiredAuctions.size() + " open auctions to close");
+            log.info("Found {} open auctions to close", expiredAuctions.size());
         }
         for (Auction auction : expiredAuctions) {
-            System.out.println("Closing auction ID: " + auction.getId() + " - " + auction.getTitle());
+            log.info("Closing auction ID: {} - {}", auction.getId(), auction.getTitle());
             auction.setStatus(AuctionStatus.CLOSED);
             auctionRepository.save(auction);
             
@@ -89,11 +93,14 @@ public class AuctionService {
             messagingTemplate.convertAndSend("/topic/auction/" + auction.getId() + "/status", statusUpdate);
         }
         
-        System.out.println("=== Scheduler finished ===");
+        log.info("=== Scheduler finished ===");
     }
 
     @Transactional
+    @Timed(value = "auctions.create.time", description = "Tempo de criação de leilão")
+    @Counted(value = "auctions.create.count", description = "Quantidade de leilões criados")
     public AuctionResponseDTO insert(AuctionRequestDTO requestDTO) {
+        log.info("Inserting new auction: {}", requestDTO.getTitle());
         Auction auction = new Auction();
         mapDTOToEntity(requestDTO, auction);
         
@@ -106,21 +113,29 @@ public class AuctionService {
         }
         
         Auction savedAuction = auctionRepository.save(auction);
+        log.info("Auction created successfully with ID: {}", savedAuction.getId());
         return toResponseDTO(savedAuction);
     }
 
     @Transactional
+    @Timed(value = "auctions.update.time", description = "Tempo de atualização de leilão")
+    @Counted(value = "auctions.update.count", description = "Quantidade de leilões atualizados")
     public AuctionResponseDTO update(Long id, AuctionRequestDTO requestDTO) {
+        log.info("Updating auction with ID: {}", id);
         Auction existingAuction = findById(id);
         mapDTOToEntity(requestDTO, existingAuction);
         Auction updatedAuction = auctionRepository.save(existingAuction);
+        log.info("Auction updated successfully: {}", id);
         return toResponseDTO(updatedAuction);
     }
 
     @Transactional
+    @Counted(value = "auctions.delete.count", description = "Quantidade de leilões deletados")
     public void delete(Long id) {
+        log.info("Deleting auction with ID: {}", id);
         Auction auction = findById(id);
         auctionRepository.delete(auction);
+        log.info("Auction deleted successfully: {}", id);
     }
 
     public Auction findById(Long id) {
